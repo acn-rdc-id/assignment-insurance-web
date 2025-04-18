@@ -1,0 +1,7 @@
+mat-grid-tile {
+  &.mat-grid-tile.login-form-tile .mat-grid-tile-content {
+    display: block;
+    align-items: unset;
+    justify-content: unset;
+  }
+}

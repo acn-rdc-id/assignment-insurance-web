@@ -1,0 +1,25 @@
+<div
+  nxLayout="grid nogutters"
+  class="grid"
+>
+  <div nxRow class="grid-row">
+    <div nxCol="12,12,12,7" class="banner-col">
+      <div style="background-image: url(../../../assets/banner5.jpg);" class="login-banner"></div>
+    </div>
+    <div nxCol="12,12,12,5" class="login-form-col">
+      <p class="text-align-right">Allianz Indonesia</p>
+      <nx-formfield label="User ID">
+        <input nxInput type="text">
+      </nx-formfield>
+      <nx-formfield label="Password">
+        <input nxInput type="password" #password>
+        <nx-password-toggle [control]="password"></nx-password-toggle>
+      </nx-formfield>
+      <button nxButton="primary" type="button" class="login-button">LOG IN</button>
+      <div class="register-container">
+        New to MyAllianz? 
+        <nx-link>Register now</nx-link>
+      </div>
+    </div>
+  </div>
+</div>

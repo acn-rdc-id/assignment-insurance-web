@@ -1,0 +1,12 @@
+<div class="site-footer">
+  <div class="flex-wrapper">
+    <div class="copyright"> © Allianz 2025 . All Rights Reserved </div>
+    <ul class="site-footer-navigation">
+      @for (navItem of siteFooterNavList; track $index) {
+        <li>
+          <a>{{navItem}}</a>
+        </li>
+      }
+    </ul>
+  </div>
+</div>
