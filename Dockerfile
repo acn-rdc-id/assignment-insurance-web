@@ -20,4 +20,4 @@ EXPOSE 4200
 
 # Copy built app from Stage 1
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /app/dist/sample-angular/browser /usr/share/nginx/html
+COPY --from=builder /app/dist/insurance-app/browser /usr/share/nginx/html
