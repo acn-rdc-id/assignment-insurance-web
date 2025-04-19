@@ -18,7 +18,7 @@
           "--platform",
           "linux/amd64",
           "-t",
-          "gcr.io/genuine-vent-457105-i4/insurance-web",
+          "gcr.io/genuine-vent-457105-i4/insurance-web-prod",
           "."
         ]
       },
@@ -26,15 +26,15 @@
         "name": "gcr.io/cloud-builders/docker",
         "args": [
           "push",
-          "gcr.io/genuine-vent-457105-i4/insurance-web"
+          "gcr.io/genuine-vent-457105-i4/insurance-web-prod"
         ]
       },
       {
         "name": "gcr.io/cloud-builders/gcloud",
         "entrypoint": "gcloud",
         "args": [
-          "run", "deploy", "insurance-web-stg",
-          "--image", "gcr.io/genuine-vent-457105-i4/insurance-web-stg",
+          "run", "deploy", "insurance-web-prod",
+          "--image", "gcr.io/genuine-vent-457105-i4/insurance-web-prod",
           "--platform", "managed",
           "--region", "asia-southeast1",
           "--allow-unauthenticated"
@@ -43,7 +43,7 @@
     ],
     "options": { "logging": "CLOUD_LOGGING_ONLY" },
     "images": [
-      "gcr.io/genuine-vent-457105-i4/insurance-web-stg"
+      "gcr.io/genuine-vent-457105-i4/insurance-web-prod"
     ]
   }
   
