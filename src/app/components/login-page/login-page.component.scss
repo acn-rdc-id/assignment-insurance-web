@@ -1,5 +1,6 @@
 @use "sass:map";
 @use "../../../scss/variables";
+@use "../../app.component.scss";
 
 .grid {
   padding: 0 !important;
@@ -17,16 +18,14 @@
   height: 100%;
 }
 
-.banner-col {
-  min-height: 400px !important;
-}
-
 .login-form-col {
-  padding: 60px 40px !important;
+  padding: 35px 32px;
 }
 
-.text-align-right {
+.oe-title {
   text-align: right;
+  display: none;
+  font-weight: 400 !important;
 }
 
 .login-button {
@@ -40,13 +39,19 @@
 }
 
 @media(min-width: map.get(variables.$grid-breakpoints, md)) {
-  .banner-col {
-    min-height: 400px !important;
-  }
+  
 }
 
 @media(min-width: map.get(variables.$grid-breakpoints, lg)) {
-  .banner-col {
-    min-height: 736px !important;
+
+  .oe-title {
+    display: block;
+  }
+
+  .login-form-col {
+    margin: 100px auto;
+    max-width: 500px;
+    padding-left: 32px;
+    padding-right: 32px;
   }
 }

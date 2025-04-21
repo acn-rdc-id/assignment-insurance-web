@@ -9,6 +9,7 @@ import { SiteFooterComponent } from './components/site-footer/site-footer.compon
         SiteFooterComponent
     ],
     templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
 })
 export class AppComponent {
 

@@ -1,0 +1,15 @@
+nx-formfield {
+  &.nx-formfield .nx-formfield__wrapper .nx-formfield__row .nx-formfield__flexfield {
+    font-weight: 400;
+  }
+
+  &.nx-formfield .nx-formfield__wrapper .nx-formfield__row .nx-formfield__appendix{
+    position: absolute;
+    right: -30px;
+  }
+
+  &.nx-formfield .nx-formfield__wrapper .nx-formfield__row .nx-formfield__flexfield
+    .nx-formfield__input-container .nx-formfield__input .nx-formfield__label-holder .nx-formfield__label {
+      font-weight: 400;
+    }
+}

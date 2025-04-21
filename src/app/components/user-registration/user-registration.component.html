@@ -1,0 +1,112 @@
+<div class="registration-page">
+  <div nxLayout="grid nogutters" class="">
+    <div nxRow>
+      <div nxCol="12">
+        <div class="tile-wrapper">
+          <a class="back-button">
+            <nx-icon name="arrow-left" class="back-arrow"></nx-icon>
+            <span class="back-title">BACK</span>
+          </a>
+        </div>
+      </div>
+      <div nxCol="12">
+        <div class="registration-header tile-wrapper">
+          <p class="registration-title">Let's get started</p>
+        </div>
+      </div>
+      <div nxCol="12">
+        <div class="tile-wrapper">
+          <p class="registration-desc">Welcome! Get started by entering your basic details:</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tile-wrapper form-flex-wrapper">
+    <form [formGroup]="registrationForm" class="registration-form">
+      <div nxLayout="grid" class="registration-form-grid">
+        <div nxRow>
+          <div nxCol="12,5">
+            <nx-formfield label="ID type">
+              <nx-dropdown formControlName="idType">
+                @for(idType of idTypeStringList; track $index) {
+                  <nx-dropdown-item value="{{idType}}"></nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+          </div>
+          <div nxCol="12,7">
+            <nx-formfield label="Id no.">
+              <input nxInput formControlName="idNo" />
+              <button
+                nxFormfieldAppendix
+                nxIconButton="tertiary small"
+                nxPopoverDirection="right"
+                [nxPopoverTriggerFor]="idNoHint"
+                nxPopoverTrigger="hover"
+                type="button"
+                aria-label="More information"
+              >
+                <nx-icon name="info-circle" size="s" aria-hidden="true"> </nx-icon>
+              </button>
+            </nx-formfield>
+            <nx-popover #idNoHint>
+              <div style="max-width: 300px">
+                Enter the ID number that you used during policy sign-up. 
+                Hyphens and spaces should not be included, e.g.:
+                <br/>
+                <br/>
+                NRIC - 999999999999 <br/>
+                Old IC - A0001234 <br/>
+                Passport - A12345678
+              </div>
+            </nx-popover>
+          </div>
+          <div nxCol="12">
+            <nx-formfield label="Name as per ID">
+              <input nxInput formControlName="fullName" />
+            </nx-formfield>
+          </div>
+          <div nxCol="12,3">
+            <nx-formfield label="Prefix">
+              <nx-dropdown formControlName="mobilePrefix">
+                @for(prefix of mobilePrefixList; track $index) {
+                  <nx-dropdown-item value="{{prefix}}"></nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+          </div>
+          <div nxCol="12,9">
+            <nx-formfield label="Mobile no.">
+              <input nxInput formControlName="mobileNo" />
+              <button
+                nxFormfieldAppendix
+                nxIconButton="tertiary small"
+                nxPopoverDirection="top"
+                [nxPopoverTriggerFor]="mobileNoHint"
+                nxPopoverTrigger="hover"
+                type="button"
+                aria-label="More information"
+              >
+                <nx-icon name="info-circle" size="s" aria-hidden="true"> </nx-icon>
+              </button>
+            </nx-formfield>
+            <nx-popover #mobileNoHint>
+              <div style="max-width: 300px">
+                Enter your mobile number.
+                <br/>
+                <br/>
+                If you used a Malaysia mobile number
+                e.g. 012 345 6789, you should select
+                60 as your prefix and enter 12 345 6789
+                as your mobile number.
+              </div>
+            </nx-popover>
+          </div>
+          <div nxCol="12">
+            <button nxButton="primary" type="submit" class="submit-button">NEXT</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

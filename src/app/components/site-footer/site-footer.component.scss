@@ -13,7 +13,7 @@
   flex-direction: row;
   padding: 0 32px;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .copyright {
@@ -25,28 +25,41 @@
 
 .site-footer-navigation {
   list-style: none;
+  text-align: center;
+  width: 100%;
   order: 1;
 }
 
 li {
-  padding-left: 20px;
-  display: inline;
+  padding: 0 9px;
+  display: inline-block;
+  cursor: pointer;
 }
 
 @media(min-width: map.get(variables.$grid-breakpoints, md)) {
   .copyright {
     order: 1;
-    padding: 0;
+    padding-top: 0;
+    padding-right: 30px;
     width: unset;
   }
 
   .site-footer-navigation {
+    width: unset;
+    text-align: left;
     order: 2;
+  }
+
+  li {
+    padding-left: 9px;
+    padding-right: 30px;
+    display: inline;
   }
 
   .flex-wrapper {
     text-align: left;
     padding-left: 100px;
     padding-right: 32px;
+    font-size: 14px;
   }
 }

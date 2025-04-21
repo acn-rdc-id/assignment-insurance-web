@@ -1,0 +1,10 @@
+.site-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-main {
+  position: relative;
+  flex-grow: 1;
+}
