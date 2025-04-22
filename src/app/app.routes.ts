@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { userAuthGuard } from './guards/user-auth.guard';
 
 export const routes: Routes = [
   {
@@ -13,5 +14,9 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
+  },
+  {
+    path: '**',
+    loadComponent: () => import('./components/not-found/not-found.component').then(m => m.NotFoundComponent)
   }
 ];

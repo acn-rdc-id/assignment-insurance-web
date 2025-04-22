@@ -10,12 +10,14 @@ import { NxPopoverComponent, NxPopoverTriggerDirective } from '@aposin/ng-aquila
 import { getIdTypeString, IdType } from '../../enums/id-type.enum';
 import { MobilePrefix } from '../../enums/mobile-prefix.enum';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-user-registration',
   imports: [
     FormsModule,
     ReactiveFormsModule,
+    RouterModule,
     NxIconComponent,
     NxLayoutComponent,
     NxColComponent,
@@ -36,6 +38,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
   styleUrl: './user-registration.component.scss'
 })
 export class UserRegistrationComponent {
+
   idType: typeof IdType = IdType;
   mobilePrefix: typeof MobilePrefix = MobilePrefix;
   idTypeList: Array<IdType> = Object.values(IdType);
