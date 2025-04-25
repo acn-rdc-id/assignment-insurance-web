@@ -1,11 +1,11 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, HostListener, inject, Renderer2, ViewChild } from '@angular/core';
 import { NxLayoutComponent, NxColComponent, NxRowComponent} from '@aposin/ng-aquila/grid';
 import { NxFormfieldComponent, NxFormfieldSuffixDirective } from '@aposin/ng-aquila/formfield';
 import { NxInputDirective, NxPasswordToggleComponent } from '@aposin/ng-aquila/input';
-import { NxErrorComponent } from '@aposin/ng-aquila/base';
 import { NxButtonComponent } from '@aposin/ng-aquila/button';
 import { NxLinkComponent } from '@aposin/ng-aquila/link'; 
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -17,9 +17,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
     NxRowComponent,
     NxFormfieldComponent,
     NxInputDirective,
-    NxErrorComponent,
     NxButtonComponent,
-    NxFormfieldSuffixDirective,
     NxPasswordToggleComponent,
     NxLinkComponent
   ],
@@ -30,13 +28,14 @@ export class LoginPageComponent implements AfterViewChecked {
   @ViewChild('bannerCol', {read: ElementRef, static: false}) bannerCol!: ElementRef;
   viewportHeight: number = window.innerHeight;
   viewportWidth: number = window.innerWidth;
-
+  
   loginForm: FormGroup = new FormGroup({
     userId: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
   });
-
-  constructor (private renderer: Renderer2) { }
+  
+  private renderer = inject(Renderer2);
+  private router = inject(Router);
 
   ngAfterViewChecked(): void {
     this.updateBannerHeight();
@@ -50,6 +49,10 @@ export class LoginPageComponent implements AfterViewChecked {
   onLoginUser() {
     //TODO: implement login here
     console.log(this.loginForm.value);
+  }
+
+  goToUserRegistration() {
+    this.router.navigate(['registration']);
   }
 
   private updateBannerHeight(): void {

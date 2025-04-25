@@ -2,5 +2,7 @@
   <div class="site-main" #siteMain>
     <router-outlet></router-outlet>
   </div>
-  <app-site-footer id="siteFooter"></app-site-footer>
+  @if (showSiteFooter === true) {
+    <app-site-footer id="siteFooter"></app-site-footer>
+  }
 </div>
