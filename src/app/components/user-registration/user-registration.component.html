@@ -22,7 +22,7 @@
     </div>
   </div>
   <div class="tile-wrapper form-flex-wrapper">
-    <form [formGroup]="registrationForm" class="registration-form">
+    <form [formGroup]="registrationForm" (ngSubmit)="onRegister()" class="registration-form">
       <div nxLayout="grid" class="registration-form-grid">
         <div nxRow>
           <div nxCol="12,5">
@@ -77,7 +77,7 @@
           </div>
           <div nxCol="12,9">
             <nx-formfield label="Mobile no.">
-              <input nxInput formControlName="mobileNo" />
+              <input nxInput maxlength=11 formControlName="mobileNo" />
               <button
                 nxFormfieldAppendix
                 nxIconButton="tertiary small"
@@ -103,7 +103,12 @@
             </nx-popover>
           </div>
           <div nxCol="12">
-            <button nxButton="primary" type="submit" class="submit-button">NEXT</button>
+            <nx-formfield label="E-Mail">
+              <input nxInput type="email" email formControlName="email"/>
+            </nx-formfield>
+          </div>
+          <div nxCol="12">
+            <button nxButton="primary" type="submit" class="submit-button">REGISTER</button>
           </div>
         </div>
       </div>
