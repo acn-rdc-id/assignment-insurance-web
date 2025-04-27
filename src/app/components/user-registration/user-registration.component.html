@@ -108,6 +108,18 @@
             </nx-formfield>
           </div>
           <div nxCol="12">
+            <nx-formfield label="Password">
+              <input nxInput type="password" #password formControlName="password">
+              <nx-password-toggle [control]="password"></nx-password-toggle>
+            </nx-formfield>
+          </div>
+          <div nxCol="12">
+            <nx-formfield label="Confirm Password">
+              <input nxInput type="password" #confirmPassword formControlName="confirmPassword">
+              <nx-password-toggle [control]="confirmPassword"></nx-password-toggle>
+            </nx-formfield>
+          </div>
+          <div nxCol="12">
             <button nxButton="primary" type="submit" class="submit-button">REGISTER</button>
           </div>
         </div>

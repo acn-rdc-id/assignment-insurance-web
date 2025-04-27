@@ -7,21 +7,33 @@
       <div style="background-image: url(../../../assets/banner5.jpg);" class="login-banner"></div>
     </div>
     <div nxCol="12,12,12,5">
-      <div class="login-form-col">
-        <nx-link class="oe-title">Allianz Indonesia</nx-link>
-        <form [formGroup]="loginForm" (ngSubmit)="onLoginUser()">
-          <nx-formfield label="User ID">
-            <input nxInput type="text" formControlName="userId">
-          </nx-formfield>
-          <nx-formfield label="Password">
-            <input nxInput type="password" #password formControlName="password">
-            <nx-password-toggle [control]="password"></nx-password-toggle>
-          </nx-formfield>
-          <button nxButton="primary" type="submit" class="login-button">LOG IN</button>
-        </form>
-        <div class="register-container">
-          New to MyAllianz? 
-          <nx-link (click)="goToUserRegistration()">Register now</nx-link>
+      <div class="oe-wrapper">
+        <p class="oe-title">
+          <nx-link class="oe">Allianz Indonesia</nx-link>
+        </p>
+      </div>
+      <div class="std-flex-wrapper">
+        <div class="login-form-wrapper">
+          <form [formGroup]="loginForm" (ngSubmit)="onLoginUser()">
+            @if (showError) {
+              <nx-message context="error" class="error-message">
+                <span class="nx-font-weight-bold">The user ID/password entered is incorrect.</span><br />
+                For security reasons, your account will be locked after three (3) unsuccessful login attempts.
+              </nx-message>
+            }
+            <nx-formfield label="User ID">
+              <input nxInput type="text" formControlName="userId">
+            </nx-formfield>
+            <nx-formfield label="Password">
+              <input nxInput type="password" #password formControlName="password">
+              <nx-password-toggle [control]="password"></nx-password-toggle>
+            </nx-formfield>
+            <button nxButton="primary" type="submit" class="login-button">LOG IN</button>
+          </form>
+          <div class="register-container">
+            New to MyAllianz?
+            <nx-link class="register-link" (click)="goToUserRegistration()">Register now</nx-link>
+          </div>
         </div>
       </div>
     </div>

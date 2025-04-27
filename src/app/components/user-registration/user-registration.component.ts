@@ -1,20 +1,19 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
 import { NxErrorComponent } from '@aposin/ng-aquila/base';
 import { NxButtonComponent, NxIconButtonComponent } from '@aposin/ng-aquila/button';
+import { NxDropdownComponent, NxDropdownItemComponent } from '@aposin/ng-aquila/dropdown';
 import { NxFormfieldAppendixDirective, NxFormfieldComponent } from '@aposin/ng-aquila/formfield';
 import { NxColComponent, NxLayoutComponent, NxRowComponent } from '@aposin/ng-aquila/grid';
 import { NxIconComponent } from '@aposin/ng-aquila/icon';
-import { NxInputDirective } from '@aposin/ng-aquila/input';
-import { NxDropdownComponent, NxDropdownItemComponent } from '@aposin/ng-aquila/dropdown';
+import { NxInputDirective, NxPasswordToggleComponent } from '@aposin/ng-aquila/input';
 import { NxPopoverComponent, NxPopoverTriggerDirective } from '@aposin/ng-aquila/popover';
 import { getIdTypeString, IdType } from '../../enums/id-type.enum';
 import { MobilePrefix } from '../../enums/mobile-prefix.enum';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { nricValidator } from '../../services/nric.validator';
+import { nricValidator } from '../../validators/nric.validator';
 import { NricPipe } from '../../pipes/nric.pipe';
-import { Subject, takeUntil } from 'rxjs';
-import { Regex } from '../../enums/regex.enum';
 
 @Component({
   selector: 'app-user-registration',
@@ -28,7 +27,6 @@ import { Regex } from '../../enums/regex.enum';
     NxRowComponent,
     NxFormfieldComponent,
     NxInputDirective,
-    NxErrorComponent,
     NxButtonComponent,
     NxDropdownComponent,
     NxDropdownItemComponent,
@@ -37,7 +35,7 @@ import { Regex } from '../../enums/regex.enum';
     NxIconComponent,
     NxPopoverComponent,
     NxIconButtonComponent,
-    NricPipe
+    NxPasswordToggleComponent,
   ],
   providers: [NricPipe],
   templateUrl: './user-registration.component.html',
@@ -52,7 +50,7 @@ export class UserRegistrationComponent implements OnInit, OnDestroy{
   mobilePrefixList: Array<MobilePrefix> = Object.values(MobilePrefix);
 
   private nricPipe = inject(NricPipe);
-  private unsubscribe$ = new Subject<null>();
+  private unsubscribe$ = new Subject();
   
   registrationForm: FormGroup = new FormGroup({
     idType: new FormControl(IdType.Nric, Validators.required),
@@ -62,7 +60,12 @@ export class UserRegistrationComponent implements OnInit, OnDestroy{
     fullName: new FormControl('', Validators.required),
     mobilePrefix: new FormControl(MobilePrefix.Msia, Validators.required),
     mobileNo: new FormControl('', [Validators.required, Validators.maxLength(11)]),
-    email: new FormControl('', [Validators.required, Validators.email])
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    confirmPassword: new FormControl('', {
+      updateOn: 'blur',
+      validators: [Validators.required, Validators.minLength(8)]
+    })
   });
 
   constructor() {
@@ -96,18 +99,20 @@ export class UserRegistrationComponent implements OnInit, OnDestroy{
 
     this.registrationForm.get('idNo')?.valueChanges.pipe(takeUntil(this.unsubscribe$))
       .subscribe(value => {
-        const initialValue = typeof value === 'string' ? value.replace(/[^0-9, -]/g, '') : '';
-        
         if (this.registrationForm.get('idType')?.value === IdType.Nric) {
           if (typeof value === 'string') {
-            if (value !== initialValue) {
-              this.registrationForm.patchValue({idNo: initialValue}, {emitEvent: false});
-            } else {
-              const formattedString = this.nricPipe.transform(value);
-              this.registrationForm.patchValue({idNo: formattedString}, {emitEvent: false});
-            }
+            const formattedString = this.nricPipe.transform(value);
+            this.registrationForm.patchValue({idNo: formattedString}, {emitEvent: false});
           }
         }
+      });
+
+    this.registrationForm.get('confirmPassword')?.valueChanges.pipe(takeUntil(this.unsubscribe$))
+      .subscribe(value => {
+        const password = this.registrationForm.get('password')?.value;
+        password && password === value
+          ? this.registrationForm.get('confirmPassword')?.setErrors(null)
+          : this.registrationForm.get('confirmPassword')?.setErrors({notMatching: true})
       });
   }
 
@@ -119,7 +124,7 @@ export class UserRegistrationComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-    this.unsubscribe$.next(null);
+    this.unsubscribe$.next('');
     this.unsubscribe$.complete();
   }
 }

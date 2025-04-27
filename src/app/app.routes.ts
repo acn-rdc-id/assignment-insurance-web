@@ -11,6 +11,12 @@ export const routes: Routes = [
     loadComponent: () => import('./components/user-registration/user-registration.component').then(m => m.UserRegistrationComponent)
   },
   {
+    path: 'policy-product',
+    loadComponent: () => import('./components/policy-product/policy-product.component').then(m => m.PolicyProductComponent),
+    // TODO: enable userAuthGuard after integrating user signup and login
+    // canActivate: [userAuthGuard]
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'

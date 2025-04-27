@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class NricPipe implements PipeTransform {
 
-  transform(value: string, ...args: unknown[]): string {
+  transform(value: string): string {
     value = value.replaceAll('-', '');
     if (value.length < 7) {
       return value;
@@ -14,7 +14,6 @@ export class NricPipe implements PipeTransform {
     } else {
       return value.substring(0, 6) + '-' + value.substring(6, 8) + '-' + value.substring(8, 12);
     }
-
   }
 
 }

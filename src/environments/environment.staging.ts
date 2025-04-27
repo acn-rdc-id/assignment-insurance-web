@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://allianz-api-stg.hackydoodle.com/api/'
+  apiUrl: 'https://allianz-api-stg.hackydoodle.com/api/'
 };
