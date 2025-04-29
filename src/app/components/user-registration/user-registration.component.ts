@@ -1,19 +1,26 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Store } from '@ngxs/store';
 import { Subject, takeUntil } from 'rxjs';
-import { NxErrorComponent } from '@aposin/ng-aquila/base';
 import { NxButtonComponent, NxIconButtonComponent } from '@aposin/ng-aquila/button';
 import { NxDropdownComponent, NxDropdownItemComponent } from '@aposin/ng-aquila/dropdown';
 import { NxFormfieldAppendixDirective, NxFormfieldComponent } from '@aposin/ng-aquila/formfield';
 import { NxColComponent, NxLayoutComponent, NxRowComponent } from '@aposin/ng-aquila/grid';
 import { NxIconComponent } from '@aposin/ng-aquila/icon';
 import { NxInputDirective, NxPasswordToggleComponent } from '@aposin/ng-aquila/input';
+import { NxDialogService, NxModalRef } from '@aposin/ng-aquila/modal';
 import { NxPopoverComponent, NxPopoverTriggerDirective } from '@aposin/ng-aquila/popover';
-import { getIdTypeString, IdType } from '../../enums/id-type.enum';
-import { MobilePrefix } from '../../enums/mobile-prefix.enum';
 import { nricValidator } from '../../validators/nric.validator';
 import { NricPipe } from '../../pipes/nric.pipe';
+import { MessageModalComponent } from '../message-modal/message-modal.component';
+import { UserRegistration } from '../../store/user/user.action';
+import { getIdTypeString, IdType } from '../../enums/id-type.enum';
+import { UserRole } from '../../enums/user-role.enum';
+import { MobilePrefix } from '../../enums/mobile-prefix.enum';
+import { UserRegistrationForm } from '../../models/user.model';
+import { HttpErrorBody } from '../../models/http-body.model';
+import { MessageModalData } from '../../models/message-modal-data.model';
 
 @Component({
   selector: 'app-user-registration',
@@ -35,21 +42,23 @@ import { NricPipe } from '../../pipes/nric.pipe';
     NxIconComponent,
     NxPopoverComponent,
     NxIconButtonComponent,
-    NxPasswordToggleComponent,
+    NxPasswordToggleComponent
   ],
   providers: [NricPipe],
   templateUrl: './user-registration.component.html',
   styleUrl: './user-registration.component.scss'
 })
 export class UserRegistrationComponent implements OnInit, OnDestroy{
-
   idType: typeof IdType = IdType;
   mobilePrefix: typeof MobilePrefix = MobilePrefix;
   idTypeList: Array<IdType> = Object.values(IdType);
   idTypeStringList: Array<string> = [];
   mobilePrefixList: Array<MobilePrefix> = Object.values(MobilePrefix);
+  dialogRef?: NxModalRef<any>;
 
   private nricPipe = inject(NricPipe);
+  private store = inject(Store);
+  private dialogService = inject(NxDialogService);
   private unsubscribe$ = new Subject();
   
   registrationForm: FormGroup = new FormGroup({
@@ -117,10 +126,36 @@ export class UserRegistrationComponent implements OnInit, OnDestroy{
   }
 
   onRegister() {
-    if (!this.registrationForm.valid) {
-      console.log('FORM NOT VALID')
-      return;
+    if (this.registrationForm.valid) {
+      const userRegistrationPayload: UserRegistrationForm = {
+        email: this.registrationForm.value.email,
+        password: this.registrationForm.value.password,
+        username: this.registrationForm.value.fullName,
+        idType: this.registrationForm.value.idType,
+        idNo: this.registrationForm.value.idNo,
+        mobileNoPrefix: this.registrationForm.value.mobilePrefix,
+        mobileNo: this.registrationForm.value.mobileNo,
+        role: UserRole.User
+      }
+
+      this.store.dispatch(new UserRegistration(userRegistrationPayload)).subscribe({
+        error: (err: HttpErrorBody) => {
+          const messageData: MessageModalData = {
+            header: 'Error',
+            message: err.message ? err.message : 'Unexpected error occured.'
+          }
+          this.openErrorModal(messageData);
+        }
+      })
     }
+  }
+
+  private openErrorModal(messageData?: MessageModalData): void {
+    this.dialogRef = this.dialogService.open(MessageModalComponent, {
+      data: messageData,
+      disableClose: true,
+      ariaLabel: 'Error dialog'
+    })
   }
 
   ngOnDestroy(): void {

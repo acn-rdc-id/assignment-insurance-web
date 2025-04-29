@@ -61,8 +61,9 @@ export class LoginPageComponent implements AfterViewChecked {
       }
   
       this.store.dispatch(new UserLogin(userLoginPayload)).subscribe({
-        next: val => console.log('USER LOGGED IN!'),
-        complete: () => console.log('COMPLETE'),
+        next: val => {
+          this.router.navigate(['policy-product']);
+        },
         error: err => this.showError = true
       });
     }

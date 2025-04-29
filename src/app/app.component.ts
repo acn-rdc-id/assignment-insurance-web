@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { NxSpinnerComponent } from '@aposin/ng-aquila/spinner';
 import { SiteFooterComponent } from './components/site-footer/site-footer.component';
 import { SiteHeaderComponent } from './components/site-header/site-header.component';
@@ -42,7 +42,6 @@ export class AppComponent implements OnInit, OnDestroy {
 			.pipe(takeUntil(this.unsubscribe$))
 			.subscribe(event => {
 				if (event instanceof NavigationEnd) {
-					console.log(this.appRoutes.find((route) => event.urlAfterRedirects.includes(route.path ? route.path : '') && route.path !== ''));
 					if (!event.urlAfterRedirects.includes('login')) {
 						this.showSiteHeader = true;
 					} else {

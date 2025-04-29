@@ -1,10 +1,14 @@
-import { Action, Selector, State, StateContext } from "@ngxs/store";
-import { UserStateModel } from "./user.state.model";
 import { inject, Injectable } from "@angular/core";
+import { Router } from "@angular/router";
+import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { map } from "rxjs";
-import { UserLogin } from "./user.action";
+import { NxDialogService, NxModalRef } from "@aposin/ng-aquila/modal";
+import { UserLogin, UserLogout, UserRegistration } from "./user.action";
 import { UserService } from "../../services/user.service";
-import { UserRole } from "../../enums/user-role.enum";
+import { MessageModalComponent } from "../../components/message-modal/message-modal.component";
+import { UserStateModel } from "./user.state.model";
+import { MessageModalData } from "../../models/message-modal-data.model";
+import { User } from "../../models/user.model";
 
 @State<UserStateModel>({
   name: 'userstate',
@@ -12,7 +16,7 @@ import { UserRole } from "../../enums/user-role.enum";
     userDetails: {
       name: '',
       email: '',
-      role: null
+      userId: ''
     },
     jwtToken: ''
   }
@@ -21,10 +25,18 @@ import { UserRole } from "../../enums/user-role.enum";
 @Injectable()
 export class UserState {
   private userService = inject(UserService);
+  private dialogService = inject(NxDialogService);
+  private router = inject(Router);
+  private dialogRef?: NxModalRef<any>;
 
   @Selector()
   static getJwtToken(state: UserStateModel): string {
     return structuredClone(state.jwtToken);
+  }
+
+  @Selector()
+  static getUser(state: UserStateModel): User {
+    return structuredClone(state.userDetails);
   }
   
   @Action(UserLogin)
@@ -34,14 +46,48 @@ export class UserState {
     return this.userService.userLogin(payload).pipe(
       map(res => {
         setState({
-          jwtToken: res.token,
+          jwtToken: res.data.token,
           userDetails: {
-            name: 'Test',
-            email: 'test@example.com',
-            role: UserRole.User
+            name: res.data.username,
+            email: res.data.email,
+            userId: res.data.userId
           }
         });
       })
     );
+  }
+
+  @Action(UserRegistration)
+  userRegistration({}: StateContext<UserStateModel>, 
+    {payload}: UserRegistration
+  ) {
+    return this.userService.userRegistration(payload).pipe(
+      map(res => res.message)
+    ).subscribe(res => {
+      const messageData: MessageModalData = {
+        header: 'Success',
+        message: res
+      }
+      this.dialogRef = this.dialogService.open(MessageModalComponent, {
+        data: messageData,
+        disableClose: true,
+        ariaLabel: 'Success Message'
+      });
+      this.dialogRef.afterClosed().subscribe(() => {
+        this.router.navigate(['login']);
+      })
+    });
+  }
+
+  @Action(UserLogout)
+  userLogout({setState}: StateContext<UserStateModel>): void {
+    setState({
+      userDetails: {
+        name: '',
+        email: '',
+        userId: ''
+      },
+      jwtToken: ''
+    })
   }
 }

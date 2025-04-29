@@ -1,0 +1,24 @@
+.message-modal-wrapper {
+  text-align: center;
+}
+
+.modal-message-container {
+  display: flex;
+  text-align: center;
+  padding: 32px;
+  flex-wrap: nowrap;
+  word-wrap: break-word;
+
+  p {
+    width: 100%;
+  }
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.ok-button {
+  max-width: 100px;
+}

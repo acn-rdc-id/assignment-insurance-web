@@ -1,8 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-import { User, UserLoginForm } from '../models/user.model';
+import { HttpClient, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { User, UserLoginForm, UserRegistrationForm } from '../models/user.model';
 import { environment } from '../../environments/environment';
+import { SkipUserAuthHeaders } from '../interceptors/user-auth.interceptor';
+import { HttpResponseBody } from '../models/http-body.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +15,17 @@ export class UserService {
 
   constructor() { }
 
-  // TODO: Change type to {userDetails: User, jwtToken: string}
-  userLogin(payload: UserLoginForm): Observable<{userDetails: User, token: string}> {
-    return this.http.post<{userDetails: User, token: string}>(this.apiUrl + 'auth/login', payload);
+  userLogin(payload: UserLoginForm): Observable<HttpResponseBody> {
+    const httpContext = new HttpContext().set(SkipUserAuthHeaders, true);
+    return this.http.post<HttpResponseBody>(
+      this.apiUrl + 'auth/login', payload, {context: httpContext}
+    );
+  }
+
+  userRegistration(payload: UserRegistrationForm): Observable<HttpResponseBody> {
+    const httpContext = new HttpContext().set(SkipUserAuthHeaders, true);
+    return this.http.post<HttpResponseBody>(
+      this.apiUrl + 'auth/signup', payload, {context: httpContext}
+    );
   }
 }
