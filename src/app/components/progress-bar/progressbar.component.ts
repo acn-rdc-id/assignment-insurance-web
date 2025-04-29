@@ -12,9 +12,7 @@ export class ProgressbarComponent implements OnInit {
   currentPage = 9;
   totalPage = 10;
 
-  ngOnInit(): void {
-    //this.value = (this.value + 10) % this.max;
-  }
+  ngOnInit(): void {}
 
   getCompletedPercentage() {
     return Math.round((this.currentPage / this.totalPage) * 100);
