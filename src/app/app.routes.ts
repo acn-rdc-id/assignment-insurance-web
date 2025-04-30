@@ -17,15 +17,6 @@ export const routes: Routes = [
     // canActivate: [userAuthGuard]
   },
   {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full'
-  },
-  {
-    path: '**',
-    loadComponent: () => import('./components/not-found/not-found.component').then(m => m.NotFoundComponent)
-  },
-  {
     path: 'policy-initial-info',
     loadComponent: () => import('./components/policy-purchase-initial-info/policy-purchase-initial-info.component').then(m => m.PolicyPurchaseInitialInfoComponent)
   },
@@ -36,5 +27,14 @@ export const routes: Routes = [
   {
     path: 'policy-purchase',
     loadComponent: () => import('./components/policy-purchase/policy-purchase.component').then(m => m.PolicyPurchaseComponent)
+  },
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+  {
+    path: '**',
+    loadComponent: () => import('./components/not-found/not-found.component').then(m => m.NotFoundComponent)
   }
 ];
