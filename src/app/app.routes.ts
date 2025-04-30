@@ -24,5 +24,17 @@ export const routes: Routes = [
   {
     path: '**',
     loadComponent: () => import('./components/not-found/not-found.component').then(m => m.NotFoundComponent)
+  },
+  {
+    path: 'policy-initial-info',
+    loadComponent: () => import('./components/policy-purchase-initial-info/policy-purchase-initial-info.component').then(m => m.PolicyPurchaseInitialInfoComponent)
+  },
+  {
+    path: 'policy-purchase-plan',
+    loadComponent: () => import('./components/policy-purchase-plan/policy-purchase-plan.component').then(m => m.PolicyPurchasePlanComponent)
+  },
+  {
+    path: 'policy-purchase',
+    loadComponent: () => import('./components/policy-purchase/policy-purchase.component').then(m => m.PolicyPurchaseComponent)
   }
 ];

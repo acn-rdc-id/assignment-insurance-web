@@ -11,6 +11,7 @@ import { environment } from '../environments/environment';
 import { UserState } from './store/user/user.state';
 import { errorHandlingInterceptor } from './interceptors/error-handling.interceptor';
 import { loadingInterceptor } from './interceptors/loading.interceptor';
+import { PolicyState } from './store/policy/policy.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +21,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([errorHandlingInterceptor, loadingInterceptor])),
     provideStore(
       [
-        UserState
+        UserState,
+        PolicyState
       ],
       withNgxsStoragePlugin({
         keys: '*',
