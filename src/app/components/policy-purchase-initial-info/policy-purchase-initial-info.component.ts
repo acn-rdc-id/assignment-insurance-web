@@ -8,8 +8,8 @@ import { NxDatefieldModule, NxDatepickerComponent, NxNativeDateModule, NxDatefie
 import { NxErrorComponent } from '@aposin/ng-aquila/base';
 import { RouterModule, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { SubmitInitialInfo, SubmitInitialInfoSuccess} from '../../store/policy/policy.action';
-import { PolicyState } from '../../store/policy/policy.state';
+import { SubmitInitialInfo, SubmitInitialInfoSuccess} from '../../store/policy/policy-purchase.action';
+import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
 
 @Component({
   selector: 'app-policy-purchase-initial-info',
@@ -66,7 +66,7 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit{
       ])
     })
 
-    this.store.select(PolicyState.getGender).subscribe(gender => {
+    this.store.select(PolicyPurchaseState.getGender).subscribe(gender => {
       console.log('Gender:', gender);
     });
   }

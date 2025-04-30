@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PolicyStateModel } from '../store/policy/policy.state.model';
+import { HttpResponseBody } from '../models/http-body.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class PolicyService {
 
   constructor(private http: HttpClient) {}
 
-  getPlans(payload: { gender: string; dateOfBirth: string }): Observable<PolicyStateModel> {
-    return this.http.post<PolicyStateModel>(`${this.apiUrl}/get-plans`, payload);
+  getPlans(payload: { gender: string; dateOfBirth: string }): Observable<HttpResponseBody> {
+    return this.http.post<HttpResponseBody>(`${this.apiUrl}/get-plans`, payload);
   }
 }

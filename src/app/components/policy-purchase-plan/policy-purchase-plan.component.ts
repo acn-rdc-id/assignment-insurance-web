@@ -5,9 +5,9 @@ import { NxDropdownComponent, NxDropdownItemComponent } from '@aposin/ng-aquila/
 import { NxRadioModule } from '@aposin/ng-aquila/radio-button';
 import { Observable } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { PolicyState } from '../../store/policy/policy.state';
-import { PolicyPlan } from '../../models/policy.model';
-import { SelectPlan } from '../../store/policy/policy.action';
+import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
+import { PolicyPlan, PolicyPlanDto } from '../../models/policy.model';
+import { SelectPlan } from '../../store/policy/policy-purchase.action';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -28,8 +28,8 @@ import { Router } from '@angular/router';
 })
 
 export class PolicyPurchasePlanComponent implements OnInit {
-  plans$: Observable<PolicyPlan[]> | undefined;
-  selectedPlan$: Observable<PolicyPlan | null> | undefined;
+  plans$: Observable<PolicyPlanDto[]> | undefined;
+  selectedPlan$: Observable<PolicyPlan | undefined> | undefined;
 
   infoForm!: FormGroup;
   selectedPlan: any; 
@@ -42,11 +42,11 @@ export class PolicyPurchasePlanComponent implements OnInit {
       planSelection: ['']
     });
 
-    this.plans$ = this.store.select(PolicyState.plans);
-    this.selectedPlan$ = this.store.select(PolicyState.selectedPlan);
+    this.plans$ = this.store.select(PolicyPurchaseState.plans);
+    this.selectedPlan$ = this.store.select(PolicyPurchaseState.selectedPlan);
   }
 
-  onPlanSelect(plan: PolicyPlan) {
+  onPlanSelect(plan: PolicyPlanDto) {
     this.infoForm.patchValue({ planSelection: plan.planName });
     this.store.dispatch(new SelectPlan(plan));
   }

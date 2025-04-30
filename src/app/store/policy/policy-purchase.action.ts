@@ -1,4 +1,4 @@
-import { PolicyPlan } from '../../models/policy.model';
+import { PolicyPlanDto } from '../../models/policy.model';
 
 export class SubmitInitialInfo {
   static readonly type = '[Policy] Submit Initial Info';
@@ -7,7 +7,7 @@ export class SubmitInitialInfo {
 
 export class SelectPlan {
   static readonly type = '[Policy] Select Plan';
-  constructor(public payload: PolicyPlan) {}
+  constructor(public payload: PolicyPlanDto) {}
 }
 
 export class SubmitInitialInfoSuccess {
