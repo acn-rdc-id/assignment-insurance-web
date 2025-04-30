@@ -1,0 +1,9 @@
+@if (loading$ | async) {
+  <div class="loading-container">
+    <nx-spinner
+      size="large"
+      [activationAnnouncement]="'Loading large data'"
+      [completionAnnouncement]="'Done loading large data'"
+    ></nx-spinner>
+  </div>
+}

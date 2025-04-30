@@ -1,16 +1,7 @@
-@if (loading$ | async) {
-  <div class="loading-container">
-    <nx-spinner
-      size="large"
-      [activationAnnouncement]="'Loading large data'"
-      [completionAnnouncement]="'Done loading large data'"
-    ></nx-spinner>
-  </div>
-}
-
+<app-loading-spinner></app-loading-spinner>
 <div class="site-wrapper">
   @if (showSiteHeader == true) {
-    <app-site-header></app-site-header>
+    <app-site-header [isLoggedIn]="isLoggedIn()"></app-site-header>
   }
   <div class="site-main" #siteMain>
     <router-outlet></router-outlet>

@@ -38,6 +38,11 @@ export class UserState {
   static getUser(state: UserStateModel): User {
     return structuredClone(state.userDetails);
   }
+
+  @Selector()
+  static isLoggedIn(state: UserStateModel): boolean {
+    return (state.jwtToken !== '' && state.userDetails.userId !== '');
+  }
   
   @Action(UserLogin)
   userLogin({setState}: StateContext<UserStateModel>,
@@ -89,5 +94,7 @@ export class UserState {
       },
       jwtToken: ''
     })
+
+    this.router.navigate(['login']);
   }
 }
