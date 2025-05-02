@@ -1,12 +1,17 @@
 import { PolicyDetails, PolicyPlanDto } from "../../models/policy.model";
   
 export interface PolicyPurchaseStateModel {
-    // referenceNumber: string;
-    // gender: string;
-    // dateOfBirth: string;
-    // ageNearestBirthday: number;
-    
     quotationDetails: PolicyDetails
     plans: PolicyPlanDto[];
 }
-  
+
+export const POLICY_PURCHASE_STATE_DEFAULTS: PolicyPurchaseStateModel = {
+    quotationDetails: {
+        quotationNumber: '',
+        gender: '',
+        dateOfBirth: '',
+        age: 0,
+        plan: undefined
+    },
+    plans: []
+}

@@ -21,11 +21,3 @@ export interface PolicyPlan {
     premiumAmount: number;
     paymentPeriod: string;
 }
-
-export const POLICY_DETAILS_DEFAULT: PolicyDetails = {
-    quotationNumber: '',
-    gender: '',
-    dateOfBirth: '',
-    age: 0,
-    plan: undefined
-}

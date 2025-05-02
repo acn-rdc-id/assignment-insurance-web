@@ -11,7 +11,7 @@ import { MessageModalData } from "../../models/message-modal-data.model";
 import { User } from "../../models/user.model";
 
 @State<UserStateModel>({
-  name: 'userstate',
+  name: 'UserState',
   defaults: USER_STATE_DEFAULT
 })
 
