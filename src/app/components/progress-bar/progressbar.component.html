@@ -1,8 +1,9 @@
 <nx-progressbar
+  style="width: 30%"
   ariaLabel="Some aria label"
   aria-valuetext="Some value description"
-  [value]="currentPage"
+  [value]="currentPath"
   [min]="min"
-  [max]="totalPage"
+  [max]="totalPath"
 ></nx-progressbar>
 Progress: {{ getCompletedPercentage() }}%
