@@ -1,15 +1,10 @@
-import {Action, Selector, State, StateContext} from '@ngxs/store';
-import {inject, Injectable} from '@angular/core';
-import {
-  SelectPlan,
-  SubmitInitialInfo,
-  SubmitInitialInfoSuccess,
-  SubmitPersonalDetailsInfo
-} from './policy-purchase.action';
-import {PolicyPurchaseStateModel} from './policy-purchase.state.model';
-import {PolicyService} from '../../services/policy.service';
-import {map} from 'rxjs';
-import {POLICY_DETAILS_DEFAULT, PolicyDetails, PolicyPlan} from '../../models/policy.model';
+import { State, Action, StateContext, Selector } from '@ngxs/store';
+import { Injectable, inject } from '@angular/core';
+import { SubmitInitialInfo, SelectPlan, SubmitInitialInfoSuccess } from './policy-purchase.action';
+import { PolicyPurchaseStateModel } from './policy-purchase.state.model';
+import { PolicyService } from '../../services/policy.service';
+import { map } from 'rxjs';
+import { POLICY_DETAILS_DEFAULT, PolicyPlan } from '../../models/policy.model';
 
 @State<PolicyPurchaseStateModel>({
   name: 'policy',
@@ -37,7 +32,7 @@ export class PolicyPurchaseState {
   static getReferenceNumber(state: PolicyPurchaseStateModel): string {
     return state.quotationDetails.quotationNumber;
   }
-
+  
   @Selector()
   static plans(state: PolicyPurchaseStateModel) {
     return state.plans;
@@ -85,35 +80,5 @@ export class PolicyPurchaseState {
     }
     quotationDetails.plan = selectedPlan;
     ctx.patchState({ quotationDetails: quotationDetails,  });
-  }
-
-  @Action(SubmitPersonalDetailsInfo)
-  submitPersonalDetailsInfo(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: SubmitPersonalDetailsInfo) {
-    const state: PolicyPurchaseStateModel = ctx.getState();
-    const quotationDetails: PolicyDetails = structuredClone(state.quotationDetails || {});
-
-    quotationDetails.personalDetails = {
-      title: payload.title,
-      fullName: payload.fullName,
-      gender: payload.gender,
-      dateOfBirth: payload.dateOfBirth,
-      nationality: payload.nationality,
-      idNo: payload.idNo,
-      otherId: payload.otherId,
-      isUsPerson: payload.isUsPerson,
-      countryOfBirth: payload.countryOfBirth,
-      isSmoker: payload.isSmoker,
-      cigarettesPerDay: payload.cigarettesPerDay,
-      countryCode: payload.countryCode,
-      mobileNo: payload.mobileNo,
-      occupation: payload.occupation,
-      email: payload.email,
-      transactionPurpose: payload.transactionPurpose
-    };
-
-    ctx.setState({
-      ...state,
-      quotationDetails
-    });
   }
 }

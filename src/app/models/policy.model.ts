@@ -4,7 +4,6 @@ export interface PolicyDetails {
     dateOfBirth: string;
     age: number;
     plan?: PolicyPlan
-    personalDetails?: PolicyPersonalDetails
 }
 
 export interface PolicyPlanDto {
@@ -21,26 +20,6 @@ export interface PolicyPlan {
     coverageTerm: string;
     premiumAmount: number;
     paymentPeriod: string;
-}
-
-export interface PolicyPersonalDetails {
-  title: string;
-  fullName: string;
-  gender: string;
-  dateOfBirth: string;
-  nationality: string;
-  idNo: string;
-  otherId: string;
-  isUsPerson: boolean;
-  countryOfBirth: string;
-  isSmoker: boolean;
-  cigarettesPerDay: number;
-  countryCode: string;
-  // areaCode: string;
-  mobileNo: string;
-  occupation: string;
-  email: string;
-  transactionPurpose: string;
 }
 
 export const POLICY_DETAILS_DEFAULT: PolicyDetails = {
