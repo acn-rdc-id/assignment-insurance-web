@@ -29,6 +29,14 @@ export const routes: Routes = [
     loadComponent: () => import('./components/policy-purchase/policy-purchase.component').then(m => m.PolicyPurchaseComponent)
   },
   {
+    path: 'policy-purchase-summary',
+    loadComponent: () => import('./components/policy-purchase-summary/policy-purchase-summary.component').then(m => m.PolicyPurchaseSummaryComponent)
+  },
+  {
+    path: 'policy-purchase-receipt',
+    loadComponent: () => import('./components/policy-purchase-receipt/policy-purchase-receipt.component').then(m => m.PolicyPurchaseReceiptComponent)
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'

@@ -1,0 +1,96 @@
+<div
+    nxLayout="grid nogutters"
+    class="grid">
+    <h3>ALLIANZ Life&Health Insurance</h3>
+    <div nxRow class="grid-row summary">
+        <div nxCol="12,12,12,6">
+            <div class="personal-details-wrapper">
+                <table nxTable condensed class="info-table">
+                    <tbody>
+                        <tr nxTableRow>
+                            <td>
+                                Basic & Personal Details
+                            </td>
+                        </tr>
+                        @for (item of displayPersonalInfo; track item) {
+                        <tr nxTableRow>
+                            <td nxTableCell>{{item.label}}</td>
+                            <td nxTableCell>{{item.content}}</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                <!-- @for (item of tableElements; track item) {
+                    <div nxRow class="info-row">
+                        <p>hello</p>
+                    </div>
+                    } -->
+                
+            </div>
+            </div>
+        <div nxCol="12,12,12,6">
+            <div class="mini-summary-wrapper">
+                Here
+            </div>
+        </div>
+    </div>
+    <div nxRow class="grid-row">
+        <div class="terms-condition-wrapper nx-margin-bottom-3xs">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                <h3>You are required to carefully read and answer</h3>
+
+                @for (item1 of termsAndConditions; let i = $index; track $index) {
+                    <div nxRow class="grid-row">
+                        <!-- <div nxCol="2">{{ $index + 1 }}</div>
+                        <div nxCol="10" [innerHTML]="sanitizeHtml(item1.terms_html)">{{ $index + 1 }}</div> -->
+                        <div nxCol="1" class="term-index">
+                            <div>{{ $index + 1 }}</div>
+                          </div>
+                          <div nxCol="11">
+                            <div [innerHTML]="sanitizeHtml(item1.terms_html)"></div>
+                          </div>
+                        
+                    </div>
+                    <div nxRow class="grid-row">
+                        <nx-checkbox [formControl]="getFormControlAt(i)">Yes</nx-checkbox>
+                    </div>
+                    <div nxRow class="grid-row">
+                        <p>If you are unsure, please contact us at 03-1234567 for more details, or click <b style="color: red;"><u>here</u></b></p>
+                    </div>
+                } 
+                <div nxRow class="grid-row">
+                    <p>To make a claim, please refer to the claims <b style="color: red;"><u>guide</u></b>. For any other enquiries, our customer service can be reached at 03-1234567 or <b style="color: red;"><u>cust.serv&#64;allianz.co</u></b></p>
+                </div> 
+                <div nxRow class="grid-row">
+                    <nx-checkbox [formControl]="getFormControlAt(termsAndConditions.length)">I confirm that I have read your <b style="color: red;"><u>Privacy Notice</u></b> and agree to provide the relevant information for the purposes stated in the Privacy Notice. I understand that I can choose to unsubscribe at any time if I no longer wish to receive any marketing/promotions from Allianz by writing to <b style="color: red;"><u>cust.serv&#64;allianz.co</u></b></nx-checkbox>
+                </div>
+                <div nxRow class="grid-row">
+                    <div nxCol="8">
+                        <p>Upon clicking on the "Pay Now" button below, you will be redirected to the payment gateway to proceed with your first premium payment via your credit/debit card and subsequent premium(s) will also be debited from same credit/debit card. Kindly follow the instructions and once payment is successful, please do not click on refresh or close your internet browser until the entire payment process is completed.</p>
+                    </div>
+                    <div nxCol="4" class="display-button">
+                        <button nxButton="back" type="button" (click)="onBack()">Back</button>
+                    <!-- </div>
+                    <div nxCol="2"> -->
+                        <button nxButton="payNow danger" type="submit">
+                            <nx-icon name="arrow-right" nxIconPositionEnd aria-hidden="true"></nx-icon>
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<ng-template #paymentDialog>
+    <div class="payment-dialog">
+        <p>Select how do you like to simulate the payment</p>
+        <button nxButton="fail" type="button" nxModalClose="fail">Fail</button>
+        <button nxButton="success" type="button" nxModalClose="success">Success</button>
+
+    </div>
+
+</ng-template>
+  
