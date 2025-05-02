@@ -8,13 +8,14 @@ import { NxProgressbarModule } from '@aposin/ng-aquila/progressbar';
   styleUrl: './progressbar.component.scss',
 })
 export class ProgressbarComponent implements OnInit {
+  @Input() currentPath = 1;
+  @Input() totalPath = 10;
+
   min = 0;
-  currentPage = 9;
-  totalPage = 10;
 
   ngOnInit(): void {}
 
   getCompletedPercentage() {
-    return Math.round((this.currentPage / this.totalPage) * 100);
+    return Math.round((this.currentPath / this.totalPath) * 100);
   }
 }
