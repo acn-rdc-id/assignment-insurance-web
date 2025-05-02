@@ -1,17 +1,14 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { Injectable, inject } from '@angular/core';
 import { SubmitInitialInfo, SelectPlan, SubmitInitialInfoSuccess } from './policy-purchase.action';
-import { PolicyPurchaseStateModel } from './policy-purchase.state.model';
+import { POLICY_PURCHASE_STATE_DEFAULTS, PolicyPurchaseStateModel } from './policy-purchase.state.model';
 import { PolicyService } from '../../services/policy.service';
 import { map } from 'rxjs';
-import { POLICY_DETAILS_DEFAULT, PolicyPlan } from '../../models/policy.model';
+import { PolicyPlan } from '../../models/policy.model';
 
 @State<PolicyPurchaseStateModel>({
-  name: 'policy',
-  defaults: {
-    quotationDetails: POLICY_DETAILS_DEFAULT,
-    plans: []
-  }
+  name: 'PolicyState',
+  defaults: POLICY_PURCHASE_STATE_DEFAULTS
 })
 
 @Injectable()

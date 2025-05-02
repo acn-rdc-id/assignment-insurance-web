@@ -29,3 +29,25 @@ export const POLICY_DETAILS_DEFAULT: PolicyDetails = {
     age: 0,
     plan: undefined
 }
+
+export interface PolicySummary {
+    name: string;
+    nric: string;
+    dob: string;
+    gender: string;
+    nationality: string;
+    birthCountry: string;
+    usPerson: string;
+    mobileNum: string;
+    email: string;
+    smoker: string;
+    occupation: string;
+    purpose: string;
+  
+    [key: string]: string;
+  }
+  
+  export interface TermsConditions {
+    terms_id: number;
+    terms_html: string;
+  }

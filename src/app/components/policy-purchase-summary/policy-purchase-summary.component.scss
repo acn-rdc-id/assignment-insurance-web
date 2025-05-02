@@ -1,0 +1,87 @@
+// .std-flex-wrapper {
+//     display: flex;
+//     width: 100%;
+//     height: 100%;
+//     flex-flow: row wrap;
+//     align-items: center;
+//     justify-content: center;
+//   }
+.grid {
+    padding: 10px !important;
+  }
+
+.personal-details-wrapper {
+    margin: 45px 32px;
+    width: 100%;
+    padding-right: 20px;
+}
+
+.terms-condition-wrapper {
+    // margin: 45px 32px;
+    width: 100%;
+    padding-left: 38px;
+}
+
+.mini-summary-wrapper{
+  margin: 45px 32px;
+  width: 100%;
+  padding-right: 20px;
+}
+
+.info-row{
+    padding-left: 2px ;
+    border-bottom: 1px solid #ccc;
+    
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table td{
+padding: 12px 0;
+}
+
+.info-table td:first-child {
+    width: 30%;
+}
+
+.info-table td:last-child {
+    width: 70%;
+}
+
+.info-table tr:last-child td {
+    border-bottom: none;
+}
+
+.term-container {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.term-index {
+  max-width: 20px !important;
+  margin-top: 15Px;
+}
+
+.term-content, .term-checkbox {
+  margin-left: 30px; 
+}
+
+button {
+  margin: 0 8px 16px;
+}
+
+.display-button {
+  text-align: right;
+  align-content: end;
+}
+
+.payment-dialog {
+  text-align: center;
+}
+
+// .summary{
+//     background-color: rgba(255, 255, 255, 0.183);
+// }
