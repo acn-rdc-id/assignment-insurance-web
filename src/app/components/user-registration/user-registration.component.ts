@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
@@ -48,18 +48,22 @@ import { MessageModalData } from '../../models/message-modal-data.model';
   templateUrl: './user-registration.component.html',
   styleUrl: './user-registration.component.scss'
 })
-export class UserRegistrationComponent implements OnInit, OnDestroy{
+export class UserRegistrationComponent implements OnInit, AfterViewInit, OnDestroy{
+  @ViewChild('idNoInput', {read: ElementRef, static: false}) idNoInput!: ElementRef;
+
   idType: typeof IdType = IdType;
   mobilePrefix: typeof MobilePrefix = MobilePrefix;
   idTypeList: Array<IdType> = Object.values(IdType);
   idTypeStringList: Array<string> = [];
   mobilePrefixList: Array<MobilePrefix> = Object.values(MobilePrefix);
   dialogRef?: NxModalRef<any>;
-
+  idNoInputRef!: HTMLInputElement;
+  
   private nricPipe = inject(NricPipe);
   private store = inject(Store);
   private dialogService = inject(NxDialogService);
   private unsubscribe$ = new Subject();
+  private prevIdNoValue: string = '';
   
   registrationForm: FormGroup = new FormGroup({
     idType: new FormControl(IdType.Nric, Validators.required),
@@ -87,6 +91,10 @@ export class UserRegistrationComponent implements OnInit, OnDestroy{
     this.onFormChange();
   }
 
+  ngAfterViewInit(): void {
+    this.idNoInputRef = this.idNoInput.nativeElement;
+  }
+
   onFormChange() {
     this.registrationForm.get('idType')?.valueChanges.pipe(takeUntil(this.unsubscribe$))
       .subscribe(value => {
@@ -110,8 +118,7 @@ export class UserRegistrationComponent implements OnInit, OnDestroy{
       .subscribe(value => {
         if (this.registrationForm.get('idType')?.value === IdType.Nric) {
           if (typeof value === 'string') {
-            const formattedString = this.nricPipe.transform(value);
-            this.registrationForm.patchValue({idNo: formattedString}, {emitEvent: false});
+            this.updateIdNoVal(value);
           }
         }
       });
@@ -148,6 +155,37 @@ export class UserRegistrationComponent implements OnInit, OnDestroy{
         }
       })
     }
+  }
+
+  get currentIdType(): IdType {
+    return this.registrationForm.get('idType')?.value as IdType;
+  }
+
+  private updateIdNoVal(value: string): void {
+    const posStart: number = this.idNoInputRef.selectionStart
+      ? this.idNoInputRef.selectionStart : 0;
+    new Promise<number>((resolve) => {
+      const prevDashes = this.idNoInputRef.value.toString().split('-').length - 1;
+      const formattedString = this.nricPipe.transform(value);
+      this.registrationForm.patchValue({idNo: formattedString}, {emitEvent: false, onlySelf: false});
+      resolve(prevDashes);
+    }).then((val) => {
+      const curDashes = this.idNoInputRef.value.toString().split('-').length - 1;
+      const delta = this.registrationForm.value?.idNo.toString().length - this.prevIdNoValue.length;
+      if (delta < 0) {
+        const offset = curDashes - val;
+        this.idNoInputRef.selectionStart = this.idNoInputRef.selectionEnd
+          = posStart > 6 ? +posStart + (posStart + offset < 0 ? 0 : offset)
+            : posStart;
+      } else {
+        if (posStart === 7 || posStart === 10) {
+          this.idNoInputRef.selectionStart = this.idNoInputRef.selectionEnd = +posStart + 1;
+        } else {
+          this.idNoInputRef.selectionStart = this.idNoInputRef.selectionEnd = +posStart;
+        }
+      }
+      this.prevIdNoValue = this.registrationForm.value?.idNo;
+    });
   }
 
   private openErrorModal(messageData?: MessageModalData): void {

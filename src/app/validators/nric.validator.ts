@@ -10,7 +10,7 @@ export function nricValidator(): ValidatorFn {
     
     if (!value)
       return null;
-    
+
     const isNricRegex: boolean = nricRegex.test(value);
 
     if (value.length > 6 && typeof value === 'string') {

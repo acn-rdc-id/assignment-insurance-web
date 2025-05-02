@@ -6,20 +6,13 @@ import { NxDialogService, NxModalRef } from "@aposin/ng-aquila/modal";
 import { UserLogin, UserLogout, UserRegistration } from "./user.action";
 import { UserService } from "../../services/user.service";
 import { MessageModalComponent } from "../../components/message-modal/message-modal.component";
-import { UserStateModel } from "./user.state.model";
+import { USER_STATE_DEFAULT, UserStateModel } from "./user.state.model";
 import { MessageModalData } from "../../models/message-modal-data.model";
 import { User } from "../../models/user.model";
 
 @State<UserStateModel>({
   name: 'userstate',
-  defaults: {
-    userDetails: {
-      name: '',
-      email: '',
-      userId: ''
-    },
-    jwtToken: ''
-  }
+  defaults: USER_STATE_DEFAULT
 })
 
 @Injectable()
@@ -86,15 +79,7 @@ export class UserState {
 
   @Action(UserLogout)
   userLogout({setState}: StateContext<UserStateModel>): void {
-    setState({
-      userDetails: {
-        name: '',
-        email: '',
-        userId: ''
-      },
-      jwtToken: ''
-    })
-
+    setState(USER_STATE_DEFAULT);
     this.router.navigate(['login']);
   }
 }
