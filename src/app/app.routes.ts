@@ -21,6 +21,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/policy-purchase-initial-info/policy-purchase-initial-info.component').then(m => m.PolicyPurchaseInitialInfoComponent)
   },
   {
+    path: 'policy-insured-info',
+    loadComponent: () => import('./components/policy-purchase-insured-info/policy-purchase-insured-info.component').then(m => m.PolicyPurchaseInsuredInfoComponent),
+  },
+  {
     path: 'policy-purchase-plan',
     loadComponent: () => import('./components/policy-purchase-plan/policy-purchase-plan.component').then(m => m.PolicyPurchasePlanComponent)
   },
