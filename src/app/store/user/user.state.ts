@@ -33,6 +33,11 @@ export class UserState {
   }
 
   @Selector()
+  static getUsername(state: UserStateModel): string {
+    return structuredClone(state.userDetails.name);
+  }
+
+  @Selector()
   static isLoggedIn(state: UserStateModel): boolean {
     return (state.jwtToken !== '' && state.userDetails.userId !== '');
   }
