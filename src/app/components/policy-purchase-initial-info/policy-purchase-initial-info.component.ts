@@ -1,20 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
-import { NxButtonComponent } from '@aposin/ng-aquila/button';
-import { NxDropdownComponent, NxDropdownItemComponent } from '@aposin/ng-aquila/dropdown';
-import { NxFormfieldComponent, NxFormfieldModule, NxFormfieldSuffixDirective } from '@aposin/ng-aquila/formfield';
-import { NxInputDirective } from '@aposin/ng-aquila/input';
-import { NxDatefieldModule, NxDatepickerComponent, NxNativeDateModule, NxDatefieldDirective, NxDatepickerToggleComponent } from '@aposin/ng-aquila/datefield';
-import { NxErrorComponent } from '@aposin/ng-aquila/base';
-import { RouterModule, Router } from '@angular/router';
-import { Store } from '@ngxs/store';
-import { SubmitInitialInfo, SubmitInitialInfoSuccess} from '../../store/policy/policy-purchase.action';
-import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
+import {Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {NxButtonComponent} from '@aposin/ng-aquila/button';
+import {NxDropdownComponent, NxDropdownItemComponent} from '@aposin/ng-aquila/dropdown';
+import {NxFormfieldComponent, NxFormfieldModule, NxFormfieldSuffixDirective} from '@aposin/ng-aquila/formfield';
+import {NxInputDirective} from '@aposin/ng-aquila/input';
+import {
+  NxDatefieldDirective,
+  NxDatefieldModule,
+  NxDatepickerComponent,
+  NxDatepickerToggleComponent,
+  NxNativeDateModule
+} from '@aposin/ng-aquila/datefield';
+import {NxErrorComponent} from '@aposin/ng-aquila/base';
+import {Router, RouterModule} from '@angular/router';
+import {Store} from '@ngxs/store';
+import {SubmitInitialInfoSuccess} from '../../store/policy/policy-purchase.action';
+import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
+import {NxStepperNextDirective} from '@aposin/ng-aquila/progress-stepper';
 
 @Component({
   selector: 'app-policy-purchase-initial-info',
-  imports: [FormsModule, 
-    ReactiveFormsModule, 
+  imports: [FormsModule,
+    ReactiveFormsModule,
     NxFormfieldComponent,
     NxDatefieldDirective,
     NxInputDirective,
@@ -23,25 +30,28 @@ import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
     NxDatepickerComponent,
     NxErrorComponent,
     NxFormfieldComponent,
-    NxButtonComponent, 
+    NxButtonComponent,
     NxFormfieldModule,
     NxDropdownComponent,
     NxDropdownItemComponent,
     NxDatefieldModule,
     NxNativeDateModule,
     NxDatepickerComponent,
-    RouterModule
+    RouterModule,
+    NxStepperNextDirective,
   ],
   templateUrl: './policy-purchase-initial-info.component.html',
   styleUrl: './policy-purchase-initial-info.component.scss'
 })
 
 export class PolicyPurchaseInitialInfoComponent implements OnInit{
+  @Input() nextStep!: () => void;
+  @Input() prevStep!: () => void;
 
   infoForm!: FormGroup;
 
   submitted = false;
-  
+
   today: Date = new Date();
   minAge: number = 18;
   maxAge: number = 65;
@@ -73,13 +83,14 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit{
 
   onBack(): void {
     console.log('Back button clicked');
+    this.prevStep();
   }
 
   onNext(): void {
     this.submitted = true;
-
+    this.nextStep();
     // API implementation
-    
+
     // if (this.infoForm.valid) {
     //   const formData = this.infoForm.value;
 
@@ -128,7 +139,7 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit{
       };
 
       this.store.dispatch(new SubmitInitialInfoSuccess(mockResponse));
-      this.router.navigate(['/policy-purchase-plan']);
+      // this.router.navigate(['/policy-purchase-plan']);
     } else {
       this.infoForm.markAllAsTouched();
       console.log('Form is invalid');

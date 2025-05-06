@@ -3,7 +3,8 @@ export interface PolicyDetails {
     gender: string;
     dateOfBirth: string;
     age: number;
-    plan?: PolicyPlan
+    plan?: PolicyPlan;
+    personalDetails?: PolicyPersonalDetails
 }
 
 export interface PolicyPlanDto {
@@ -20,6 +21,31 @@ export interface PolicyPlan {
     coverageTerm: string;
     premiumAmount: number;
     paymentPeriod: string;
+}
+
+export interface PolicyPersonalDetails {
+  title: string;
+  fullName: string;
+  gender: string;
+  dateOfBirth: string;
+  nationality: string;
+  idNo: string;
+  otherId: string;
+  isUsPerson: boolean;
+  countryOfBirth: string;
+  isSmoker: boolean;
+  cigarettesPerDay: number;
+  countryCode: string;
+  // areaCode: string;
+  mobileNo: string;
+  occupation: string;
+  email: string;
+  transactionPurpose: string;
+}
+
+export interface PolicyPurchaseStep {
+  path: string;
+  step: number;
 }
 
 export const POLICY_DETAILS_DEFAULT: PolicyDetails = {
@@ -43,10 +69,10 @@ export interface PolicySummary {
     smoker: string;
     occupation: string;
     purpose: string;
-  
+
     [key: string]: string;
   }
-  
+
   export interface TermsConditions {
     terms_id: number;
     terms_html: string;

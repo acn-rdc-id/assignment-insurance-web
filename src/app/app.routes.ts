@@ -16,18 +16,18 @@ export const routes: Routes = [
     // TODO: enable userAuthGuard after integrating user signup and login
     // canActivate: [userAuthGuard]
   },
-  {
-    path: 'policy-initial-info',
-    loadComponent: () => import('./components/policy-purchase-initial-info/policy-purchase-initial-info.component').then(m => m.PolicyPurchaseInitialInfoComponent)
-  },
-  {
-    path: 'policy-insured-info',
-    loadComponent: () => import('./components/policy-purchase-insured-info/policy-purchase-insured-info.component').then(m => m.PolicyPurchaseInsuredInfoComponent),
-  },
-  {
-    path: 'policy-purchase-plan',
-    loadComponent: () => import('./components/policy-purchase-plan/policy-purchase-plan.component').then(m => m.PolicyPurchasePlanComponent)
-  },
+  // {
+  //   path: 'policy-initial-info',
+  //   loadComponent: () => import('./components/policy-purchase-initial-info/policy-purchase-initial-info.component').then(m => m.PolicyPurchaseInitialInfoComponent)
+  // },
+  // {
+  //   path: 'policy-insured-info',
+  //   loadComponent: () => import('./components/policy-purchase-insured-info/policy-purchase-insured-info.component').then(m => m.PolicyPurchaseInsuredInfoComponent),
+  // },
+  // {
+  //   path: 'policy-purchase-plan',
+  //   loadComponent: () => import('./components/policy-purchase-plan/policy-purchase-plan.component').then(m => m.PolicyPurchasePlanComponent)
+  // },
   {
     path: 'policy-purchase',
     loadComponent: () => import('./components/policy-purchase/policy-purchase.component').then(m => m.PolicyPurchaseComponent)

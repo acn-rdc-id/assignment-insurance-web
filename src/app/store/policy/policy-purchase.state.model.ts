@@ -1,6 +1,8 @@
-import { PolicyDetails, PolicyPlanDto } from "../../models/policy.model";
-  
+import {PolicyDetails, PolicyPlanDto, PolicyPurchaseStep} from "../../models/policy.model";
+
 export interface PolicyPurchaseStateModel {
+    mainStep: PolicyPurchaseStep[];
+    currentMainStep: PolicyPurchaseStep;
     quotationDetails: PolicyDetails
     plans: PolicyPlanDto[];
 }
@@ -11,7 +13,17 @@ export const POLICY_PURCHASE_STATE_DEFAULTS: PolicyPurchaseStateModel = {
         gender: '',
         dateOfBirth: '',
         age: 0,
-        plan: undefined
+        plan: undefined,
+        personalDetails: undefined,
     },
-    plans: []
+    plans: [],
+    mainStep: [
+      { path: 'basic-information', step: 1 },
+      { path: 'get-quote', step: 2 },
+      { path: 'apply-now', step: 3 }
+    ],
+    currentMainStep: {
+      path: 'basic-information',
+      step: 1
+    },
 }

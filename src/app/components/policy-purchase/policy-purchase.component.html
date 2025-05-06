@@ -1,9 +1,40 @@
-<div class="hero-banner">
-    <div class="hero-content">
-      <h1>Allianz i-EssentialCover</h1>
-      <p>Helping to provide financial support when you are no longer able to. Cover for death and total permanent disablement</p>
-    </div>
-</div>
-  
-<app-policy-purchase-initial-info></app-policy-purchase-initial-info>
-  
+<nx-progress-stepper [linear]="true" [selectedIndex]="currentStep - 1" currentStepLabel="Step" style="margin-bottom: 3rem; margin-top: 3rem">
+  @for (item of mainSteps; track item; let i = $index) {
+    <nx-step [label]="formatCamelCase(item.path)">
+      @if (item.path === 'basic-information' && item.step === 1) {
+        <div class="hero-banner">
+          <div class="hero-content">
+            <h1>Allianz i-EssentialCover</h1>
+            <p>Helping to provide financial support when you are no longer able to. Cover for death and total permanent disablement</p>
+          </div>
+        </div>
+        <app-policy-purchase-initial-info
+          [nextStep]="nextStep.bind(this)"
+          [prevStep]="prevStep.bind(this)">
+        </app-policy-purchase-initial-info>
+      } @else if (item.path === 'get-quote' && item.step === 2) {
+        <app-policy-purchase-plan
+          [nextStep]="nextStep.bind(this)"
+          [prevStep]="prevStep.bind(this)">
+        </app-policy-purchase-plan>
+      } @else if (item.path === 'apply-now' && item.step === 3) {
+        <div class="plan-selection-container">
+          <nx-card style="width: 1200px">
+            <h3 nxHeadline size="l" class="card-title">Allianz i-EssentialCover</h3>
+            <p nxCardSecondaryInfo class="card-subtitle">
+              Life Assured's Particulars
+            </p>
+            <form [formGroup]="mainFormGroup" style="margin-bottom: 2rem">
+              <app-personal-details-step [formGroup]="personalDetailsForm"
+                 [nextStep]="nextStep.bind(this)"
+                 [prevStep]="prevStep.bind(this)">
+              </app-personal-details-step>
+            </form>
+          </nx-card>
+        </div>
+      } @else {
+        <app-policy-purchase-summary></app-policy-purchase-summary>
+      }
+    </nx-step>
+  }
+</nx-progress-stepper>

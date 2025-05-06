@@ -6,7 +6,7 @@
         <nx-dropdown-item value="yearly">Yearly</nx-dropdown-item>
       </nx-dropdown>
     </div>
-  
+
     @if (plans$ | async) {
       <div class="plan-selection-container">
         @for (plan of plans$ | async; track plan.planName) {
@@ -21,16 +21,16 @@
                   {{ infoForm.value.paymentPeriod === 'monthly' ? 'Per Month' : 'Per Year' }}
                 </div>
               </div>
-  
+
               <div class="plan-name">
                 {{ plan.planName }}
               </div>
-  
+
               <div class="plan-description">
                 Sum Assured: RM {{ plan.sumAssured | number }}<br>
                 Term: {{ plan.coverageTerm }}
               </div>
-  
+
               <div class="plan-radio">
                 <nx-radio
                   name="planSelection"
@@ -48,14 +48,21 @@
 
     <div class="button-container">
         <button
-          nxButton
+          nxButton="primary small"
+          nxStepperPrevious
+          type="button"
+          style="margin-right: 1rem"
+          (click)="onBack()"
+        >Back</button>
+        <button
+          nxButton="primary small"
           class="next-button"
           [disabled]="!infoForm.value.planSelection"
           (click)="onNext()"
+          nxStepperNext
         >
           Next
         </button>
     </div>
-  
+
 </form>
-  
