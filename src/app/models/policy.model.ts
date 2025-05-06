@@ -1,8 +1,5 @@
 export interface PolicyDetails {
     quotationNumber: string;
-    gender: string;
-    dateOfBirth: string;
-    age: number;
     plan?: PolicyPlan;
     personalDetails?: PolicyPersonalDetails
 }
@@ -28,6 +25,7 @@ export interface PolicyPersonalDetails {
   fullName: string;
   gender: string;
   dateOfBirth: string;
+  age: number;
   nationality: string;
   idNo: string;
   otherId: string;
@@ -43,17 +41,28 @@ export interface PolicyPersonalDetails {
   transactionPurpose: string;
 }
 
-export interface PolicyPurchaseStep {
-  path: string;
-  step: number;
-}
-
 export const POLICY_DETAILS_DEFAULT: PolicyDetails = {
     quotationNumber: '',
-    gender: '',
-    dateOfBirth: '',
-    age: 0,
-    plan: undefined
+    plan: undefined,
+    personalDetails: {
+        gender: '',
+        dateOfBirth: '',
+        age: 0,
+        title: '',
+        fullName: '',
+        nationality: '',
+        idNo: '',
+        otherId: '',
+        isUsPerson: false,
+        countryOfBirth: '',
+        isSmoker: false,
+        cigarettesPerDay: 0,
+        countryCode: '',
+        mobileNo: '',
+        occupation: '',
+        email: '',
+        transactionPurpose: ''
+    }
 }
 
 export interface PolicySummary {
@@ -73,6 +82,11 @@ export interface PolicySummary {
     [key: string]: string;
   }
 
+  export interface PolicyPurchaseStep {
+    path: string;
+    step: number;
+  }
+  
   export interface TermsConditions {
     id: number;
     termsHtml: string;

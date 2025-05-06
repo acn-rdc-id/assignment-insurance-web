@@ -1,4 +1,4 @@
-<form [formGroup]="infoForm">
+<form [formGroup]="infoForm" (ngSubmit)="onNext()">
     <div class="plan-controls">
       <label class="dropdown-label">Payment Period: </label>
       <nx-dropdown formControlName="paymentPeriod">
@@ -35,8 +35,7 @@
                 <nx-radio
                   name="planSelection"
                   [value]="plan.planName"
-                  formControlName="planSelection"
-                  (change)="onPlanSelect(plan)">
+                  formControlName="planSelection">
                   {{ infoForm.value.planSelection === plan.planName ? 'Selected' : 'Select this plan' }}
                 </nx-radio>
               </div>

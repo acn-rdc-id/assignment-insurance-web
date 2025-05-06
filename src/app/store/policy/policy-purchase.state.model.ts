@@ -8,12 +8,20 @@ export interface PolicyPurchaseStateModel {
     termsAndConditions: TermsConditions[]
 }
 
+// export const POLICY_PURCHASE_STATE_DEFAULTS: PolicyPurchaseStateModel = {
+//     quotationDetails: {
+//         quotationNumber: '',
+//         gender: '',
+//         dateOfBirth: '',
+//         age: 0,
+//         plan: undefined
+//     },
+//     plans: []
+// }
+
 export const POLICY_PURCHASE_STATE_DEFAULTS: PolicyPurchaseStateModel = {
     quotationDetails: {
         quotationNumber: '',
-        gender: '',
-        dateOfBirth: '',
-        age: 0,
         plan: undefined,
         personalDetails: undefined,
     },

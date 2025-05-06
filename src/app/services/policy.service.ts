@@ -1,20 +1,21 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HttpResponseBody } from '../models/http-body.model';
-import { PolicyDetails, PolicySummary } from '../models/policy.model';
+import { PolicyDetails, PolicyPlanDto, PolicySummary } from '../models/policy.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PolicyService {
-  //private readonly apiUrl = 'https://your-api-url.com/policy'; // <-- replace with actual endpoint
+  private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
-  constructor(private http: HttpClient) {}
 
-  getPlans(payload: { gender: string; dateOfBirth: string }): Observable<HttpResponseBody> {
-    return this.http.post<HttpResponseBody>(`${this.apiUrl}/get-plans`, payload);
+  constructor() {}
+
+  getPlans(payload: any): Observable<HttpResponseBody[]> {
+    return this.http.post<HttpResponseBody[]>(this.apiUrl + 'plan/get-quotationPlan', payload);
   }
 
   getTermsConditions(): Observable<HttpResponseBody> {

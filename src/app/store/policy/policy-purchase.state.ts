@@ -16,13 +16,13 @@ export class PolicyPurchaseState {
   private policyService = inject(PolicyService);
 
   @Selector()
-  static getGender(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.gender;
+  static getGender(state: PolicyPurchaseStateModel): string | undefined {
+    return state.quotationDetails.personalDetails?.gender
   }
 
   @Selector()
-  static getDateOfBirth(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.dateOfBirth;
+  static getDateOfBirth(state: PolicyPurchaseStateModel): string | undefined{
+    return state.quotationDetails.personalDetails?.dateOfBirth;
   }
 
   @Selector()
@@ -152,29 +152,64 @@ export class PolicyPurchaseState {
   @Action(SubmitInitialInfoSuccess)
   submitInitialInfoSuccess(ctx: StateContext<PolicyPurchaseStateModel>, {payload}: SubmitInitialInfoSuccess) {
     let quotationDetails = structuredClone(ctx.getState().quotationDetails);
-    quotationDetails.gender = payload.gender;
-    quotationDetails.dateOfBirth = payload.dateOfBirth;
-    quotationDetails.quotationNumber = payload.referenceNumber;
-    quotationDetails.age = payload.ageNearestBirthday,
-
+    // quotationDetails.gender = payload.gender;
+    // quotationDetails.dateOfBirth = payload.dateOfBirth;
+    // quotationDetails.quotationNumber = payload.referenceNumber;
+    // quotationDetails.age = payload.ageNearestBirthday,
+    const updatedDetails = {
+      quotationNumber: payload.quotationNumber,
+      plan: undefined,
+      personalDetails: {
+        // gender: payload.gender,
+        // dateOfBirth: payload.dateOfBirth,
+        // age: payload.ageNearestBirthday,
+        ...payload.personalDetails,
+        title: '',
+        fullName: '',
+        nationality: '',
+        idNo: '',
+        otherId: '',
+        isUsPerson: false,
+        countryOfBirth: '',
+        isSmoker: false,
+        cigarettesPerDay: 0,
+        countryCode: '',
+        mobileNo: '',
+        occupation: '',
+        email: '',
+        transactionPurpose: ''
+      }
+    };
+    
     ctx.patchState({
-      quotationDetails: quotationDetails,
+      quotationDetails: updatedDetails,
       plans: payload.plans
     });
+    
+    // ctx.patchState({
+    //   quotationDetails: quotationDetails,
+    //   plans: payload.plans
+    // });
   }
 
   @Action(SelectPlan)
   selectPlan(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: SelectPlan) {
-    let quotationDetails = structuredClone(ctx.getState().quotationDetails);
-    const selectedPlan: PolicyPlan = {
-      coverageTerm: payload.coverageTerm,
-      paymentPeriod: 'monthly',
-      planName: payload.planName,
-      premiumAmount: 4000,
-      sumAssured: payload.sumAssured
-    }
-    quotationDetails.plan = selectedPlan;
-    ctx.patchState({ quotationDetails: quotationDetails,  });
+    const quotationDetails = structuredClone(ctx.getState().quotationDetails);
+    // const selectedPlan: PolicyPlan = {
+    //   coverageTerm: payload.coverageTerm,
+    //   paymentPeriod: 'monthly',
+    //   planName: payload.planName,
+    //   premiumAmount: 4000,
+    //   sumAssured: payload.sumAssured
+    // }
+    const updatedQuotation = {
+      ...quotationDetails,
+      plan: payload
+    };
+
+    // quotationDetails.plan = selectedPlan;
+    console.log('Patch log plan\: ', updatedQuotation.plan)
+    ctx.patchState({ quotationDetails: updatedQuotation });
   }
 
 
@@ -188,6 +223,7 @@ export class PolicyPurchaseState {
       fullName: payload.fullName,
       gender: payload.gender,
       dateOfBirth: payload.dateOfBirth,
+      age: payload.age,
       nationality: payload.nationality,
       idNo: payload.idNo,
       otherId: payload.otherId,

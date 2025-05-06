@@ -1,14 +1,14 @@
-import {PolicyPersonalDetails, PolicyPlanDto, TermsConditions, PolicyPurchaseStep} from '../../models/policy.model';
+import {PolicyPersonalDetails, PolicyPlan, PolicyPlanDto, TermsConditions, PolicyPurchaseStep} from '../../models/policy.model';
 
 export class SubmitInitialInfo {
   static readonly type = '[Policy] Submit Initial Info';
-  constructor(public payload: { gender: string; dateOfBirth: string }) {}
+  constructor(public payload: any) {}
 }
 
 export class SelectPlan {
   static readonly type = '[Policy] Select Plan';
-  constructor(public payload: PolicyPlanDto) {}
-}
+  constructor(public payload: PolicyPlan) {}
+} 
 
 export class SubmitInitialInfoSuccess {
   static readonly type = '[Policy] Submit Initial Info Success';
