@@ -5,11 +5,9 @@ import {
   NxRowComponent,
 } from '@aposin/ng-aquila/grid';
 import { NxLinkComponent } from '@aposin/ng-aquila/link';
-import { PolicyDetails } from '../../models/policy.model';
 import { Router } from '@angular/router';
 import { ProgressbarComponent } from '../progress-bar/progressbar.component';
 import { Store } from '@ngxs/store';
-import { PolicyProductService } from '../../services/policy-product.service';
 import { PolicyProductDetails } from '../../store/policy-product/policy-product.action';
 import { PolicyProductState } from '../../store/policy-product/policy-product.state';
 

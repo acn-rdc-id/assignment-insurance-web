@@ -1,5 +1,8 @@
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
-import { PolicyStateModel } from './policy-product.state.model';
+import {
+  POLICY_PRODUCT_STATE_DEFAULT,
+  PolicyStateModel,
+} from './policy-product.state.model';
 import { inject, Injectable } from '@angular/core';
 import { PolicyDetails } from '../../models/policy.model';
 import { PolicyProductService } from '../../services/policy-product.service';
@@ -8,14 +11,7 @@ import { PolicyProductDetails } from './policy-product.action';
 
 @State<PolicyStateModel>({
   name: 'PolicyProductState',
-  defaults: {
-    policyList: {
-      quotationNumber: '',
-      gender: '',
-      dateOfBirth: '',
-      age: 0,
-    },
-  },
+  defaults: POLICY_PRODUCT_STATE_DEFAULT,
 })
 @Injectable()
 export class PolicyProductState {
