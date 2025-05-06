@@ -12,24 +12,24 @@ import { UserState } from './store/user/user.state';
 import { errorHandlingInterceptor } from './interceptors/error-handling.interceptor';
 import { loadingInterceptor } from './interceptors/loading.interceptor';
 import { PolicyPurchaseState } from './store/policy/policy-purchase.state';
+import { PolicyProductState } from './store/policy-product/policy-product.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
     provideAnimations(),
-    provideHttpClient(withInterceptors([errorHandlingInterceptor, loadingInterceptor])),
+    provideHttpClient(
+      withInterceptors([errorHandlingInterceptor, loadingInterceptor])
+    ),
     provideStore(
-      [
-        UserState,
-        PolicyPurchaseState
-      ],
+      [UserState, PolicyPurchaseState, PolicyProductState],
       withNgxsStoragePlugin({
         keys: '*',
-        storage: 1
+        storage: 1,
       }),
       withNgxsReduxDevtoolsPlugin(),
-      withNgxsLoggerPlugin({disabled: environment.production})
-    )
-  ]
+      withNgxsLoggerPlugin({ disabled: environment.production })
+    ),
+  ],
 };

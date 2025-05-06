@@ -1,5 +1,5 @@
-import { PolicyDetails } from '../../models/policy-product.model';
+import { PolicyDetails } from '../../models/policy.model';
 
 export interface PolicyStateModel {
-  policyDetails: PolicyDetails[];
+  policyList: PolicyDetails;
 }

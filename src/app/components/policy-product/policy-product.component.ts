@@ -5,12 +5,13 @@ import {
   NxRowComponent,
 } from '@aposin/ng-aquila/grid';
 import { NxLinkComponent } from '@aposin/ng-aquila/link';
-import { PolicyDetails } from '../../models/policy-product.model';
+import { PolicyDetails } from '../../models/policy.model';
 import { Router } from '@angular/router';
 import { ProgressbarComponent } from '../progress-bar/progressbar.component';
 import { Store } from '@ngxs/store';
 import { PolicyProductService } from '../../services/policy-product.service';
 import { PolicyProductDetails } from '../../store/policy-product/policy-product.action';
+import { PolicyProductState } from '../../store/policy-product/policy-product.state';
 
 @Component({
   selector: 'app-policy-product',
@@ -25,30 +26,23 @@ import { PolicyProductDetails } from '../../store/policy-product/policy-product.
   styleUrl: './policy-product.component.scss',
 })
 export class PolicyProductComponent implements OnInit {
-  numOfPolicy: number = 0;
   private router = inject(Router);
   private store = inject(Store);
 
-  private policyProductService = inject(PolicyProductService);
-
+  numOfPolicy: number = 0;
   currentPath = 7;
   totalPath = 10;
 
-  constructor(private apiService: PolicyProductService) {}
-  responseData: PolicyDetails[] = [];
+  constructor() {}
 
-  ngOnInit(): void {
-    this.apiService.getPolicyDetails().subscribe({
-      next: (data) => {
-        this.responseData = data;
-        this.numOfPolicy = this.responseData.length;
-        this.store.dispatch(new PolicyProductDetails(data)).subscribe();
-      },
-      error: (e) => {
-        console.error(e);
-        console.log('error');
-      },
-    });
+  ngOnInit() {
+    this.store.dispatch(new PolicyProductDetails());
+
+    const policyList = this.store.selectSnapshot(
+      PolicyProductState.getPolicies
+    );
+
+    console.log('Policy List:', policyList);
   }
 
   goToUserPolicies() {

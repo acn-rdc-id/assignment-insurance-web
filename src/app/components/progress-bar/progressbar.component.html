@@ -1,4 +1,4 @@
-<nx-progressbar
+<!-- <nx-progressbar
   style="width: 30%"
   ariaLabel="Some aria label"
   aria-valuetext="Some value description"
@@ -6,4 +6,17 @@
   [min]="min"
   [max]="totalPath"
 ></nx-progressbar>
-Progress: {{ getCompletedPercentage() }}%
+<div>Progress: {{ getCompletedPercentage() }}%</div> -->
+
+<div class="progress-container">
+  <nx-progressbar
+    class="progress-bar"
+    style="width: 30%"
+    ariaLabel="Some aria label"
+    aria-valuetext="Some value description"
+    [value]="currentPath"
+    [min]="min"
+    [max]="totalPath"
+  ></nx-progressbar>
+  <div class="progress-text">Progress: {{ getCompletedPercentage() }}%</div>
+</div>
