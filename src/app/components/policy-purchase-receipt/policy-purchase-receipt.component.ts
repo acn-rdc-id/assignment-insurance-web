@@ -18,7 +18,7 @@ import { NxIconComponent } from '@aposin/ng-aquila/icon';
     NxColComponent,
     CommonModule,
     NxButtonComponent,
-    NxIconButtonComponent,
+    // NxIconButtonComponent,
     NxIconComponent
   ],
   templateUrl: './policy-purchase-receipt.component.html',

@@ -74,6 +74,7 @@ export interface PolicySummary {
   }
 
   export interface TermsConditions {
-    terms_id: number;
-    terms_html: string;
+    id: number;
+    termsHtml: string;
+    isRequired: number;
   }

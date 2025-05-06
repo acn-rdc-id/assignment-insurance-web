@@ -21,18 +21,17 @@ import { NxButtonComponent } from '@aposin/ng-aquila/button';
 import { NxIconComponent } from '@aposin/ng-aquila/icon';
 import { NxDialogService, NxModalCloseDirective } from '@aposin/ng-aquila/modal';
 import { Router } from '@angular/router';
+import { GetTermsAndConditions } from '../../store/policy/policy-purchase.action'; 
+import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
 
 type MyDialogResult = 'success' | 'fail';
 
 @Component({
   selector: 'app-policy-purchase-summary',
   imports: [
-    NxCardComponent,
-    NxHeadlineComponent,
-    NxCopytextComponent,
     NxLayoutComponent,
     NxColComponent,
-    NxRowComponent,NxHeaderCellDirective,
+    NxRowComponent,
     NxTableCellComponent,
     NxTableComponent,
     NxTableRowComponent,
@@ -53,6 +52,11 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   modalRef: any;
   form: FormGroup;
   actionResult?: MyDialogResult;
+  termsAndConditions:Array<TermsConditions> =[];
+  personalInfo: Array<PolicySummary> = [];
+  displayPersonalInfo: any[] = []; 
+  formArray: FormArray;
+
   constructor(
     private sanitizer: DomSanitizer,
     private policyService: PolicyService,
@@ -65,23 +69,12 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     
     //stores checked terms
     this.form = this.fb.group({
-      terms: this.fb.array([])
+      terms: this.fb.array([]),
     });
-
-    //To get Personal Info from the State
-    // this.store.dispatch(new setAddresslist()).subscribe(()=>{
-    //   this.personalInfo= this.deepCopy.deepCopy(this.store.selectSnapshot(HomeState.getAddressList));
-    // })
+    this.formArray = this.form.get('terms') as FormArray;
 
    }
-   termsAndConditions:Array<TermsConditions> =[];
-   personalInfo: Array<PolicySummary> = [];
-  //  termsForm!: new FormGroup;
-  //  this.termsForm = this.fb.group({
-  //   firstName: [''],
-  //   lastName: ['']
-  // });
-  
+   
 
   tableElements: Array<PolicySummary> = [{
     name: 'Nur Aina Insyirah',
@@ -97,27 +90,6 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     occupation: 'Programmer',
     purpose: 'I have no purpose in life ahaha',
   }];
-
-  tableElements1 = [{
-    terms_id: 1,
-    terms_html: `<p>Are you aware that this product pays out benefits:</p>
-  <p>&emsp;(i)  Upon Death. / Selepas Kematian.</p>
-  <p>&emsp;(ii) Upon Total and Permanent Disability (TPD). / Selepas Hilang Upaya Menyeluruh dan Kekal (TPD).</p>`
-  },
-  {
-    terms_id: 2,
-    terms_html: `<p>Are you aware that this product does not pay out benefits:</p>
-  <p>&emsp;(i) In the event of death caused by suicide within 1 year from policy issue date.</p>
-  <p>&emsp;(ii) In the event of TPD caused by attempting suicide or self-inflicted bodily injuries while sane or insane.</p>
-  <p>&emsp;(iii) In the event of TPD caused by Pre-existing Conditions.</p>`
-  },
-  {
-    terms_id: 2,
-    terms_html: `<p>Are you aware that:</p>
-  <p>&emsp;(i) If you change your mind, you have 15 days to return the policy from the date you receive the policy and you can obtain a refund.</p>
-  <p>&emsp;(ii) You can nominate your beneficiaries in the policy servicing (you may wish to inform them about the policy to make payment of future claims easier)</p>`
-  },
-];
 
   getDisplayName(key: string): string {
     let displayName: string;
@@ -167,8 +139,6 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     return displayName;
   }
 
-  displayPersonalInfo: any[] = []; 
-
   transformPersonalInfo() {
     const summary = this.tableElements[0];
     this.displayPersonalInfo = Object.keys(summary).map(key => ({
@@ -186,39 +156,31 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   get termsFormArray(): FormArray {
     return this.form.get('terms') as FormArray;
   }
-
   
   //Get Tnc in db
   getTermsandConditions(){
-    // this.policyService.getTermsConditions().subscribe({
-    //   next: (res) => {
-    //     this.termsAndConditions = res.data;
-    //     // console.log(this.responseData.length);
-    //   },
-    //   error: (e) => {
-    //     console.error(e);
-    //     console.log('error');
-    //   }
-    // })
 
-    this.termsAndConditions = this.tableElements1
-    const formArray = this.form.get('terms') as FormArray;
-    formArray.clear();
+    const tncExist = this.store.selectSnapshot(PolicyPurchaseState.getTermsAndConditions);
 
-    this.termsAndConditions.forEach(() => formArray.push(new FormControl(false, Validators.requiredTrue)));
-    console.log("formArray==> ", formArray)
+    if(!tncExist || tncExist.length === 0){
+      this.store.dispatch(new GetTermsAndConditions()).subscribe(()=>{
+        this.termsAndConditions=this.store.selectSnapshot(PolicyPurchaseState.getTermsAndConditions);
+      })
+    }else{
+      this.termsAndConditions = tncExist;
+    }
 
-    formArray.push(new FormControl(false, Validators.requiredTrue));
+    this.formArray.clear();
+
+    this.termsAndConditions.forEach(term => {
+      const control = term.isRequired === 1 
+        ? new FormControl(false, Validators.requiredTrue)
+        : new FormControl(false);
+      this.formArray.push(control);
+    });
+
+    this.formArray.push(new FormControl(false, Validators.requiredTrue));
   
-  }
-
-  ngOnInit(): void {
-    // this.form = this.fb.group({
-    //   terms: this.fb.array([])
-    // });
-
-    this.getTermsandConditions();
-    this.transformPersonalInfo();
   }
 
   sanitizeHtml(content: string) {
@@ -226,12 +188,17 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   }
 
   onSubmit(){
-    if (this.form.invalid || this.termsFormArray.controls.some(term => !term.value)) {
-      alert('Please check all boxes before submitting.');
+
+    const checkboxIsRequired = this.termsAndConditions.some((term, index) =>
+      term.isRequired === 1 && !this.formArray.at(index).value
+    );
+  
+    if (this.form.invalid || checkboxIsRequired) {
+      alert('Please check all required boxes!');
       return;
     }
 
-    const result = this.tableElements1.map((item, index) => ({
+    const result = this.termsAndConditions.map((item, index) => ({
       ...item,
       checked: this.termsFormArray.at(index).value
     }));
@@ -259,7 +226,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   OpenModal(): void{
     this.modalRef = this.dialogService.open(this.paymentDialog, {
       showCloseIcon: true
-  });
+    });
 
     this.modalRef.afterClosed().subscribe((result: MyDialogResult) => {
       this.actionResult = result;
@@ -275,6 +242,9 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
           queryParams: { paymentStatus: 0 }
         });
       }
+      else{
+        console.log("Unknown result")
+      }
     });
   
   }
@@ -285,6 +255,11 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
 
   onBack(){
     console.log("this redirects to previous page")
+  }
+
+  ngOnInit(): void {
+    this.getTermsandConditions();
+    this.transformPersonalInfo();
   }
 
 }
