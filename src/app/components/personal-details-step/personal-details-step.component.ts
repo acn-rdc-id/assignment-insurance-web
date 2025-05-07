@@ -193,11 +193,14 @@ export class PersonalDetailsStepComponent implements OnInit, OnDestroy {
     this.prevStep();
   }
 
+  setAgeFromSession(): void {
+    this.age = this.store.selectSnapshot(PolicyPurchaseState.getAge);
+  }
+
   ngOnInit(): void {
     this.onFormChange();
     this.populateFormFieldsFromState();
-
-    this.age = this.store.selectSnapshot(PolicyPurchaseState.getAge);
+    this.setAgeFromSession();
   }
 
   ngOnDestroy(): void {
