@@ -63,7 +63,7 @@ export class PolicyPurchaseComponent implements OnInit {
       idNo: new FormControl('', {
         validators: [Validators.required, nricValidator()],
       }),
-      otherId: new FormControl('', Validators.required),
+      otherId: new FormControl(''),
       isUsPerson: new FormControl(false),
       countryOfBirth: new FormControl('', Validators.required),
       isSmoker: new FormControl(false),

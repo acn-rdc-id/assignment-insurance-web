@@ -25,7 +25,7 @@
           [nextStep]="nextStep.bind(this)"
           [prevStep]="prevStep.bind(this)">
         </app-policy-purchase-plan>
-      } @else if (item.path === 'apply-now' && item.step === 3 && currentSubStep === 1 && currentSubPath === 'info-details' ) {
+      } @else if (item.path === 'apply-now' && item.step === 3 && currentSubStep === 1) {
         <div class="plan-selection-container">
           <nx-card style="width: 1200px">
             <div nxLayout="list">
@@ -78,6 +78,8 @@
         <app-policy-purchase-summary
           [prevSubStep]="prevSubStep.bind(this)">
         </app-policy-purchase-summary>
+      } @else if (item.path === 'apply-now' && item.step === 3 && currentSubStep === 3 ) {
+        Receipt
       }
     </nx-step>
   }
