@@ -28,7 +28,7 @@ export class PolicyProductComponent implements OnInit {
     this.store.dispatch(new PolicyProductDetails());
 
     const policyList = this.store.selectSnapshot(
-      PolicyProductState.getPolicies
+      PolicyProductState.getPolicyDetailsList
     );
 
     this.numOfPolicy = policyList.length;

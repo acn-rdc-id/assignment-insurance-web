@@ -19,12 +19,12 @@ export class PolicyProductState {
   private store = inject(Store);
 
   @Selector()
-  static getPolicies(state: PolicyStateModel): PolicyDetails[] {
+  static getPolicyDetailsList(state: PolicyStateModel): PolicyDetails[] {
     return structuredClone(state.policyList);
   }
 
   @Action(PolicyProductDetails)
-  getPolicyList({ setState }: StateContext<PolicyStateModel>) {
+  policyDetailsList({ setState }: StateContext<PolicyStateModel>) {
     return this.policyProductService.getPolicyDetails().pipe(
       map((res) => {
         setState({
