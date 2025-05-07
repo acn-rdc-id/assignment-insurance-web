@@ -26,30 +26,12 @@ export class PolicyProductState {
   @Action(PolicyProductDetails)
   getPolicyList({ setState }: StateContext<PolicyStateModel>) {
     return this.policyProductService.getPolicyDetails().pipe(
-      tap((res) => {
+      map((res) => {
         setState({
           policyList: {
             quotationNumber: res.data.quotationNumber,
             plan: res.data.plan,
-            personalDetails: {
-              gender: res.data.gender,
-              dateOfBirth: res.data.dateOfBirth,
-              age: res.data.age,
-              title: res.data.title,
-              fullName: res.data.fullName,
-              nationality: res.data.nationality,
-              idNo: res.data.idNo,
-              otherId: res.data.otherId,
-              isUsPerson: res.data.isUsPerson,
-              countryOfBirth: res.data.countryOfBirth,
-              isSmoker: res.data.isSmoker,
-              cigarettesPerDay: res.data.cigarettesPerDay,
-              countryCode: res.data.countryCode,
-              mobileNo: res.data.mobileNo,
-              occupation: res.data.occupation,
-              email: res.data.email,
-              transactionPurpose: res.data.transactionPurpose
-            }
+            personalDetails: res.data.personalDetails,
           },
         });
       }),

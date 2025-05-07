@@ -9,7 +9,7 @@ import { NxProgressbarModule } from '@aposin/ng-aquila/progressbar';
 })
 export class ProgressbarComponent implements OnInit {
   @Input() currentPath = 1;
-  @Input() totalPath = 10;
+  @Input() totalPath = 1;
   min = 0;
 
   ngOnInit(): void {}
