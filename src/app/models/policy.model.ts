@@ -25,7 +25,7 @@ export interface PolicyPersonalDetails {
   fullName: string;
   gender: string;
   dateOfBirth: string;
-  age: number;
+  age?: number;
   nationality: string;
   idNo: string;
   otherId: string;
@@ -86,7 +86,7 @@ export interface PolicySummary {
     path: string;
     step: number;
   }
-  
+
   export interface TermsConditions {
     id: number;
     termsHtml: string;

@@ -9,7 +9,7 @@ import {NxDropdownComponent, NxDropdownItemComponent} from '@aposin/ng-aquila/dr
 import {NxIconComponent} from '@aposin/ng-aquila/icon';
 import {NxSwitcherComponent} from '@aposin/ng-aquila/switcher';
 import {NxPopoverComponent, NxPopoverTriggerDirective} from '@aposin/ng-aquila/popover';
-import {Subject, takeUntil} from 'rxjs';
+import {debounceTime, Subject, takeUntil} from 'rxjs';
 import {IdType} from '../../enums/id-type.enum';
 import {Store} from '@ngxs/store';
 import {SubmitPersonalDetailsInfo} from '../../store/policy/policy-purchase.action';
@@ -45,8 +45,8 @@ import {NgClass} from '@angular/common';
 })
 export class PersonalDetailsStepComponent implements OnInit, OnDestroy {
   @Input({ required: true }) formGroup!: FormGroup;
-  @Input() nextStep!: () => void;
   @Input() prevStep!: () => void;
+  @Input() nextSubStep!: () => void;
 
   FIELD_OPTIONS = {
     title: [
@@ -88,6 +88,8 @@ export class PersonalDetailsStepComponent implements OnInit, OnDestroy {
   store: Store = inject(Store);
   unsubscribe$ = new Subject();
   usPersonError: boolean = false;
+  idNoError: boolean = false;
+  age!: number | undefined;
 
   getFormFieldMappings(): { controlName: string, selector: (state: any) => any }[] {
     return [
@@ -129,13 +131,30 @@ export class PersonalDetailsStepComponent implements OnInit, OnDestroy {
 
   onFormChange(): void {
     this.formGroup.get('idNo')?.valueChanges
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe(value => {
-          if (typeof value === 'string') {
-            const formattedString = this.nricPipe.transform(value);
-            this.formGroup.patchValue({idNo: formattedString}, {emitEvent: false});
+      .pipe(
+        debounceTime(800),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(value => {
+        if (typeof value === 'string') {
+          const formattedString = this.nricPipe.transform(value);
+          this.formGroup.patchValue({ idNo: formattedString }, { emitEvent: false });
+
+          const gender = this.formGroup.get('gender')?.value;
+          const dob = this.formGroup.get('dateOfBirth')?.value;
+
+          if (gender && dob && formattedString) {
+            const isValid = this.nricPipe.validateNric(formattedString, gender, dob);
+
+            this.idNoError = !isValid;
+            if (this.idNoError) {
+              this.formGroup.get('idNo')?.setErrors({ invalidNric: true });
+            } else {
+              this.formGroup.get('idNo')?.setErrors(null);
+            }
           }
-        });
+        }
+      });
 
     this.formGroup.get('isSmoker')?.valueChanges
         .pipe(takeUntil(this.unsubscribe$))
@@ -153,19 +172,18 @@ export class PersonalDetailsStepComponent implements OnInit, OnDestroy {
       .subscribe((isUs: boolean) => {
         this.usPersonError = isUs;
       });
-
   }
 
-  onNext(): void {
-    if (this.formGroup.valid) {
+  onSubNext(): void {
+    if (this.formGroup.valid && !this.usPersonError) {
       const formValue: PolicyPersonalDetails = this.formGroup.getRawValue();
-
       const userPersonalDetailsPayload: PolicyPersonalDetails = {
         ...formValue,
-      };
+        age: this.age
+      }
 
       this.store.dispatch(new SubmitPersonalDetailsInfo(userPersonalDetailsPayload));
-      this.nextStep();
+      this.nextSubStep();
     } else {
       console.log("Form is invalid, cannot proceed.");
     }
@@ -178,6 +196,8 @@ export class PersonalDetailsStepComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.onFormChange();
     this.populateFormFieldsFromState();
+
+    this.age = this.store.selectSnapshot(PolicyPurchaseState.getAge);
   }
 
   ngOnDestroy(): void {

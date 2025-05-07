@@ -1,4 +1,4 @@
-<div nxLayout="grid" [formGroup]="formGroup" style="margin-top: 2rem;">
+<div nxLayout="list" [formGroup]="formGroup" style="margin-top: 2rem;">
   <div nxRow>
     <div nxCol="6" class="docs-grid-colored-col" >
       <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
@@ -50,9 +50,13 @@
               </nx-dropdown>
             </nx-formfield>
           </div>
-          <div nxCol="6" class="docs-grid-colored-col nested">
+          <div nxCol="6" [ngClass]="{ 'error-border': idNoError }" class="docs-grid-colored-col nested">
             <nx-formfield label="NRIC No. *" appearance="outline" floatLabel="always" autocomplete="idNo">
-              <input nxInput type="text" formControlName="idNo" />
+              <input
+                nxInput
+                type="text"
+                formControlName="idNo"
+              />
             </nx-formfield>
           </div>
         </div>
@@ -77,23 +81,22 @@
               type="button"
               aria-label="More information"
             >
-              <nx-icon name="info-circle" size="s" aria-hidden="true"> </nx-icon>
+              <nx-icon name="info-circle" size="s" aria-hidden="true" style="color: #0077a6"> </nx-icon>
             </button>
-            <nx-switcher formControlName="isUsPerson" labelSize="small">
-              @if (usPersonError) {
-                <button
-                  nxFormfieldAppendix
-                  nxIconButton="tertiary small"
-                  nxPopoverDirection="right"
-                  [nxPopoverTriggerFor]="usPersonTooltip"
-                  nxPopoverTrigger="hover"
-                  type="button"
-                  aria-label="More information"
-                >
-                  <nx-icon name="exclamation-triangle" size="s" aria-hidden="true" style="color: red"> </nx-icon>
-                </button>
-              }
-            </nx-switcher>
+            @if (usPersonError) {
+              <button
+                nxFormfieldAppendix
+                nxIconButton="tertiary small"
+                nxPopoverDirection="right"
+                [nxPopoverTriggerFor]="usPersonTooltip"
+                nxPopoverTrigger="hover"
+                type="button"
+                aria-label="More information"
+              >
+                <nx-icon name="exclamation-triangle" size="s" aria-hidden="true" style="color: red"> </nx-icon>
+              </button>
+            }
+            <nx-switcher formControlName="isUsPerson" labelSize="small"></nx-switcher>
 
             <nx-popover #usPersonDefinitionTooltip>
               <div style="max-width: 300px">
@@ -173,19 +176,6 @@
               </nx-dropdown>
             </nx-formfield>
           </div>
-<!--          <div nxCol="4" class="docs-grid-colored-col nested">-->
-<!--            <nx-formfield-->
-<!--              label="Area Code"-->
-<!--              appearance="outline"-->
-<!--              floatLabel="always"-->
-<!--            >-->
-<!--              <nx-dropdown formControlName="areaCode">-->
-<!--                @for (field of FIELD_OPTIONS.areaCode; track field;) {-->
-<!--                  <nx-dropdown-item value="{{ field.value }}">{{ field.label }}</nx-dropdown-item>-->
-<!--                }-->
-<!--              </nx-dropdown>-->
-<!--            </nx-formfield>-->
-<!--          </div>-->
           <div nxCol="6" class="docs-grid-colored-col nested">
             <nx-formfield
               label="Mobile Number *"
@@ -254,18 +244,20 @@
   </div>
 
   <div nxRow>
-    <button
-      nxButton="primary small"
-      nxStepperPrevious
-      type="button"
-      style="margin-right: 1rem"
-      (click)="onBack()"
-    >Back</button>
-    <button
-      nxButton="primary small"
-      type="button"
-      (click)="onNext()"
-      [disabled]="formGroup.invalid"
-    >Next</button>
+    <div nxCol="12" class="docs-grid-colored-col">
+      <button
+        nxButton="primary small"
+        nxStepperPrevious
+        type="button"
+        style="margin-right: 1rem;"
+        (click)="onBack()"
+      >Back</button>
+      <button
+        nxButton="primary small"
+        type="button"
+        (click)="onSubNext()"
+        [disabled]="formGroup.invalid || formGroup.get('isUsPerson')?.value === true"
+      >Next</button>
+    </div>
   </div>
 </div>

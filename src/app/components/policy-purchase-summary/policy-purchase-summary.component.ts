@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import {Component, OnInit, ViewChild, TemplateRef, Input} from '@angular/core';
 import { NxCardComponent } from '@aposin/ng-aquila/card';
 import { NxCopytextComponent } from '@aposin/ng-aquila/copytext';
 import { NxHeadlineComponent } from '@aposin/ng-aquila/headline';
@@ -21,7 +21,7 @@ import { NxButtonComponent } from '@aposin/ng-aquila/button';
 import { NxIconComponent } from '@aposin/ng-aquila/icon';
 import { NxDialogService, NxModalCloseDirective } from '@aposin/ng-aquila/modal';
 import { Router } from '@angular/router';
-import { GetTermsAndConditions } from '../../store/policy/policy-purchase.action'; 
+import { GetTermsAndConditions } from '../../store/policy/policy-purchase.action';
 import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
 
 type MyDialogResult = 'success' | 'fail';
@@ -54,8 +54,10 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   actionResult?: MyDialogResult;
   termsAndConditions:Array<TermsConditions> =[];
   personalInfo: Array<PolicySummary> = [];
-  displayPersonalInfo: any[] = []; 
+  displayPersonalInfo: any[] = [];
   formArray: FormArray;
+
+  @Input() prevSubStep!: () => void;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -66,7 +68,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     private router: Router
     // private deepCopy: DeepCopyService
   ) {
-    
+
     //stores checked terms
     this.form = this.fb.group({
       terms: this.fb.array([]),
@@ -74,7 +76,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     this.formArray = this.form.get('terms') as FormArray;
 
    }
-   
+
 
   tableElements: Array<PolicySummary> = [{
     name: 'Nur Aina Insyirah',
@@ -145,7 +147,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
       label: this.getDisplayName(key),
       content: summary[key as keyof typeof summary]
     }));
-  
+
     console.log('Modified Array:', this.displayPersonalInfo);
   }
 
@@ -156,7 +158,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   get termsFormArray(): FormArray {
     return this.form.get('terms') as FormArray;
   }
-  
+
   //Get Tnc in db
   getTermsandConditions(){
 
@@ -173,14 +175,14 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     this.formArray.clear();
 
     this.termsAndConditions.forEach(term => {
-      const control = term.isRequired === 1 
+      const control = term.isRequired === 1
         ? new FormControl(false, Validators.requiredTrue)
         : new FormControl(false);
       this.formArray.push(control);
     });
 
     this.formArray.push(new FormControl(false, Validators.requiredTrue));
-  
+
   }
 
   sanitizeHtml(content: string) {
@@ -192,7 +194,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     const checkboxIsRequired = this.termsAndConditions.some((term, index) =>
       term.isRequired === 1 && !this.formArray.at(index).value
     );
-  
+
     if (this.form.invalid || checkboxIsRequired) {
       alert('Please check all required boxes!');
       return;
@@ -246,15 +248,15 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
         console.log("Unknown result")
       }
     });
-  
+
   }
 
   closeDialog(result: MyDialogResult): void {
     this.modalRef.close(result);
 }
 
-  onBack(){
-    console.log("this redirects to previous page")
+  onBack(): void {
+    this.prevSubStep();
   }
 
   ngOnInit(): void {

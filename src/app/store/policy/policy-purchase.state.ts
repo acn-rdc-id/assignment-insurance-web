@@ -1,10 +1,18 @@
-import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { Injectable, inject } from '@angular/core';
-import { SubmitInitialInfo, SelectPlan, SubmitInitialInfoSuccess,GetTermsAndConditions,SubmitPersonalDetailsInfo,SubmitPolicyPurchaseStep} from './policy-purchase.action';
-import { POLICY_PURCHASE_STATE_DEFAULTS, PolicyPurchaseStateModel } from './policy-purchase.state.model';
-import { PolicyService } from '../../services/policy.service';
-import { map } from 'rxjs';
-import {PolicyDetails, PolicyPlan, PolicyPurchaseStep} from '../../models/policy.model';
+import {Action, Selector, State, StateContext} from '@ngxs/store';
+import {inject, Injectable} from '@angular/core';
+import {
+  GetTermsAndConditions,
+  SelectPlan,
+  SubmitInitialInfo,
+  SubmitInitialInfoSuccess,
+  SubmitPersonalDetailsInfo,
+  SubmitPolicyPurchaseStep,
+  SubmitPolicyPurchaseSubStep
+} from './policy-purchase.action';
+import {POLICY_PURCHASE_STATE_DEFAULTS, PolicyPurchaseStateModel} from './policy-purchase.state.model';
+import {PolicyService} from '../../services/policy.service';
+import {map} from 'rxjs';
+import {PolicyDetails, PolicyPurchaseStep} from '../../models/policy.model';
 
 @State<PolicyPurchaseStateModel>({
   name: 'PolicyState',
@@ -18,6 +26,11 @@ export class PolicyPurchaseState {
   @Selector()
   static getGender(state: PolicyPurchaseStateModel): string | undefined {
     return state.quotationDetails.personalDetails?.gender
+  }
+
+  @Selector()
+  static getAge(state: PolicyPurchaseStateModel): number | undefined{
+    return state.quotationDetails.personalDetails?.age;
   }
 
   @Selector()
@@ -134,8 +147,13 @@ export class PolicyPurchaseState {
   }
 
   @Selector()
-  static getSteps(state: PolicyPurchaseStateModel): PolicyPurchaseStep[] {
-    return state.mainStep;
+  static getMainSteps(state: PolicyPurchaseStateModel): PolicyPurchaseStep[] {
+    return state.mainSteps;
+  }
+
+  @Selector()
+  static getSubSteps(state: PolicyPurchaseStateModel): PolicyPurchaseStep[] {
+    return state.subSteps;
   }
 
   @Action(SubmitInitialInfo)
@@ -180,12 +198,12 @@ export class PolicyPurchaseState {
         transactionPurpose: ''
       }
     };
-    
+
     ctx.patchState({
       quotationDetails: updatedDetails,
       plans: payload.plans
     });
-    
+
     // ctx.patchState({
     //   quotationDetails: quotationDetails,
     //   plans: payload.plans
@@ -257,6 +275,19 @@ export class PolicyPurchaseState {
     });
   }
 
+  @Action(SubmitPolicyPurchaseSubStep)
+  setCurrentSubStep(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: SubmitPolicyPurchaseSubStep): void {
+    const state: PolicyPurchaseStateModel = ctx.getState();
+
+    ctx.setState({
+      ...state,
+      currentSubStep: {
+        path: payload.path,
+        step: payload.step
+      }
+    });
+  }
+
   @Action(GetTermsAndConditions)
   setTermsAndConditions({getState, patchState}: StateContext<GetTermsAndConditions> ){
     const state = getState();
@@ -297,5 +328,5 @@ export class PolicyPurchaseState {
   isRequired: 1
   },
 ];
-  
+
 }

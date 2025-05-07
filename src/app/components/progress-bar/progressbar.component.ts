@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NxProgressbarModule } from '@aposin/ng-aquila/progressbar';
+import {Component, Input, OnInit} from '@angular/core';
+import {NxProgressbarModule} from '@aposin/ng-aquila/progressbar';
 
 @Component({
   selector: 'app-progressbar',
@@ -8,9 +8,9 @@ import { NxProgressbarModule } from '@aposin/ng-aquila/progressbar';
   styleUrl: './progressbar.component.scss',
 })
 export class ProgressbarComponent implements OnInit {
-  @Input() currentPath = 1;
-  @Input() totalPath = 1;
-  min = 0;
+  @Input() currentPath: number = 1;
+  @Input() totalPath: number = 1;
+  min: number = 0;
 
   ngOnInit(): void {}
 

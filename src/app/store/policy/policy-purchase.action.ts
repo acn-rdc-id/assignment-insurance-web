@@ -8,7 +8,7 @@ export class SubmitInitialInfo {
 export class SelectPlan {
   static readonly type = '[Policy] Select Plan';
   constructor(public payload: PolicyPlan) {}
-} 
+}
 
 export class SubmitInitialInfoSuccess {
   static readonly type = '[Policy] Submit Initial Info Success';
@@ -27,5 +27,10 @@ export class SubmitPersonalDetailsInfo {
 
 export class SubmitPolicyPurchaseStep {
   static readonly type = '[Policy] Submit Inital Policy Purchase Step';
+  constructor(public payload: PolicyPurchaseStep) {}
+}
+
+export class SubmitPolicyPurchaseSubStep {
+  static readonly type = '[Policy] Submit Inital Policy Purchase Sub Step';
   constructor(public payload: PolicyPurchaseStep) {}
 }
