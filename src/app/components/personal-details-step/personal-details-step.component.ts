@@ -88,45 +88,27 @@ export class PersonalDetailsStepComponent implements OnInit, OnDestroy {
   store: Store = inject(Store);
   unsubscribe$ = new Subject();
   usPersonError: boolean = false;
+  emailError: boolean = false;
   idNoError: boolean = false;
-  age!: number | undefined;
-
-  getFormFieldMappings(): { controlName: string, selector: (state: any) => any }[] {
-    return [
-      { controlName: 'title', selector: PolicyPurchaseState.getPersonalTitle },
-      { controlName: 'gender', selector: PolicyPurchaseState.getGender },
-      { controlName: 'dateOfBirth', selector: PolicyPurchaseState.getDateOfBirth },
-      { controlName: 'fullName', selector: PolicyPurchaseState.getPersonalFullName },
-      { controlName: 'nationality', selector: PolicyPurchaseState.getPersonalNationality },
-      { controlName: 'idNo', selector: PolicyPurchaseState.getPersonalIdNo },
-      { controlName: 'otherId', selector: PolicyPurchaseState.getPersonalOtherId },
-      { controlName: 'isUsPerson', selector: PolicyPurchaseState.getPersonalIsUsPerson },
-      { controlName: 'countryOfBirth', selector: PolicyPurchaseState.getPersonalCountryOfBirth },
-      { controlName: 'isSmoker', selector: PolicyPurchaseState.getPersonalIsSmoker },
-      { controlName: 'cigarettesPerDay', selector: PolicyPurchaseState.getPersonalCigarettesPerDay },
-      { controlName: 'countryCode', selector: PolicyPurchaseState.getPersonalCountryCode },
-      { controlName: 'mobileNo', selector: PolicyPurchaseState.getPersonalMobileNo },
-      { controlName: 'occupation', selector: PolicyPurchaseState.getPersonalOccupation },
-      { controlName: 'email', selector: PolicyPurchaseState.getPersonalEmail },
-      { controlName: 'transactionPurpose', selector: PolicyPurchaseState.getPersonalTransactionPurpose }
-    ];
-  }
 
   populateFormFieldsFromState(): void {
     const disableFields = ['gender', 'dateOfBirth'];
-    const fieldMappings = this.getFormFieldMappings();
 
-    fieldMappings.forEach(({ controlName, selector }) => {
-      this.store.select(selector).subscribe(value => {
-        const control = this.formGroup.get(controlName);
-        if (control) {
-          control.setValue(value);
-          if (disableFields.includes(controlName)) {
-            control.disable();
+    this.store.select(PolicyPurchaseState.getPersonalDetails)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(details => {
+        if (!details) return;
+
+        Object.entries(details).forEach(([key, value]) => {
+          const control = this.formGroup.get(key);
+          if (control) {
+            control.setValue(value);
+            if (disableFields.includes(key)) {
+              control.disable();
+            }
           }
-        }
+        });
       });
-    });
   }
 
   onFormChange(): void {
@@ -172,15 +154,23 @@ export class PersonalDetailsStepComponent implements OnInit, OnDestroy {
       .subscribe((isUs: boolean) => {
         this.usPersonError = isUs;
       });
+
+    this.formGroup.get('email')?.statusChanges
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        const emailControl = this.formGroup.get('email');
+        this.emailError = !!emailControl && emailControl.invalid && emailControl.touched;
+      });
   }
 
   onSubNext(): void {
     if (this.formGroup.valid && !this.usPersonError) {
-      const formValue: PolicyPersonalDetails = this.formGroup.getRawValue();
+      const formValue = this.formGroup.getRawValue();
+
       const userPersonalDetailsPayload: PolicyPersonalDetails = {
         ...formValue,
-        age: this.age
-      }
+        age: this.getAgeFromSession()
+      };
 
       this.store.dispatch(new SubmitPersonalDetailsInfo(userPersonalDetailsPayload));
       this.nextSubStep();
@@ -193,14 +183,13 @@ export class PersonalDetailsStepComponent implements OnInit, OnDestroy {
     this.prevStep();
   }
 
-  setAgeFromSession(): void {
-    this.age = this.store.selectSnapshot(PolicyPurchaseState.getAge);
+  getAgeFromSession(): number | undefined {
+    return this.store.selectSnapshot(PolicyPurchaseState.getAge);
   }
 
   ngOnInit(): void {
     this.onFormChange();
     this.populateFormFieldsFromState();
-    this.setAgeFromSession();
   }
 
   ngOnDestroy(): void {

@@ -12,7 +12,7 @@ import {
 import {POLICY_PURCHASE_STATE_DEFAULTS, PolicyPurchaseStateModel} from './policy-purchase.state.model';
 import {PolicyService} from '../../services/policy.service';
 import {map} from 'rxjs';
-import {PolicyDetails, PolicyPurchaseStep} from '../../models/policy.model';
+import {PolicyDetails, PolicyPersonalDetails, PolicyPurchaseStep} from '../../models/policy.model';
 
 @State<PolicyPurchaseStateModel>({
   name: 'PolicyState',
@@ -59,83 +59,8 @@ export class PolicyPurchaseState {
     }
 
   @Selector()
-  static getPersonalTitle(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.title || '';
-  }
-
-  @Selector()
-  static getPersonalFullName(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.fullName || '';
-  }
-
-  @Selector()
-  static getPersonalGender(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.gender || '';
-  }
-
-  @Selector()
-  static getPersonalDateOfBirth(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.dateOfBirth || '';
-  }
-
-  @Selector()
-  static getPersonalNationality(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.nationality || '';
-  }
-
-  @Selector()
-  static getPersonalIdNo(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.idNo || '';
-  }
-
-  @Selector()
-  static getPersonalOtherId(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.otherId || '';
-  }
-
-  @Selector()
-  static getPersonalIsUsPerson(state: PolicyPurchaseStateModel): boolean {
-    return state.quotationDetails.personalDetails?.isUsPerson || false;
-  }
-
-  @Selector()
-  static getPersonalCountryOfBirth(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.countryOfBirth || '';
-  }
-
-  @Selector()
-  static getPersonalIsSmoker(state: PolicyPurchaseStateModel): boolean {
-    return state.quotationDetails.personalDetails?.isSmoker || false;
-  }
-
-  @Selector()
-  static getPersonalCigarettesPerDay(state: PolicyPurchaseStateModel): number {
-    return state.quotationDetails.personalDetails?.cigarettesPerDay || 0;
-  }
-
-  @Selector()
-  static getPersonalCountryCode(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.countryCode || '';
-  }
-
-  @Selector()
-  static getPersonalMobileNo(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.mobileNo || '';
-  }
-
-  @Selector()
-  static getPersonalOccupation(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.occupation || '';
-  }
-
-  @Selector()
-  static getPersonalEmail(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.email || '';
-  }
-
-  @Selector()
-  static getPersonalTransactionPurpose(state: PolicyPurchaseStateModel): string {
-    return state.quotationDetails.personalDetails?.transactionPurpose || '';
+  static getPersonalDetails(state: PolicyPurchaseStateModel): PolicyPersonalDetails | null {
+    return state.quotationDetails.personalDetails ?? null;
   }
 
   @Selector()

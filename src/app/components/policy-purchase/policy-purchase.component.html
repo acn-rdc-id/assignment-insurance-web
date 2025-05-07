@@ -7,15 +7,6 @@
   @for (item of mainSteps; track item; let i = $index) {
     <nx-step [label]="formatCamelCase(item.path)">
       @if (item.path === 'basic-information' && item.step === 1) {
-        <div class="hero-banner">
-          <div class="hero-content">
-            <h1>Allianz i-EssentialCover</h1>
-            <p>
-              Helping to provide financial support when you are no longer able to.
-              Cover for death and total permanent disablement
-            </p>
-          </div>
-        </div>
         <app-policy-purchase-initial-info
           [nextStep]="nextStep.bind(this)"
           [prevStep]="prevStep.bind(this)">
@@ -26,7 +17,7 @@
           [prevStep]="prevStep.bind(this)">
         </app-policy-purchase-plan>
       } @else if (item.path === 'apply-now' && item.step === 3 && currentSubStep === 1) {
-        <div class="plan-selection-container">
+        <div class="particulars-container">
           <nx-card style="width: 1200px">
             <div nxLayout="list">
               <div nxRow>

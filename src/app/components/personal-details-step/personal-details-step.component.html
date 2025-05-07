@@ -57,6 +57,17 @@
                 type="text"
                 formControlName="idNo"
               />
+              @if (idNoError) {
+                <nx-icon
+                  name="exclamation-triangle"
+                  size="s"
+                  aria-hidden="true"
+                  style="color: red; cursor: pointer"
+                  [nxPopoverTriggerFor]="idNoErrorTooltip"
+                  nxPopoverTrigger="hover"
+                  aria-label="More information">
+                </nx-icon>
+              }
             </nx-formfield>
           </div>
         </div>
@@ -97,14 +108,6 @@
               </button>
             }
             <nx-switcher formControlName="isUsPerson" labelSize="small"></nx-switcher>
-
-            <nx-popover #usPersonDefinitionTooltip>
-              <div style="max-width: 300px">
-                Definition of U.S. Person: U.S. citizenship or U.S. residence. U.S. place of birth. U.S. address including U.S. P.O. Box.U.S. telephone number.
-                Standing instructions to transfer funds to an account maintained in the U.S. A U.S. 'in care of' address or a 'hold mail' address that is the sole address
-                for the account holder.A power of attorney or signatory authority granted to a person with a U.S. address.
-              </div>
-            </nx-popover>
             <nx-popover #usPersonTooltip>
               @if (usPersonError) {
                   <div style="max-width: 300px">
@@ -211,14 +214,25 @@
   </div>
 
   <div nxRow>
-    <div nxCol="6" class="docs-grid-colored-col" >
+    <div nxCol="6" class="docs-grid-colored-col" [ngClass]="{ 'error-border': emailError }">
       <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
         <nx-formfield
           label="Email *"
           appearance="outline"
           floatLabel="always"
         >
-          <input nxInput type="email" formControlName="email" />
+          <input nxInput type="email" required formControlName="email" />
+          @if (emailError) {
+            <nx-icon
+              name="exclamation-triangle"
+              size="s"
+              aria-hidden="true"
+              style="color: red; cursor: pointer"
+              [nxPopoverTriggerFor]="emailErrorTooltip"
+              nxPopoverTrigger="hover"
+              aria-label="More information">
+            </nx-icon>
+          }
         </nx-formfield>
       </div>
     </div>
@@ -244,16 +258,16 @@
   </div>
 
   <div nxRow>
-    <div nxCol="12" class="docs-grid-colored-col">
+    <div nxCol="12" class="docs-grid-colored-col" style="margin-top: 1rem;">
       <button
-        nxButton="primary small"
+        nxButton="primary medium"
         nxStepperPrevious
         type="button"
         style="margin-right: 1rem;"
         (click)="onBack()"
       >Back</button>
       <button
-        nxButton="primary small"
+        nxButton="primary medium"
         type="button"
         (click)="onSubNext()"
         [disabled]="formGroup.invalid || formGroup.get('isUsPerson')?.value === true"
@@ -261,3 +275,21 @@
     </div>
   </div>
 </div>
+
+<nx-popover #usPersonDefinitionTooltip>
+  <div style="max-width: 300px">
+    Definition of U.S. Person: U.S. citizenship or U.S. residence. U.S. place of birth. U.S. address including U.S. P.O. Box.U.S. telephone number.
+    Standing instructions to transfer funds to an account maintained in the U.S. A U.S. 'in care of' address or a 'hold mail' address that is the sole address
+    for the account holder.A power of attorney or signatory authority granted to a person with a U.S. address.
+  </div>
+</nx-popover>
+<nx-popover #idNoErrorTooltip>
+  <div style="max-width: 300px">
+    Invalid Id Number
+  </div>
+</nx-popover>
+<nx-popover #emailErrorTooltip>
+  <div style="max-width: 300px">
+    Invalid Email
+  </div>
+</nx-popover>
