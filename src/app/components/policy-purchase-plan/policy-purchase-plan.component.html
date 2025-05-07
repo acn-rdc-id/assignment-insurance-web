@@ -1,51 +1,65 @@
 <form [formGroup]="infoForm" (ngSubmit)="onNext()">
-    <div class="plan-controls">
-      <label class="dropdown-label">Payment Period: </label>
-      <nx-dropdown formControlName="paymentPeriod">
-        <nx-dropdown-item value="monthly">Monthly</nx-dropdown-item>
-        <nx-dropdown-item value="yearly">Yearly</nx-dropdown-item>
-      </nx-dropdown>
-    </div>
+  <div class="plan-controls">
+    <label class="dropdown-label">Payment Period: </label>
+    <nx-dropdown formControlName="paymentPeriod">
+      <nx-dropdown-item value="monthly">Monthly</nx-dropdown-item>
+      <nx-dropdown-item value="yearly">Yearly</nx-dropdown-item>
+    </nx-dropdown>
+  </div>
 
-    @if (plans$ | async) {
-      <div class="plan-selection-container">
-        @for (plan of plans$ | async; track plan.planName) {
-          <div class="plan-card">
-            <nx-card>
-              <div class="plan-header">
-                <div class="premium">
-                  RM {{ infoForm.value.paymentPeriod === 'monthly' ? plan.monthlyPremium : plan.yearlyPremium }}
-                </div>
-                <br>
-                <div class="payment-period">
-                  {{ infoForm.value.paymentPeriod === 'monthly' ? 'Per Month' : 'Per Year' }}
-                </div>
-              </div>
-
-              <div class="plan-name">
-                {{ plan.planName }}
-              </div>
-
-              <div class="plan-description">
-                Sum Assured: RM {{ plan.sumAssured | number }}<br>
-                Term: {{ plan.coverageTerm }}
-              </div>
-
-              <div class="plan-radio">
-                <nx-radio
-                  name="planSelection"
-                  [value]="plan.planName"
-                  formControlName="planSelection">
-                  {{ infoForm.value.planSelection === plan.planName ? 'Selected' : 'Select this plan' }}
-                </nx-radio>
-              </div>
-            </nx-card>
+  @if (plans$ | async) {
+  <div class="plan-selection-container">
+    @for (plan of plans$ | async; track plan.planName) {
+    <div class="plan-card">
+      <nx-card>
+        <div class="plan-header">
+          <div class="premium">
+            RM
+            {{
+              infoForm.value.paymentPeriod === "monthly"
+                ? plan.monthlyPremium
+                : plan.yearlyPremium
+            }}
           </div>
-        }
-      </div>
-    }
+          <br />
+          <div class="payment-period">
+            {{
+              infoForm.value.paymentPeriod === "monthly"
+                ? "Per Month"
+                : "Per Year"
+            }}
+          </div>
+        </div>
 
-    <div class="button-container">
+        <div class="plan-name">
+          {{ plan.planName }}
+        </div>
+
+        <div class="plan-description">
+          Sum Assured: RM {{ plan.sumAssured | number }}<br />
+          Term: {{ plan.coverageTerm }}
+        </div>
+
+        <div class="plan-radio">
+          <nx-radio
+            name="planSelection"
+            [value]="plan.planName"
+            formControlName="planSelection"
+          >
+            {{
+              infoForm.value.planSelection === plan.planName
+                ? "Selected"
+                : "Select this plan"
+            }}
+          </nx-radio>
+        </div>
+      </nx-card>
+    </div>
+    }
+  </div>
+  }
+
+  <!-- <div class="button-container">
         <button
           nxButton="primary small"
           nxStepperPrevious
@@ -62,6 +76,16 @@
         >
           Next
         </button>
-    </div>
+    </div> -->
 
+  <div class="buttons">
+    <button nxButton="secondary" type="button" (click)="onBack()">Back</button>
+    <button
+      nxButton="primary"
+      [disabled]="!infoForm.value.planSelection"
+      (click)="onNext()"
+    >
+      Next
+    </button>
+  </div>
 </form>

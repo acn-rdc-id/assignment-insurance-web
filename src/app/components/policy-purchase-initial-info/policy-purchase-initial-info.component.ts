@@ -1,28 +1,43 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {NxButtonComponent} from '@aposin/ng-aquila/button';
-import {NxDropdownComponent, NxDropdownItemComponent} from '@aposin/ng-aquila/dropdown';
-import {NxFormfieldComponent, NxFormfieldModule, NxFormfieldSuffixDirective} from '@aposin/ng-aquila/formfield';
-import {NxInputDirective} from '@aposin/ng-aquila/input';
+import { Component, Input, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { NxButtonComponent } from '@aposin/ng-aquila/button';
+import {
+  NxDropdownComponent,
+  NxDropdownItemComponent,
+} from '@aposin/ng-aquila/dropdown';
+import {
+  NxFormfieldComponent,
+  NxFormfieldModule,
+  NxFormfieldSuffixDirective,
+} from '@aposin/ng-aquila/formfield';
+import { NxInputDirective } from '@aposin/ng-aquila/input';
 import {
   NxDatefieldDirective,
   NxDatefieldModule,
   NxDatepickerComponent,
   NxDatepickerToggleComponent,
-  NxNativeDateModule
+  NxNativeDateModule,
 } from '@aposin/ng-aquila/datefield';
-import {NxErrorComponent} from '@aposin/ng-aquila/base';
-import {Router, RouterModule} from '@angular/router';
-import {Store} from '@ngxs/store';
-import {SubmitInitialInfoSuccess} from '../../store/policy/policy-purchase.action';
-import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
+import { NxErrorComponent } from '@aposin/ng-aquila/base';
+import { Router, RouterModule } from '@angular/router';
+import { Store } from '@ngxs/store';
+import { SubmitInitialInfoSuccess } from '../../store/policy/policy-purchase.action';
+import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
 import { take } from 'rxjs';
 import { PolicyService } from '../../services/policy.service';
-import {NxStepperNextDirective} from '@aposin/ng-aquila/progress-stepper';
+import { NxStepperNextDirective } from '@aposin/ng-aquila/progress-stepper';
 
 @Component({
   selector: 'app-policy-purchase-initial-info',
-  imports: [FormsModule,
+  imports: [
+    FormsModule,
     ReactiveFormsModule,
     NxFormfieldComponent,
     NxDatefieldDirective,
@@ -43,10 +58,9 @@ import {NxStepperNextDirective} from '@aposin/ng-aquila/progress-stepper';
     NxStepperNextDirective,
   ],
   templateUrl: './policy-purchase-initial-info.component.html',
-  styleUrl: './policy-purchase-initial-info.component.scss'
+  styleUrl: './policy-purchase-initial-info.component.scss',
 })
-
-export class PolicyPurchaseInitialInfoComponent implements OnInit{
+export class PolicyPurchaseInitialInfoComponent implements OnInit {
   @Input() nextStep!: () => void;
   @Input() prevStep!: () => void;
 
@@ -61,7 +75,12 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit{
   maxDate: Date;
   minDate: Date;
 
-  constructor(private fb: FormBuilder, private store: Store, private router: Router, private policyService: PolicyService) {
+  constructor(
+    private fb: FormBuilder,
+    private store: Store,
+    private router: Router,
+    private policyService: PolicyService
+  ) {
     this.maxDate = new Date();
     this.maxDate.setFullYear(this.today.getFullYear() - this.minAge);
 
@@ -74,21 +93,27 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit{
       gender: new FormControl('', Validators.required),
       birthDate: new FormControl('', [
         Validators.required,
-        this.birthdateValidator(this.minDate, this.maxDate)
-      ])
-    })
-
-    this.store.select(PolicyPurchaseState.getGender).pipe(take(1)).subscribe(gender => {
-      this.infoForm.get('gender')?.setValue(gender);
+        this.birthdateValidator(this.minDate, this.maxDate),
+      ]),
     });
 
-    this.store.select(PolicyPurchaseState.getDateOfBirth).pipe(take(1)).subscribe(dobString => {
-      if (dobString) {
-        const [day, month, year] = dobString.split('/');
-        const dateObj = new Date(+year, +month - 1, +day);
-        this.infoForm.get('birthDate')?.setValue(dateObj);
-      }
-    })
+    this.store
+      .select(PolicyPurchaseState.getGender)
+      .pipe(take(1))
+      .subscribe((gender) => {
+        this.infoForm.get('gender')?.setValue(gender);
+      });
+
+    this.store
+      .select(PolicyPurchaseState.getDateOfBirth)
+      .pipe(take(1))
+      .subscribe((dobString) => {
+        if (dobString) {
+          const [day, month, year] = dobString.split('/');
+          const dateObj = new Date(+year, +month - 1, +day);
+          this.infoForm.get('birthDate')?.setValue(dateObj);
+        }
+      });
   }
 
   parseDateFromString(dateStr: string): Date | null {
@@ -104,12 +129,12 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit{
 
   onBack(): void {
     console.log('Back button clicked');
-    this.prevStep();
+    this.router.navigate(['/policy-product']);
   }
 
   onNext(): void {
     this.submitted = true;
-    this.nextStep();
+
     // API implementation
 
     // if (this.infoForm.valid) {
@@ -158,7 +183,7 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit{
     //           occupation: '',
     //           email: '',
     //           transactionPurpose: ''
-    //         }, 
+    //         },
     //         plans
     //       };
 
@@ -175,7 +200,7 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit{
     //     console.log('Form is invalid');
     //   }
 
-      if(this.infoForm.valid) {
+    if (this.infoForm.valid) {
       const mockResponse = {
         quotationNumber: 'Q270178334',
         plan: undefined,
@@ -196,34 +221,34 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit{
           mobileNo: '',
           occupation: '',
           email: '',
-          transactionPurpose: ''
-        }, 
+          transactionPurpose: '',
+        },
         plans: [
-              {
-                planName: 'Plan 200k',
-                sumAssured: 200000,
-                coverageTerm: '20 years',
-                monthlyPremium: 90,
-                yearlyPremium: 1080,
-              },
-              {
-                planName: 'Plan 300k',
-                sumAssured: 300000,
-                coverageTerm: '20 years',
-                monthlyPremium: 135,
-                yearlyPremium: 1620,
-              },
-              {
-                planName: 'Plan 500k',
-                sumAssured: 500000,
-                coverageTerm: '20 years',
-                monthlyPremium: 225,
-                yearlyPremium: 2700,
-              }
-        ]
+          {
+            planName: 'Plan 200k',
+            sumAssured: 200000,
+            coverageTerm: '20 years',
+            monthlyPremium: 90,
+            yearlyPremium: 1080,
+          },
+          {
+            planName: 'Plan 300k',
+            sumAssured: 300000,
+            coverageTerm: '20 years',
+            monthlyPremium: 135,
+            yearlyPremium: 1620,
+          },
+          {
+            planName: 'Plan 500k',
+            sumAssured: 500000,
+            coverageTerm: '20 years',
+            monthlyPremium: 225,
+            yearlyPremium: 2700,
+          },
+        ],
       };
       this.store.dispatch(new SubmitInitialInfoSuccess(mockResponse));
-      // this.router.navigate(['/policy-purchase-plan']);
+      this.nextStep();
     } else {
       this.infoForm.markAllAsTouched();
       console.log('Form is invalid');

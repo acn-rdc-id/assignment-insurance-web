@@ -19,7 +19,7 @@ export class PolicyProductState {
   private store = inject(Store);
 
   @Selector()
-  static getPolicies(state: PolicyStateModel): PolicyDetails {
+  static getPolicies(state: PolicyStateModel): PolicyDetails[] {
     return structuredClone(state.policyList);
   }
 
@@ -28,11 +28,7 @@ export class PolicyProductState {
     return this.policyProductService.getPolicyDetails().pipe(
       map((res) => {
         setState({
-          policyList: {
-            quotationNumber: res.data.quotationNumber,
-            plan: res.data.plan,
-            personalDetails: res.data.personalDetails,
-          },
+          policyList: res.data,
         });
       }),
       catchError((e) => {

@@ -6,20 +6,13 @@ import {
 } from '@aposin/ng-aquila/grid';
 import { NxLinkComponent } from '@aposin/ng-aquila/link';
 import { Router } from '@angular/router';
-import { ProgressbarComponent } from '../progress-bar/progressbar.component';
 import { Store } from '@ngxs/store';
 import { PolicyProductDetails } from '../../store/policy-product/policy-product.action';
 import { PolicyProductState } from '../../store/policy-product/policy-product.state';
 
 @Component({
   selector: 'app-policy-product',
-  imports: [
-    NxLayoutComponent,
-    NxColComponent,
-    NxRowComponent,
-    NxLinkComponent,
-    ProgressbarComponent,
-  ],
+  imports: [NxLayoutComponent, NxColComponent, NxRowComponent, NxLinkComponent],
   templateUrl: './policy-product.component.html',
   styleUrl: './policy-product.component.scss',
 })
@@ -28,8 +21,6 @@ export class PolicyProductComponent implements OnInit {
   private store = inject(Store);
 
   numOfPolicy: number = 0;
-  currentPath = 7;
-  totalPath = 10;
 
   constructor() {}
 
@@ -40,7 +31,7 @@ export class PolicyProductComponent implements OnInit {
       PolicyProductState.getPolicies
     );
 
-    console.log('Policy List:', policyList);
+    this.numOfPolicy = policyList.length;
   }
 
   goToUserPolicies() {

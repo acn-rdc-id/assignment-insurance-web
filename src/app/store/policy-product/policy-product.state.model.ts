@@ -1,14 +1,15 @@
 import { PolicyDetails } from '../../models/policy.model';
 
 export interface PolicyStateModel {
-  policyList: PolicyDetails;
+  policyList: PolicyDetails[];
 }
 
 export const POLICY_PRODUCT_STATE_DEFAULT: PolicyStateModel = {
-  policyList: {
-    quotationNumber: '',
-    plan: undefined,
-    personalDetails: {
+  policyList: [
+    {
+      quotationNumber: '',
+      plan: undefined,
+      personalDetails: {
         gender: '',
         dateOfBirth: '',
         age: 0,
@@ -25,7 +26,8 @@ export const POLICY_PRODUCT_STATE_DEFAULT: PolicyStateModel = {
         mobileNo: '',
         occupation: '',
         email: '',
-        transactionPurpose: ''
-    }
-  },
+        transactionPurpose: '',
+      },
+    },
+  ],
 };
