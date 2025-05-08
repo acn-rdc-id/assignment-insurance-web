@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, TemplateRef, Input} from '@angular/core';
+import {Component, OnInit, ViewChild, TemplateRef, Input, EventEmitter, Output} from '@angular/core';
 import { NxCardComponent } from '@aposin/ng-aquila/card';
 import { NxCopytextComponent } from '@aposin/ng-aquila/copytext';
 import { NxHeadlineComponent } from '@aposin/ng-aquila/headline';
@@ -57,7 +57,10 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   displayPersonalInfo: any[] = [];
   formArray: FormArray;
 
+  @Input() nextSubStep!: () => void;
   @Input() prevSubStep!: () => void;
+  @Output() paymentResult = new EventEmitter<number>();
+  paymentStatus: number | null = null;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -92,6 +95,12 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     occupation: 'Programmer',
     purpose: 'I have no purpose in life ahaha',
   }];
+
+  handlePayment(result: 'success' | 'fail') {
+    this.paymentStatus = result === 'success' ? 1 : 0;
+    this.paymentResult.emit(this.paymentStatus);
+    this.nextSubStep();
+  }
 
   getDisplayName(key: string): string {
     let displayName: string;
@@ -236,13 +245,15 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
       if (result === 'success') {
         //submit quotation number
         //status = boolean
-        this.router.navigate(['/policy-purchase-receipt'], {
-          queryParams: { paymentStatus: 1 }
-        });
+        // this.router.navigate(['/policy-purchase-receipt'], {
+        //   queryParams: { paymentStatus: 1 }
+        // });
+        this.handlePayment('success');
       } else if (result === 'fail') {
-        this.router.navigate(['/policy-purchase-receipt'], {
-          queryParams: { paymentStatus: 0 }
-        });
+        // this.router.navigate(['/policy-purchase-receipt'], {
+        //   queryParams: { paymentStatus: 0 }
+        // });
+        this.handlePayment('fail');
       }
       else{
         console.log("Unknown result")

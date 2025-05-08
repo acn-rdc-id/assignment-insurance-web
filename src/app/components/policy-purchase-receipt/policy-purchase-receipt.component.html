@@ -25,7 +25,7 @@
                       <tr nxTableRow>
                         <td class="label-cell">Payment Status</td>
                         <td class="separator-cell">:</td>
-                        <td class="value-cell failure" [ngStyle]="getStatusColor(paymentStatus)">{{displayPaymentStatus}}</td>
+                        <td class="value-cell failure" [ngStyle]="getStatusColor(paymentStatus!)">{{displayPaymentStatus}}</td>
                       </tr>
                       <tr nxTableRow>
                         <td class="label-cell">Payment Reference No</td>
@@ -40,14 +40,13 @@
                             <p>Allianz Contact Centre: <b><u>03-123456789</u></b><br>
                                 Email: <b><u>cust.serv&#64;allianz.co</u></b></p>
                         </div>
-                        <div nxCol="12,12,12,6" class="display-button" *ngIf="paymentStatus === '1'">
-                            <button nxButton="redirect" type="button">
+                        <div nxCol="12,12,12,6" class="display-button" *ngIf="paymentStatus === 1">
+                            <button nxButton="redirect" type="button" (click)="onNext()" >
                                 <nx-icon name="arrow-right" nxIconPositionEnd aria-hidden="true"></nx-icon>
                                 Go to Details
                             </button>
-                            
                         </div>
-                    </div>                
+                    </div>
                 </div>
         </div>
     </div>

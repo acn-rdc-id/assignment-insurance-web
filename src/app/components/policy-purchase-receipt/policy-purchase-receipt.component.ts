@@ -1,16 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {Component, inject, Input, numberAttribute, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import { NxButtonComponent, NxIconButtonComponent } from '@aposin/ng-aquila/button';
 import { NxCardComponent, NxCardHeaderComponent } from '@aposin/ng-aquila/card';
 import { NxCopytextComponent } from '@aposin/ng-aquila/copytext';
 import { NxColComponent, NxLayoutComponent, NxRowComponent } from '@aposin/ng-aquila/grid';
 import { NxHeadlineComponent } from '@aposin/ng-aquila/headline';
 import { NxIconComponent } from '@aposin/ng-aquila/icon';
+import {NxLinkComponent} from '@aposin/ng-aquila/link';
 
 @Component({
   selector: 'app-policy-purchase-receipt',
-  imports: [NxCardComponent, 
+  imports: [NxCardComponent,
     NxHeadlineComponent,
     NxCopytextComponent,
     NxLayoutComponent,
@@ -19,7 +20,7 @@ import { NxIconComponent } from '@aposin/ng-aquila/icon';
     CommonModule,
     NxButtonComponent,
     // NxIconButtonComponent,
-    NxIconComponent
+    NxIconComponent, NxLinkComponent
   ],
   templateUrl: './policy-purchase-receipt.component.html',
   styleUrl: './policy-purchase-receipt.component.scss'
@@ -27,13 +28,15 @@ import { NxIconComponent } from '@aposin/ng-aquila/icon';
 export class PolicyPurchaseReceiptComponent implements OnInit{
   constructor(private route: ActivatedRoute) {}
   displayPaymentStatus: any;
-  paymentStatus: any;
+  private router = inject(Router);
 
-  getStatusColor(status: string): { [key: string]: string } {
+  @Input() paymentStatus: number | null = null;
+
+  getStatusColor(status: number | null) {
     switch (status) {
-      case '1':
+      case 1:
         return { color: 'green', 'font-weight': 'bold' };
-      case '0':
+      case 0:
         return { color: 'red', 'font-weight': 'bold' };
       default:
         return { color: 'orange', 'font-weight': 'bold' };
@@ -41,22 +44,22 @@ export class PolicyPurchaseReceiptComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      this.paymentStatus = params['paymentStatus'];
-      console.log('Payment Status:', this.paymentStatus);
+    switch (this.paymentStatus) {
+      case 1:
+        this.displayPaymentStatus = 'Successful';
+        break;
+      case 0:
+        this.displayPaymentStatus = 'Failure';
+        break;
+      default:
+        this.displayPaymentStatus = 'Invalid';
+        break;
+    }
 
-      switch(this.paymentStatus){
-        case '0':
-          this.displayPaymentStatus = 'Failure';
-          break;
-        case '1':
-          this.displayPaymentStatus = "Successful";
-          break;
-        default:
-          this.displayPaymentStatus = 'Invalid';
-          break;
-      }
-    });
+    console.log('Payment Status:', this.paymentStatus);
   }
 
+  onNext(): void {
+    this.router.navigate(['/policy-product']);
+  }
 }

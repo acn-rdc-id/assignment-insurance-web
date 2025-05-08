@@ -12,7 +12,7 @@ export const userAuthInterceptor: HttpInterceptorFn = (req, next) => {
   const user: User = store.selectSnapshot(UserState.getUser);
   if (!req.context.get(SkipUserAuthHeaders)) {
     const authHeader = new HttpHeaders({
-      'Content-Type': 'application.json',
+      'Content-Type': 'application/json',
       'Authorization': `Bearer ${authToken}`,
       'userId': user.userId
     });

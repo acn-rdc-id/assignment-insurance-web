@@ -17,6 +17,7 @@ import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aqui
 import {
   PolicyPurchaseInsuredInfoComponent
 } from '../policy-purchase-insured-info/policy-purchase-insured-info.component';
+import {PolicyPurchaseReceiptComponent} from '../policy-purchase-receipt/policy-purchase-receipt.component';
 
 @Component({
   selector: 'app-policy-purchase',
@@ -35,6 +36,7 @@ import {
     NxLayoutComponent,
     NxRowComponent,
     PolicyPurchaseInsuredInfoComponent,
+    PolicyPurchaseReceiptComponent,
   ],
   templateUrl: './policy-purchase.component.html',
   styleUrl: './policy-purchase.component.scss',
@@ -46,6 +48,7 @@ export class PolicyPurchaseComponent implements OnInit {
   currentSubStep: number = 1;
   currentPath: string = 'basic-information';
   currentSubPath: string = 'info-details';
+  paymentStatus: number | null = null;
 
   mainSteps: PolicyPurchaseStep[] = [];
   subSteps: PolicyPurchaseStep[] = [];
@@ -68,6 +71,10 @@ export class PolicyPurchaseComponent implements OnInit {
 
   submitSubStep(step: number, path: string): void {
     this.store.dispatch(new SubmitPolicyPurchaseSubStep({ step: step, path: path }));
+  }
+
+  onPaymentResult(status: number) {
+    this.paymentStatus = status;
   }
 
   formatCamelCase(path: string): string {

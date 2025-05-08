@@ -73,7 +73,9 @@
                 </div>
 
                 <app-policy-purchase-summary
-                  [prevSubStep]="prevSubStep.bind(this)">
+                  [nextSubStep]="nextSubStep.bind(this)"
+                  [prevSubStep]="prevSubStep.bind(this)"
+                  (paymentResult)="onPaymentResult($event)">
                 </app-policy-purchase-summary>
               </nx-card>
             </div>
@@ -81,7 +83,11 @@
 
           @case (3) {
             <div class="particulars-container">
-              <app-policy-purchase-summary></app-policy-purchase-summary>
+              <nx-card style="width: 1200px">
+                <app-policy-purchase-receipt
+                  [paymentStatus]="paymentStatus">
+                </app-policy-purchase-receipt>
+              </nx-card>
             </div>
           }
         }
