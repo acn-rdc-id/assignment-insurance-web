@@ -5,7 +5,6 @@ import {
 import {NxCardComponent, NxCardSecondaryInfoDirective,} from '@aposin/ng-aquila/card';
 import {NxHeadlineComponent} from '@aposin/ng-aquila/headline';
 import {NxProgressStepperComponent, NxStepComponent,} from '@aposin/ng-aquila/progress-stepper';
-import {PersonalDetailsStepComponent} from '../policy-purchase-insured-info/policy-purchase-insured-info';
 import {PolicyPurchasePlanComponent} from '../policy-purchase-plan/policy-purchase-plan.component';
 import {PolicyPurchaseSummaryComponent} from '../policy-purchase-summary/policy-purchase-summary.component';
 import {ReactiveFormsModule,} from '@angular/forms';
@@ -15,6 +14,9 @@ import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
 import {SubmitPolicyPurchaseStep, SubmitPolicyPurchaseSubStep} from '../../store/policy/policy-purchase.action';
 import {ProgressbarComponent} from '../progress-bar/progressbar.component';
 import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aquila/grid';
+import {
+  PolicyPurchaseInsuredInfoComponent
+} from '../policy-purchase-insured-info/policy-purchase-insured-info.component';
 
 @Component({
   selector: 'app-policy-purchase',
@@ -25,7 +27,6 @@ import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aqui
     NxHeadlineComponent,
     NxProgressStepperComponent,
     NxStepComponent,
-    PersonalDetailsStepComponent,
     PolicyPurchasePlanComponent,
     PolicyPurchaseSummaryComponent,
     ReactiveFormsModule,
@@ -33,6 +34,7 @@ import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aqui
     NxColComponent,
     NxLayoutComponent,
     NxRowComponent,
+    PolicyPurchaseInsuredInfoComponent,
   ],
   templateUrl: './policy-purchase.component.html',
   styleUrl: './policy-purchase.component.scss',
