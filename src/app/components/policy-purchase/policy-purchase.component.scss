@@ -6,3 +6,16 @@
   gap: 1rem;
   margin: 2rem auto 0;
 }
+
+nx-progress-stepper {
+  margin-bottom: 3rem;
+  padding: 2.5rem;
+}
+
+.step-1-background {
+  background-image: url(../../../assets/hero-banner.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 250px;
+}

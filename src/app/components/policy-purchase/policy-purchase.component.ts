@@ -18,6 +18,7 @@ import {
   PolicyPurchaseInsuredInfoComponent
 } from '../policy-purchase-insured-info/policy-purchase-insured-info.component';
 import {PolicyPurchaseReceiptComponent} from '../policy-purchase-receipt/policy-purchase-receipt.component';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-policy-purchase',
@@ -37,6 +38,7 @@ import {PolicyPurchaseReceiptComponent} from '../policy-purchase-receipt/policy-
     NxRowComponent,
     PolicyPurchaseInsuredInfoComponent,
     PolicyPurchaseReceiptComponent,
+    NgClass,
   ],
   templateUrl: './policy-purchase.component.html',
   styleUrl: './policy-purchase.component.scss',
