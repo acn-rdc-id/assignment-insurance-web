@@ -5,13 +5,12 @@ import {
 import {NxCardComponent, NxCardSecondaryInfoDirective,} from '@aposin/ng-aquila/card';
 import {NxHeadlineComponent} from '@aposin/ng-aquila/headline';
 import {NxProgressStepperComponent, NxStepComponent,} from '@aposin/ng-aquila/progress-stepper';
-import {PersonalDetailsStepComponent} from '../personal-details-step/personal-details-step.component';
+import {PersonalDetailsStepComponent} from '../policy-purchase-insured-info/policy-purchase-insured-info';
 import {PolicyPurchasePlanComponent} from '../policy-purchase-plan/policy-purchase-plan.component';
 import {PolicyPurchaseSummaryComponent} from '../policy-purchase-summary/policy-purchase-summary.component';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {ReactiveFormsModule,} from '@angular/forms';
 import {Store} from '@ngxs/store';
 import {PolicyPurchaseStep} from '../../models/policy.model';
-import {nricValidator} from '../../validators/nric.validator';
 import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
 import {SubmitPolicyPurchaseStep, SubmitPolicyPurchaseSubStep} from '../../store/policy/policy-purchase.action';
 import {ProgressbarComponent} from '../progress-bar/progressbar.component';
@@ -40,10 +39,6 @@ import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aqui
 })
 export class PolicyPurchaseComponent implements OnInit {
   store: Store = inject(Store);
-  formBuilder: FormBuilder = inject(FormBuilder);
-
-  mainFormGroup!: FormGroup;
-  personalDetailsForm!: FormGroup;
 
   currentStep: number = 1;
   currentSubStep: number = 1;
@@ -52,36 +47,6 @@ export class PolicyPurchaseComponent implements OnInit {
 
   mainSteps: PolicyPurchaseStep[] = [];
   subSteps: PolicyPurchaseStep[] = [];
-
-  initForms(): void {
-    this.personalDetailsForm = this.formBuilder.group({
-      title: new FormControl('', Validators.required),
-      fullName: new FormControl('', Validators.required),
-      gender: new FormControl('', Validators.required),
-      dateOfBirth: new FormControl('', Validators.required),
-      nationality: new FormControl('', Validators.required),
-      idNo: new FormControl('', {
-        validators: [Validators.required, nricValidator()],
-      }),
-      otherId: new FormControl(''),
-      isUsPerson: new FormControl(false),
-      countryOfBirth: new FormControl('', Validators.required),
-      isSmoker: new FormControl(false),
-      cigarettesPerDay: new FormControl(0),
-      countryCode: new FormControl(''),
-      mobileNo: new FormControl('', [
-        Validators.required,
-        Validators.maxLength(11),
-      ]),
-      occupation: new FormControl('', Validators.required),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      transactionPurpose: new FormControl('', Validators.required),
-    });
-
-    this.mainFormGroup = this.formBuilder.group({
-      personalDetails: this.personalDetailsForm,
-    });
-  }
 
   initSteps(): void {
     this.store.select(PolicyPurchaseState.getMainSteps).subscribe(steps => {
@@ -113,7 +78,6 @@ export class PolicyPurchaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initForms();
     this.initSteps();
   }
 

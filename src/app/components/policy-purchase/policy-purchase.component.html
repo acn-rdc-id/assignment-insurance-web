@@ -11,66 +11,78 @@
           [nextStep]="nextStep.bind(this)"
           [prevStep]="prevStep.bind(this)">
         </app-policy-purchase-initial-info>
-      } @else if (item.path === 'get-quote' && item.step === 2) {
+      }
+
+      @if (item.path === 'get-quote' && item.step === 2) {
         <app-policy-purchase-plan
           [nextStep]="nextStep.bind(this)"
           [prevStep]="prevStep.bind(this)">
         </app-policy-purchase-plan>
-      } @else if (item.path === 'apply-now' && item.step === 3 && currentSubStep === 1) {
-        <div class="particulars-container">
-          <nx-card style="width: 1200px">
-            <div nxLayout="list">
-              <div nxRow>
-                <div nxCol="6" class="docs-grid-colored-col" >
-                  <h3 nxHeadline size="l" class="card-title">Allianz i-EssentialCover</h3>
-                  <p nxCardSecondaryInfo class="card-subtitle">
-                    Life Assured's Particulars
-                  </p>
-                </div>
-                <div nxCol="6" class="docs-grid-colored-col" >
-                  <app-progressbar
-                    style="display: flex; justify-content: flex-end; margin-top: 2rem;"
-                    [currentPath]="currentSubStep"
-                    [totalPath]="subSteps.length">
-                  </app-progressbar>
-                </div>
-              </div>
-            </div>
+      }
 
-            <form [formGroup]="mainFormGroup" style="margin-bottom: 2rem">
-              <app-personal-details-step
-                [formGroup]="personalDetailsForm"
-                [nextSubStep]="nextSubStep.bind(this)"
-                [prevStep]="prevStep.bind(this)"
-              >
-              </app-personal-details-step>
-            </form>
-          </nx-card>
-        </div>
-      } @else if (item.path === 'apply-now' && item.step === 3 && currentSubStep === 2 ) {
-        <div nxLayout="list">
-          <div nxRow>
-            <div nxCol="6" class="docs-grid-colored-col" >
-              <h3 nxHeadline size="l" class="card-title">Allianz i-EssentialCover</h3>
-              <p nxCardSecondaryInfo class="card-subtitle">
-                Life Assured's Particulars
-              </p>
-            </div>
-            <div nxCol="6" class="docs-grid-colored-col" >
-              <app-progressbar
-                style="display: flex; justify-content: flex-end; margin-top: 2rem;"
-                [currentPath]="currentSubStep"
-                [totalPath]="subSteps.length"
-              ></app-progressbar>
-            </div>
-          </div>
-        </div>
+      @if (item.path === 'apply-now' && item.step === 3) {
+        @switch (currentSubStep) {
+          @case (1) {
+            <div class="particulars-container">
+              <nx-card style="width: 1200px">
+                <div nxLayout="list">
+                  <div nxRow>
+                    <div nxCol="6" class="docs-grid-colored-col">
+                      <h3 nxHeadline size="l" class="card-title">Allianz i-EssentialCover</h3>
+                      <p nxCardSecondaryInfo class="card-subtitle">
+                        Life Assured's Particulars
+                      </p>
+                    </div>
+                    <div nxCol="6" class="docs-grid-colored-col">
+                      <app-progressbar
+                        style="display: flex; justify-content: flex-end; margin-top: 2rem;"
+                        [currentPath]="currentSubStep"
+                        [totalPath]="subSteps.length">
+                      </app-progressbar>
+                    </div>
+                  </div>
+                </div>
 
-        <app-policy-purchase-summary
-          [prevSubStep]="prevSubStep.bind(this)">
-        </app-policy-purchase-summary>
-      } @else if (item.path === 'apply-now' && item.step === 3 && currentSubStep === 3 ) {
-        Receipt
+                <app-policy-purchase-insured-info
+                  [nextSubStep]="nextSubStep.bind(this)"
+                  [prevStep]="prevStep.bind(this)">
+                </app-policy-purchase-insured-info>
+              </nx-card>
+            </div>
+          }
+
+          @case (2) {
+            <div class="particulars-container">
+              <nx-card style="width: 1200px">
+                <div nxLayout="list">
+                  <div nxRow>
+                    <div nxCol="6" class="docs-grid-colored-col">
+                      <h3 nxHeadline size="l" class="card-title">Allianz i-EssentialCover</h3>
+                      <p nxCardSecondaryInfo class="card-subtitle">
+                        Life Assured's Particulars
+                      </p>
+                    </div>
+                    <div nxCol="6" class="docs-grid-colored-col">
+                      <app-progressbar
+                        style="display: flex; justify-content: flex-end; margin-top: 2rem;"
+                        [currentPath]="currentSubStep"
+                        [totalPath]="subSteps.length">
+                      </app-progressbar>
+                    </div>
+                  </div>
+                </div>
+
+                <app-policy-purchase-summary
+                  [prevSubStep]="prevSubStep.bind(this)">
+                </app-policy-purchase-summary>
+              </nx-card>
+            </div>
+          }
+
+          @case (3) {
+            Receipt
+          }
+        }
       }
     </nx-step>
   }
