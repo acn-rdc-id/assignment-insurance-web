@@ -23,6 +23,7 @@ import { NxDialogService, NxModalCloseDirective } from '@aposin/ng-aquila/modal'
 import { Router } from '@angular/router';
 import { GetTermsAndConditions } from '../../store/policy/policy-purchase.action';
 import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
+import { QuotationSummaryComponent } from '../quotation-summary/quotation-summary.component';
 
 type MyDialogResult = 'success' | 'fail';
 
@@ -40,7 +41,8 @@ type MyDialogResult = 'success' | 'fail';
     ReactiveFormsModule,
     NxButtonComponent,
     NxIconComponent,
-    NxModalCloseDirective
+    NxModalCloseDirective,
+    QuotationSummaryComponent
   ],
   templateUrl: './policy-purchase-summary.component.html',
   styleUrl: './policy-purchase-summary.component.scss'

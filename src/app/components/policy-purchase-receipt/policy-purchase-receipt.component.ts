@@ -8,6 +8,7 @@ import { NxColComponent, NxLayoutComponent, NxRowComponent } from '@aposin/ng-aq
 import { NxHeadlineComponent } from '@aposin/ng-aquila/headline';
 import { NxIconComponent } from '@aposin/ng-aquila/icon';
 import {NxLinkComponent} from '@aposin/ng-aquila/link';
+import { QuotationSummaryComponent } from '../quotation-summary/quotation-summary.component';
 
 @Component({
   selector: 'app-policy-purchase-receipt',
@@ -20,7 +21,7 @@ import {NxLinkComponent} from '@aposin/ng-aquila/link';
     CommonModule,
     NxButtonComponent,
     // NxIconButtonComponent,
-    NxIconComponent, NxLinkComponent
+    NxIconComponent, NxLinkComponent, QuotationSummaryComponent
   ],
   templateUrl: './policy-purchase-receipt.component.html',
   styleUrl: './policy-purchase-receipt.component.scss'

@@ -81,6 +81,11 @@ export class PolicyPurchaseState {
     return state.subSteps;
   }
 
+  @Selector()
+  static getQuotationDetails(state: PolicyPurchaseStateModel){
+    return state.quotationDetails;
+  }
+
   @Action(SubmitInitialInfo)
   submitInitialInfo(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: SubmitInitialInfo) {
     return this.policyService.getPlans(payload).pipe(

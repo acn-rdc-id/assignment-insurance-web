@@ -12,6 +12,7 @@ import {CommonModule} from '@angular/common';
 import {Router} from '@angular/router';
 import {NxStepperNextDirective, NxStepperPreviousDirective} from '@aposin/ng-aquila/progress-stepper';
 import {NxButtonComponent} from '@aposin/ng-aquila/button';
+import { QuotationSummaryComponent } from '../quotation-summary/quotation-summary.component';
 
 @Component({
   selector: 'app-policy-purchase-plan',
@@ -26,7 +27,8 @@ import {NxButtonComponent} from '@aposin/ng-aquila/button';
     NxStepperNextDirective,
     NxButtonComponent,
     NxStepperPreviousDirective,
-    NxButtonComponent
+    NxButtonComponent,
+    QuotationSummaryComponent
   ],
   templateUrl: './policy-purchase-plan.component.html',
   styleUrl: './policy-purchase-plan.component.scss',

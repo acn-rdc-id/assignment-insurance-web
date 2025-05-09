@@ -1,0 +1,15 @@
+
+<table nxTable class="info_table">
+    <!-- <tr>{{quotationDetails}}</tr> -->
+     @for (item of quotationSummary; track $index;){
+        @if($index == 0){
+            <tr nxTableRow class="text-red summary-row"><b>{{item.title}}</b></tr>
+
+        }@else if($index == quotationSummary.length-1){
+            <tr nxTableRow class="text-red summary-last"><b>{{item.title}}</b><td class="text-right"><b>{{item.desc}}</b></td></tr>
+        }@else{
+            <tr nxTableRow class="text-gray summary-row"><td>{{item.title}}</td><td class="text-right">{{item.desc}}</td></tr>
+        }
+    }
+
+</table>
