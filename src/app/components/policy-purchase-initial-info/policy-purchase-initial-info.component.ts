@@ -134,7 +134,7 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit {
       dateOfBirth: this.formatDate(formValues.birthDate)
     };
 
-    this.policyService.getPlans(requestPayload).subscribe({
+    this.policyService.getQuotationPlans(requestPayload).subscribe({
       next: (response: HttpResponseBody): void => {
         const isSuccess: boolean = response?.code === 200 && response?.data;
 

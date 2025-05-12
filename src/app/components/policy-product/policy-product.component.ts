@@ -23,7 +23,7 @@ export class PolicyProductComponent implements OnInit {
 
   ngOnInit() {
     const user = this.store.selectSnapshot(UserState.getUser);
-    this.policyProductService.getPolicyDetails(user).subscribe({
+    this.policyProductService.getAllPolicies(user).subscribe({
       next: (response: any): void => {
         this.store.dispatch(new PolicyProductDetails(response));
       },

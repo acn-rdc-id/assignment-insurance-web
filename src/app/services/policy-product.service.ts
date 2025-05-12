@@ -3,6 +3,7 @@ import {inject, Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {HttpResponseBody} from '../models/http-body.model';
+import {POLICY_SERVICING_API} from '../constants/api.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -11,12 +12,14 @@ export class PolicyProductService {
   private apiUrl = environment.apiUrl;
   private http = inject(HttpClient);
 
-  constructor() {}
-
-  getPolicyDetails(user: any): Observable<HttpResponseBody> {
+  getAllPolicies(user: { userId: string }): Observable<HttpResponseBody> {
     const headers = new HttpHeaders({
-      'userId': user.userId ?? ''
+      userId: user.userId || ''
     });
-    return this.http.get<HttpResponseBody>(this.apiUrl + 'policy/getAll', { headers });
+
+    return this.http.get<HttpResponseBody>(
+      this.apiUrl + POLICY_SERVICING_API.GET_ALL_POLICIES,
+      { headers }
+    );
   }
 }

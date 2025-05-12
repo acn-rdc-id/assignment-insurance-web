@@ -1,10 +1,9 @@
-import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { Injectable, inject } from '@angular/core';
-import { GetPolicyDetails } from './policy-details.action';
-import { POLICY_DETAILS_STATE_DEFAULTS, PolicyDetailsStateModel } from './policy-details.state.model';
-import { PolicyService } from '../../services/policy.service';
-import { map } from 'rxjs';
-import { PolicyPlan } from '../../models/policy.model';
+import {Action, Selector, State, StateContext} from '@ngxs/store';
+import {inject, Injectable} from '@angular/core';
+import {GetPolicyDetails} from './policy-details.action';
+import {POLICY_DETAILS_STATE_DEFAULTS, PolicyDetailsStateModel} from './policy-details.state.model';
+import {PolicyService} from '../../services/policy.service';
+import {map} from 'rxjs';
 
 @State<PolicyDetailsStateModel>({
   name: 'PolicyDetailsState',
@@ -23,9 +22,8 @@ export class PolicyDetailsState {
   @Action(GetPolicyDetails)
   setPolicyDetails({getState, setState}: StateContext<PolicyDetailsStateModel>, {payload}:GetPolicyDetails){
     const state = getState();
-    return this.policyService.getPolicyDetails(payload).pipe(
+    return this.policyService.fetchPolicyDetails(payload).pipe(
       map(res=>{
-    
         setState({
           policyDetails:res.data.policyDetails
         })

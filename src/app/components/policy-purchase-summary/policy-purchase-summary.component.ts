@@ -203,7 +203,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
       planInfoDto: planInfoWithRef,
     };
 
-    this.policyService.createApplication(payload).subscribe({
+    this.policyService.createPolicyApplication(payload).subscribe({
       next: (response: any): void => {
         // todo BE structure not meet HttpResponseBody requirement
         this.quotationId = response?.id;
@@ -244,7 +244,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
         planInfo: selectedPlan
       }
 
-      this.policyService.createPayment(payload).subscribe({
+      this.policyService.initiatePayment(payload).subscribe({
         next: (response: HttpResponseBody): void => {
           // const isSuccess: boolean = response?.code === 200 && response?.data;
           console.log("Response create application api", response);

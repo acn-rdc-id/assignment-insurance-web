@@ -215,7 +215,7 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
   }
 
   getTermsandConditions(): void {
-    this.policyService.getTermsConditions().subscribe({
+    this.policyService.getTermsAndConditions().subscribe({
       next: (response: HttpResponseBody): void => {
         const isSuccess: boolean = response?.code === 200 && response?.data;
         if (isSuccess) {
