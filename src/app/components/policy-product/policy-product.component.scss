@@ -96,7 +96,7 @@ position: relative;
     margin: 0 auto 50px;
     line-height: 1.6;
   }
-  
+
   .features {
     display: flex;
     justify-content: center;
@@ -118,7 +118,7 @@ position: relative;
     margin-top: 5px;
     font-size: 14px;
   }
-  
+
   .buy-button {
     padding: 12px 24px;
     background-color: #0077a6;
@@ -128,7 +128,7 @@ position: relative;
     font-weight: bold;
     display: inline-block;
     cursor: pointer;
-    transition: background-color 0.2s ease,
+    transition: background-color 0.2s ease
   }
 
   .buy-button:hover {
@@ -144,3 +144,15 @@ position: relative;
     cursor: pointer;
   }
 
+.policy-banner-overlay {
+  position: relative;
+  display: inline-block;
+}
+
+.overlay-img {
+  position: absolute;
+  top: -27px;
+  left: -25px;
+  height: fit-content;
+  z-index: 2;
+}

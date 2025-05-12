@@ -25,10 +25,14 @@
       >
     </div>
 
+
     <div class="section">
-      <nx-link class="banner-policies" (click)="goToUserPolicies()"
-        >{{ numOfPolicy }}<b> Allianz</b> Policies
-      </nx-link>
+      <div class="policy-banner-overlay">
+        <img src="assets/person-wave.svg" alt="Allianz-Logo" class="overlay-img" />
+        <nx-link class="banner-policies" (click)="goToUserPolicies()">
+          {{ numOfPolicy }} <b> Allianz Life</b> Policies
+        </nx-link>
+      </div>
 
       <br />
       <br />
