@@ -114,7 +114,6 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit {
   }
 
   onBack(): void {
-    console.log('Back button clicked');
     this.router.navigate(['/policy-product']);
   }
 

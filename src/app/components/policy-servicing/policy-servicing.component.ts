@@ -43,7 +43,6 @@ export class PolicyServicingComponent implements OnInit {
 
   ngOnInit(): void {
     this.policyProduct = this.store.selectSnapshot(PolicyProductState.getPolicyDetailsList);
-    console.log(this.policyProduct);
   }
 
   goToDetail(id: string): void {

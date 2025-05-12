@@ -26,14 +26,13 @@ export class PolicyProductComponent implements OnInit {
     this.policyProductService.getAllPolicies(user).subscribe({
       next: (response: any): void => {
         this.store.dispatch(new PolicyProductDetails(response));
+        const policyProduct: PolicyDetails[] = this.store.selectSnapshot(PolicyProductState.getPolicyDetailsList);
+        this.numOfPolicy = policyProduct.length;
       },
       error: (error): void => {
         console.error('❌ API call failed:', error);
       }
     });
-
-    const policyProduct: PolicyDetails[] = this.store.selectSnapshot(PolicyProductState.getPolicyDetailsList);
-    this.numOfPolicy = policyProduct.length;
   }
 
   goToUserPolicies() {

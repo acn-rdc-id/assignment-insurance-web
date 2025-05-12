@@ -1,49 +1,42 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
-import { Store } from '@ngxs/store';
-import { PolicyDetails } from '../../models/policy.model';
-import { NxTableCellComponent, NxTableComponent } from '@aposin/ng-aquila/table';
-import { NxColComponent } from '@aposin/ng-aquila/grid';
+import {CommonModule} from '@angular/common';
+import {Component, inject, OnInit} from '@angular/core';
+import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
+import {Store} from '@ngxs/store';
+import {NxTableComponent, NxTableRowComponent} from '@aposin/ng-aquila/table';
+import {PolicyDetails} from '../../models/policy.model';
 
 @Component({
   selector: 'app-quotation-summary',
-  imports: [CommonModule,NxTableComponent,NxTableCellComponent,NxColComponent,NxTableComponent],
+  imports: [CommonModule, NxTableComponent, NxTableComponent, NxTableRowComponent],
   templateUrl: './quotation-summary.component.html',
   styleUrl: './quotation-summary.component.scss'
 })
 export class QuotationSummaryComponent implements OnInit {
-  quotationSummary : any[] = []
-  title : Array<String> = ['Plan Information Summary','Reference Number','Gender','Date of Birth','Age Nearest Birthday','Selected Plan','Premium Mode','Coverage Term','Premium Payable'];
-  desc : any[] = []
-  constructor(private store: Store){
+  store: Store = inject(Store);
+  quotationSummary: Array<{ title: string; desc: string }> = [];
 
+  formatPremium(amount?: number, mode: string = ''): string {
+    if (!amount) return '—';
+    const normalizedMode = mode.toLowerCase();
+    return `RM ${amount} / ${normalizedMode}`;
   }
+
   ngOnInit(): void {
-    const quotationDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
-   console.log(quotationDetails)
-   this.desc = [
-    '',
-    quotationDetails.quotationNumber,
-    quotationDetails.personalDetails?.gender,
-    quotationDetails.personalDetails?.dateOfBirth,
-    quotationDetails.personalDetails?.age,
-    quotationDetails.plan?.planName,
-    quotationDetails.plan?.paymentPeriod,
-    quotationDetails.plan?.coverageTerm,
-    "RM " + quotationDetails.plan?.premiumAmount + "/" + quotationDetails.plan?.paymentPeriod
-   ]
+    const quotation: PolicyDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
 
-   for (let index = 0; index < this.desc.length; index++) {
-    this.quotationSummary.push({title:this.title[index],desc:this.desc[index]})
-    
-   }
+    if (!quotation) return;
+    const mode = quotation.plan?.premiumMode ?? '';
 
-   console.log(this.quotationSummary)
+    this.quotationSummary = [
+      {title: 'Plan Information Summary', desc: ''},
+      {title: 'Reference Number', desc: quotation.quotationNumber ?? '—'},
+      {title: 'Gender', desc: quotation.personalDetails?.gender ?? '—'},
+      {title: 'Date of Birth', desc: quotation.personalDetails?.dateOfBirth ?? '—'},
+      {title: 'Age Nearest Birthday', desc: quotation.personalDetails?.age?.toString() ?? '—'},
+      {title: 'Selected Plan', desc: quotation.plan?.planName ?? '—'},
+      {title: 'Premium Mode', desc: mode ?? '—'},
+      {title: 'Coverage Term', desc: quotation.plan?.coverageTerm ?? '—'},
+      {title: 'Premium Payable', desc: this.formatPremium(quotation.plan?.premiumAmount, mode)},
+    ];
   }
-
-
-  
-  
-  
 }
