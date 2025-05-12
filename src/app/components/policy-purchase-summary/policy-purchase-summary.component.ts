@@ -40,32 +40,33 @@ type MyDialogResult = 'success' | 'fail';
   styleUrl: './policy-purchase-summary.component.scss'
 })
 
-
 export class PolicyPurchaseSummaryComponent implements OnInit {
-  @ViewChild('paymentDialog') paymentDialog!: TemplateRef<any>;
-  modalRef: any;
-  form: FormGroup;
-  actionResult?: MyDialogResult;
-  termsAndConditions:Array<TermsConditions> = [];
-  displayPersonalInfo: any[] = [];
-  formArray: FormArray;
-
-  @Input() nextSubStep!: () => void;
-  @Input() prevSubStep!: () => void;
-  @Output() paymentResult = new EventEmitter<number>();
-  paymentStatus: number | null = null;
-  finalConfirmation: FormControl<boolean | null> | undefined;
-
   policyService: PolicyService = inject(PolicyService);
 
   quotationId: number = 0;
   premiumMode: string = "";
+  duration: number = 0;
+  planInfo = "";
+  finalConfirmation: FormControl<boolean | null> | undefined;
+  termsAndConditions:Array<TermsConditions> = [];
+  displayPersonalInfo: any[] = [];
+
+  form: FormGroup;
+  formArray: FormArray;
+
+  @ViewChild('paymentDialog') paymentDialog!: TemplateRef<any>;
+  modalRef: any;
+  actionResult?: MyDialogResult;
+  paymentStatus: number | null = null;
+
+  @Input() nextSubStep!: () => void;
+  @Input() prevSubStep!: () => void;
+  @Output() paymentResult = new EventEmitter<number>();
+
   modeToDurationMap: Record<string, number> = {
     MONTHLY: 1,
     YEARLY: 12,
   };
-  duration: number = 0;
-  planInfo = "";
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -83,13 +84,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
 
    }
 
-  handlePayment(result: 'success' | 'fail') {
-    this.paymentStatus = result === 'success' ? 1 : 0;
-    this.paymentResult.emit(this.paymentStatus);
-    this.nextSubStep();
-  }
-
-  transformPersonalInfo(): void {
+  preparePersonalInfo(): void {
     // todo revamp more
     const personalDetails = this.store.selectSnapshot(PolicyPurchaseState.getPersonalDetails);
     if (!personalDetails) {
@@ -141,7 +136,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     return this.form.get('terms') as FormArray;
   }
 
-  getTermsandConditions(){
+  loadTermsAndConditions(){
     this.termsAndConditions = this.store.selectSnapshot(PolicyPurchaseState.getTermsAndConditions);
     this.formArray.clear();
 
@@ -156,17 +151,17 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   }
 
   sanitizeHtml(html: string): SafeHtml {
-    const cleanedHtml: string = html.replace(/<strong>Yes<\/strong>/gi, '');
-    return this.sanitizer.bypassSecurityTrustHtml(cleanedHtml);
+    return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
-  onSubmit(){
-
-    const checkboxIsRequired = this.termsAndConditions.some((term, index) =>
+  hasUncheckedRequiredTerms(): boolean {
+    return this.termsAndConditions.some((term, index) =>
       term.isRequired === 1 && !this.formArray.at(index).value
     );
+  }
 
-    if (this.form.invalid || checkboxIsRequired) {
+  onSubmit(): void{
+    if (this.form.invalid || this.hasUncheckedRequiredTerms()) {
       alert('Please check all required boxes!');
       return;
     }
@@ -178,30 +173,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
 
     console.log('Form submitted:', result);
 
-    const personalDetails = this.store.selectSnapshot(PolicyPurchaseState.getPersonalDetails);
-    const planInfoDto = this.store.selectSnapshot(PolicyPurchaseState.selectedPlan);
-    const referenceNumber = this.store.selectSnapshot(PolicyPurchaseState.getReferenceNumber);
-    const user = this.store.selectSnapshot(UserState.getUser);
-
-    const planInfoWithRef = {
-      ...planInfoDto,
-      referenceNumber,
-    };
-
-    const personDto = {
-      userId: user.userId,
-      ...personalDetails,
-      identificationNo: personalDetails?.idNo,
-      dateOfBirth: this.convertToIsoDate(personalDetails?.dateOfBirth),
-      phoneNo: personalDetails?.mobileNo,
-      cigarettesNo: personalDetails?.cigarettesPerDay,
-      purposeOfTransaction: personalDetails?.transactionPurpose,
-    };
-
-    const payload = {
-      personDto: personDto,
-      planInfoDto: planInfoWithRef,
-    };
+    const payload = this.buildApplicationPayload();
 
     this.policyService.createPolicyApplication(payload).subscribe({
       next: (response: any): void => {
@@ -209,13 +181,35 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
         this.quotationId = response?.id;
         this.premiumMode = response?.planResponseDto?.premiumMode;
         this.duration = this.modeToDurationMap[this.premiumMode];
+        this.openModal();
       },
       error: (error): void => {
         console.error('❌ API call failed:', error);
       }
     });
+  }
 
-    this.OpenModal();
+  buildApplicationPayload() {
+    const personalDetails = this.store.selectSnapshot(PolicyPurchaseState.getPersonalDetails);
+    const plan = this.store.selectSnapshot(PolicyPurchaseState.selectedPlan);
+    const referenceNumber = this.store.selectSnapshot(PolicyPurchaseState.getReferenceNumber);
+    const user = this.store.selectSnapshot(UserState.getUser);
+
+    return {
+      personDto: {
+        userId: user.userId,
+        ...personalDetails,
+        identificationNo: personalDetails?.idNo,
+        dateOfBirth: this.convertToIsoDate(personalDetails?.dateOfBirth),
+        phoneNo: personalDetails?.mobileNo,
+        cigarettesNo: personalDetails?.cigarettesPerDay,
+        purposeOfTransaction: personalDetails?.transactionPurpose,
+      },
+      planInfoDto: {
+        ...plan,
+        referenceNumber,
+      },
+    };
   }
 
   convertToIsoDate(dateStr?: string): string | null {
@@ -227,35 +221,41 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     return isNaN(isoDate.getTime()) ? null : isoDate.toISOString();
   }
 
-  OpenModal(): void{
+  openModal(): void{
     this.modalRef = this.dialogService.open(this.paymentDialog, {
       showCloseIcon: true
     });
 
     this.modalRef.afterClosed().subscribe((result: MyDialogResult) => {
       this.actionResult = result;
-      const selectedPlan = this.store.selectSnapshot(PolicyPurchaseState.selectedPlan);
-
-      const payload = {
-        quotationId: this.quotationId,
-        paymentAmount: selectedPlan?.premiumAmount,
-        duration: this.duration,
-        paymentStatus: result.toUpperCase(),
-        planInfo: selectedPlan
-      }
-
-      this.policyService.initiatePayment(payload).subscribe({
-        next: (response: HttpResponseBody): void => {
-          // const isSuccess: boolean = response?.code === 200 && response?.data;
-          console.log("Response create application api", response);
-        },
-        error: (error): void => {
-          console.error('❌ API call failed:', error);
-        }
-      });
-
+      this.processPayment(result);
       this.handlePayment(result);
     });
+  }
+
+  processPayment(result: MyDialogResult): void {
+    const selectedPlan = this.store.selectSnapshot(PolicyPurchaseState.selectedPlan);
+
+    const payload = {
+      quotationId: this.quotationId,
+      paymentAmount: selectedPlan?.premiumAmount,
+      duration: this.duration,
+      paymentStatus: result.toUpperCase(),
+      planInfo: selectedPlan,
+    };
+
+    this.policyService.initiatePayment(payload).subscribe({
+      next: (response: HttpResponseBody) => {
+        console.log('💰 Payment initiated:', response);
+      },
+      error: (error) => console.error('❌ Payment failed:', error),
+    });
+  }
+
+  handlePayment(result: 'success' | 'fail') {
+    this.paymentStatus = result === 'success' ? 1 : 0;
+    this.paymentResult.emit(this.paymentStatus);
+    this.nextSubStep();
   }
 
   closeDialog(result: MyDialogResult): void {
@@ -267,8 +267,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getTermsandConditions();
-    this.transformPersonalInfo();
+    this.loadTermsAndConditions();
+    this.preparePersonalInfo();
   }
-
 }
