@@ -85,7 +85,7 @@
 <ng-template #paymentDialog>
     <div class="payment-dialog">
         <p>Select how do you like to simulate the payment</p>
-        <button nxButton="fail" type="button" (click)="handlePayment('fail')" nxModalClose="fail">Fail</button>
+        <button nxButton="fail" type="button" (click)="handlePayment('failed')" nxModalClose="failed">Fail</button>
         <button nxButton="success" type="button" (click)="handlePayment('success')" nxModalClose="success" >Success</button>
     </div>
 </ng-template>

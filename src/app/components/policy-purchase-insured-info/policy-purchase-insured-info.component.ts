@@ -221,6 +221,7 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
         if (isSuccess) {
           const termsAndConditions = response?.data;
           this.store.dispatch(new GetTermsAndConditions(termsAndConditions));
+          this.nextSubStep();
         } else {
           console.warn('⚠️ API responded with an unexpected status or missing data:', response?.message);
         }
@@ -235,7 +236,6 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
     if (this.personalDetailsForm.valid && !this.usPersonError) {
       this.submitForm();
       this.getTermsandConditions();
-      this.nextSubStep();
     } else {
       console.log("Form is invalid, cannot proceed.");
     }

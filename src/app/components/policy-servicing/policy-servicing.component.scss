@@ -73,8 +73,9 @@ tbody tr:hover {
 }
 
 .badge-green {
+  font-size: 0.80rem;
   background-color: $badge-green-color;
   color: white;
-  padding: 4px 8px;
+  padding: 1px 6px;
   border-radius: 12px;
 }

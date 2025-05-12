@@ -17,7 +17,7 @@ import {HttpResponseBody} from '../../models/http-body.model';
 import {UserState} from '../../store/user/user.state';
 import {QuotationSummaryComponent} from '../quotation-summary/quotation-summary.component';
 
-type MyDialogResult = 'success' | 'fail';
+type MyDialogResult = 'success' | 'failed';
 
 @Component({
   selector: 'app-policy-purchase-summary',
@@ -252,7 +252,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     });
   }
 
-  handlePayment(result: 'success' | 'fail') {
+  handlePayment(result: 'success' | 'failed') {
     this.paymentStatus = result === 'success' ? 1 : 0;
     this.paymentResult.emit(this.paymentStatus);
     this.nextSubStep();

@@ -36,7 +36,7 @@
                   <td nxTableCell>{{ item.plan.endDate | date: 'dd MMM yyyy' }}</td>
                   <td nxTableCell>
                     <nx-badge [ngClass]="{ 'badge-green': item.plan.status === 'ACTIVE' }">
-                      {{ item.status }}
+                      {{ item.plan.status === 'ACTIVE' ? 'In Force' : item.plan.status }}
                     </nx-badge>
                   </td>
                 </tr>
