@@ -1,4 +1,5 @@
 import {Routes} from '@angular/router';
+import {userAuthGuard} from './guards/user-auth.guard';
 
 export const routes: Routes = [
   {
@@ -12,33 +13,23 @@ export const routes: Routes = [
   {
     path: 'policy-product',
     loadComponent: () => import('./components/policy-product/policy-product.component').then(m => m.PolicyProductComponent),
-    // TODO: enable userAuthGuard after integrating user signup and login
-    // canActivate: [userAuthGuard]
+    canActivate: [userAuthGuard]
   },
-  // {
-  //   path: 'policy-initial-info',
-  //   loadComponent: () => import('./components/policy-purchase-initial-info/policy-purchase-initial-info.component').then(m => m.PolicyPurchaseInitialInfoComponent)
-  // },
-  // {
-  //   path: 'policy-insured-info',
-  //   loadComponent: () => import('./components/policy-purchase-insured-info/policy-purchase-insured-info.component').then(m => m.PolicyPurchaseInsuredInfoComponent),
-  // },
-  // {
-  //   path: 'policy-purchase-plan',
-  //   loadComponent: () => import('./components/policy-purchase-plan/policy-purchase-plan.component').then(m => m.PolicyPurchasePlanComponent)
-  // },
   {
     path: 'policy-purchase',
-    loadComponent: () => import('./components/policy-purchase/policy-purchase.component').then(m => m.PolicyPurchaseComponent)
+    loadComponent: () => import('./components/policy-purchase/policy-purchase.component').then(m => m.PolicyPurchaseComponent),
+    canActivate: [userAuthGuard]
   },
-  // {
-  //   path: 'policy-purchase-summary',
-  //   loadComponent: () => import('./components/policy-purchase-summary/policy-purchase-summary.component').then(m => m.PolicyPurchaseSummaryComponent)
-  // },
-  // {
-  //   path: 'policy-purchase-receipt',
-  //   loadComponent: () => import('./components/policy-purchase-receipt/policy-purchase-receipt.component').then(m => m.PolicyPurchaseReceiptComponent)
-  // },
+  {
+    path: 'policy-servicing',
+    loadComponent: () => import('./components/policy-servicing/policy-servicing.component').then(m => m.PolicyServicingComponent),
+    canActivate: [userAuthGuard]
+  },
+  {
+    path: 'policy-servicing-details/:id',
+    loadComponent: () => import('./components/policy-servicing-details/policy-servicing-details.component').then(m => m.PolicyServicingDetailsComponent),
+    canActivate: [userAuthGuard]
+  },
   {
     path: '',
     redirectTo: 'login',

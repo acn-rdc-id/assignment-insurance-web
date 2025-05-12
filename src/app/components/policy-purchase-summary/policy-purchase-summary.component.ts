@@ -1,29 +1,21 @@
-import {Component, OnInit, ViewChild, TemplateRef, Input, EventEmitter, Output} from '@angular/core';
-import { NxCardComponent } from '@aposin/ng-aquila/card';
-import { NxCopytextComponent } from '@aposin/ng-aquila/copytext';
-import { NxHeadlineComponent } from '@aposin/ng-aquila/headline';
-import { NxLayoutComponent, NxColComponent, NxRowComponent} from '@aposin/ng-aquila/grid';
-import { CommonModule } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser';
-import {
-  NxHeaderCellDirective,
-  NxTableCellComponent,
-  NxTableComponent,
-  NxTableRowComponent,
-} from '@aposin/ng-aquila/table';
-import { PolicySummary, TermsConditions } from '../../models/policy.model';
-import { PolicyService } from '../../services/policy.service';
-import { Store } from '@ngxs/store';
-import { DeepCopyService } from '../../services/deep-copy.service';
-import { NxCheckboxComponent } from '@aposin/ng-aquila/checkbox';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
-import { NxButtonComponent } from '@aposin/ng-aquila/button';
-import { NxIconComponent } from '@aposin/ng-aquila/icon';
-import { NxDialogService, NxModalCloseDirective } from '@aposin/ng-aquila/modal';
-import { Router } from '@angular/router';
-import { GetTermsAndConditions } from '../../store/policy/policy-purchase.action';
-import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
-import { QuotationSummaryComponent } from '../quotation-summary/quotation-summary.component';
+import {Component, EventEmitter, inject, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
+import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aquila/grid';
+import {CommonModule} from '@angular/common';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import {NxTableCellComponent, NxTableComponent, NxTableRowComponent,} from '@aposin/ng-aquila/table';
+import {TermsConditions} from '../../models/policy.model';
+import {Store} from '@ngxs/store';
+import {NxCheckboxComponent} from '@aposin/ng-aquila/checkbox';
+import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {NxButtonComponent} from '@aposin/ng-aquila/button';
+import {NxIconComponent} from '@aposin/ng-aquila/icon';
+import {NxDialogService, NxModalCloseDirective} from '@aposin/ng-aquila/modal';
+import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
+import {SUMMARY_FORM_LABELS, SUMMARY_FORM_ORDERS} from '../../constants/form.costants';
+import {PolicyService} from '../../services/policy.service';
+import {HttpResponseBody} from '../../models/http-body.model';
+import {UserState} from '../../store/user/user.state';
+import {QuotationSummaryComponent} from '../quotation-summary/quotation-summary.component';
 
 type MyDialogResult = 'success' | 'fail';
 
@@ -54,8 +46,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   modalRef: any;
   form: FormGroup;
   actionResult?: MyDialogResult;
-  termsAndConditions:Array<TermsConditions> =[];
-  personalInfo: Array<PolicySummary> = [];
+  termsAndConditions:Array<TermsConditions> = [];
   displayPersonalInfo: any[] = [];
   formArray: FormArray;
 
@@ -63,14 +54,24 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   @Input() prevSubStep!: () => void;
   @Output() paymentResult = new EventEmitter<number>();
   paymentStatus: number | null = null;
+  finalConfirmation: FormControl<boolean | null> | undefined;
+
+  policyService: PolicyService = inject(PolicyService);
+
+  quotationId: number = 0;
+  premiumMode: string = "";
+  modeToDurationMap: Record<string, number> = {
+    MONTHLY: 1,
+    YEARLY: 12,
+  };
+  duration: number = 0;
+  planInfo = "";
 
   constructor(
     private sanitizer: DomSanitizer,
-    private policyService: PolicyService,
     private store: Store,
     private fb:FormBuilder,
     private dialogService: NxDialogService,
-    private router: Router
     // private deepCopy: DeepCopyService
   ) {
 
@@ -82,107 +83,66 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
 
    }
 
-
-  tableElements: Array<PolicySummary> = [{
-    name: 'Nur Aina Insyirah',
-    nric: '930715-14-5782',
-    dob: '15th July 2025',
-    gender: 'Female',
-    nationality: 'Malaysian',
-    birthCountry: 'Malaysia',
-    usPerson: 'No',
-    mobileNum: '019-6913392',
-    email: 'nur.a.binti.hasrin@accenture.com',
-    smoker: 'No',
-    occupation: 'Programmer',
-    purpose: 'I have no purpose in life ahaha',
-  }];
-
   handlePayment(result: 'success' | 'fail') {
     this.paymentStatus = result === 'success' ? 1 : 0;
     this.paymentResult.emit(this.paymentStatus);
     this.nextSubStep();
   }
 
-  getDisplayName(key: string): string {
-    let displayName: string;
-
-    switch (key) {
-      case 'name':
-        displayName = 'Full Name';
-        break;
-      case 'nric':
-        displayName = 'NRIC';
-        break;
-      case 'dob':
-        displayName = 'Date of Birth';
-        break;
-      case 'gender':
-        displayName = 'Gender';
-        break;
-      case 'nationality':
-        displayName = 'Nationality';
-        break;
-      case 'birthCountry':
-        displayName = 'Birth Country';
-        break;
-      case 'usPerson':
-        displayName = 'US Person';
-        break;
-      case 'mobileNum':
-        displayName = 'Mobile Number';
-        break;
-      case 'email':
-        displayName = 'Email';
-        break;
-      case 'smoker':
-        displayName = 'Smoker';
-        break;
-      case 'occupation':
-        displayName = 'Occupation';
-        break;
-      case 'purpose':
-        displayName = 'Purpose';
-        break;
-      default:
-        displayName = key;
-        break;
+  transformPersonalInfo(): void {
+    // todo revamp more
+    const personalDetails = this.store.selectSnapshot(PolicyPurchaseState.getPersonalDetails);
+    if (!personalDetails) {
+      this.displayPersonalInfo = [];
+      return;
     }
 
-    return displayName;
+    this.displayPersonalInfo = SUMMARY_FORM_ORDERS
+      .map((key): { label: string; content: string } | null => {
+        if (key === 'mobileNo') {
+          const { countryCode, mobileNo } = personalDetails;
+          if (!mobileNo && !countryCode) return null;
+
+          const combined = `${countryCode ?? ''}-${mobileNo ?? ''}`.replace(/^-/, '');
+          return {
+            label: SUMMARY_FORM_LABELS[key] ?? key,
+            content: combined,
+          };
+        }
+
+        const value = personalDetails[key as keyof typeof personalDetails];
+        if (value !== null && value !== undefined) {
+          return {
+            label: SUMMARY_FORM_LABELS[key] ?? key,
+            content: this.formatBooleanValue(value),
+          };
+        }
+
+        return null;
+      })
+      .filter(
+        (item): item is { label: string; content: string } => item !== null
+      );
   }
 
-  transformPersonalInfo() {
-    const summary = this.tableElements[0];
-    this.displayPersonalInfo = Object.keys(summary).map(key => ({
-      label: this.getDisplayName(key),
-      content: summary[key as keyof typeof summary]
-    }));
 
-    console.log('Modified Array:', this.displayPersonalInfo);
+  private formatBooleanValue(value: any): string {
+    if (value === null || value === undefined) return '—';
+    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+    return value;
   }
 
   getFormControlAt(index: number): FormControl {
-    return this.termsFormArray.at(index) as FormControl;
+    // return this.termsFormArray.at(index) as FormControl;
+    return this.formArray.at(index) as FormControl;
   }
 
   get termsFormArray(): FormArray {
     return this.form.get('terms') as FormArray;
   }
 
-  //Get Tnc in db
   getTermsandConditions(){
-
-    const tncExist = this.store.selectSnapshot(PolicyPurchaseState.getTermsAndConditions);
-
-    if(!tncExist || tncExist.length === 0){
-      this.store.dispatch(new GetTermsAndConditions()).subscribe(()=>{
-        this.termsAndConditions=this.store.selectSnapshot(PolicyPurchaseState.getTermsAndConditions);
-      })
-    }else{
-      this.termsAndConditions = tncExist;
-    }
-
+    this.termsAndConditions = this.store.selectSnapshot(PolicyPurchaseState.getTermsAndConditions);
     this.formArray.clear();
 
     this.termsAndConditions.forEach(term => {
@@ -193,11 +153,11 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     });
 
     this.formArray.push(new FormControl(false, Validators.requiredTrue));
-
   }
 
-  sanitizeHtml(content: string) {
-    return this.sanitizer.bypassSecurityTrustHtml(content);
+  sanitizeHtml(html: string): SafeHtml {
+    const cleanedHtml: string = html.replace(/<strong>Yes<\/strong>/gi, '');
+    return this.sanitizer.bypassSecurityTrustHtml(cleanedHtml);
   }
 
   onSubmit(){
@@ -218,22 +178,53 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
 
     console.log('Form submitted:', result);
 
-    //Send Personal Information to Backend
-    // const payload = this.personalInfo
-    // this.policyService.purchasePlan(payload).subscribe({
-    //   next: (res) => {
-    //     this.termsAndConditions = res.data;
-    //     // console.log(this.responseData.length);
-    //return payment ref number
-    //   },
-    //   error: (e) => {
-    //     console.error(e);
-    //     console.log('error');
-    //   }
-    // })
+    const personalDetails = this.store.selectSnapshot(PolicyPurchaseState.getPersonalDetails);
+    const planInfoDto = this.store.selectSnapshot(PolicyPurchaseState.selectedPlan);
+    const referenceNumber = this.store.selectSnapshot(PolicyPurchaseState.getReferenceNumber);
+    const user = this.store.selectSnapshot(UserState.getUser);
+
+    const planInfoWithRef = {
+      ...planInfoDto,
+      referenceNumber,
+    };
+
+    const personDto = {
+      userId: user.userId,
+      ...personalDetails,
+      identificationNo: personalDetails?.idNo,
+      dateOfBirth: this.convertToIsoDate(personalDetails?.dateOfBirth),
+      phoneNo: personalDetails?.mobileNo,
+      cigarettesNo: personalDetails?.cigarettesPerDay,
+      purposeOfTransaction: personalDetails?.transactionPurpose,
+    };
+
+    const payload = {
+      personDto: personDto,
+      planInfoDto: planInfoWithRef,
+    };
+
+    this.policyService.createApplication(payload).subscribe({
+      next: (response: any): void => {
+        // todo BE structure not meet HttpResponseBody requirement
+        this.quotationId = response?.id;
+        this.premiumMode = response?.planResponseDto?.premiumMode;
+        this.duration = this.modeToDurationMap[this.premiumMode];
+      },
+      error: (error): void => {
+        console.error('❌ API call failed:', error);
+      }
+    });
 
     this.OpenModal();
+  }
 
+  convertToIsoDate(dateStr?: string): string | null {
+    if (!dateStr) return null;
+
+    const [day, month, year] = dateStr.split('/');
+    const isoDate = new Date(`${year}-${month}-${day}T00:00:00Z`);
+
+    return isNaN(isoDate.getTime()) ? null : isoDate.toISOString();
   }
 
   OpenModal(): void{
@@ -243,25 +234,28 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
 
     this.modalRef.afterClosed().subscribe((result: MyDialogResult) => {
       this.actionResult = result;
+      const selectedPlan = this.store.selectSnapshot(PolicyPurchaseState.selectedPlan);
 
-      if (result === 'success') {
-        //submit quotation number
-        //status = boolean
-        // this.router.navigate(['/policy-purchase-receipt'], {
-        //   queryParams: { paymentStatus: 1 }
-        // });
-        this.handlePayment('success');
-      } else if (result === 'fail') {
-        // this.router.navigate(['/policy-purchase-receipt'], {
-        //   queryParams: { paymentStatus: 0 }
-        // });
-        this.handlePayment('fail');
+      const payload = {
+        quotationId: this.quotationId,
+        paymentAmount: selectedPlan?.premiumAmount,
+        duration: this.duration,
+        paymentStatus: result.toUpperCase(),
+        planInfo: selectedPlan
       }
-      else{
-        console.log("Unknown result")
-      }
+
+      this.policyService.createPayment(payload).subscribe({
+        next: (response: HttpResponseBody): void => {
+          // const isSuccess: boolean = response?.code === 200 && response?.data;
+          console.log("Response create application api", response);
+        },
+        error: (error): void => {
+          console.error('❌ API call failed:', error);
+        }
+      });
+
+      this.handlePayment(result);
     });
-
   }
 
   closeDialog(result: MyDialogResult): void {

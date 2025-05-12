@@ -1,0 +1,86 @@
+<!--<div nxCol="12,12,12,12" class="policy-servicing-banner">-->
+<!--  <div class="banner-content">-->
+<!--    <div class="banner-title">-->
+<!--      <p>Policies</p>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<div class="profile-background">
+  <div class="overlay"></div>
+  <div class="profile-container">
+    <div nxLayout="grid" class="docs-grid-colored-grid">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol nxBreadcrumb appearance="link">
+          @for (item of breadcrumbs; track item; let i = $index; let isLast = $last) {
+            <li>
+              <a nxBreadcrumbItem [routerLink]="!isLast ? item.link : null" style="color: #666666">
+                {{ item.label }}
+              </a>
+            </li>
+          }
+        </ol>
+      </nav>
+
+      <div nxRow>
+        <div nxCol="12" class="docs-grid-colored-col" style="color: #666666">
+          <h1 >
+            {{ policyDetails.companyName }}
+            <span>
+              <nx-badge class="badge-green">{{ policyDetails.status }}</nx-badge>
+            </span>
+          </h1>
+          <div class="sub-heading" style="color: #666666; font-size: 1.4rem;">
+            {{ policyDetails.subCompany }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div nxLayout="grid nogutters" class="docs-grid-colored-grid policy-grid">
+      <div nxRow class="policy-row">
+        @for (item of firstRow; track item;) {
+          <div nxCol="2,3" class="docs-grid-colored-col" style="color: #666666; font-size: 1.1rem;">
+            {{ item.label }}
+            <div style="font-size: 1.3rem;">{{ item.value }}</div>
+          </div>
+        }
+      </div>
+
+      <div nxRow class="policy-row">
+        @for (item of secondRow; track item;) {
+          <div nxCol="2,3" class="docs-grid-colored-col" style="color: #666666; font-size: 1.1rem;">
+            {{ item.label }}
+            <div style="font-size: 1.3rem;">{{ item.value }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrapper" style="margin-top: 2rem">
+  <nx-tab-group [(selectedIndex)]="currentIndex">
+    <nx-tab label="Policy Details">
+      <p class="tab__content">
+
+      </p>
+    </nx-tab>
+
+    <nx-tab label="e-Medical Card">
+      <div class="tab__content">
+        <nx-card clickable class="card-background">
+          <div class="card-info">
+            @for (item of cardFields; track item;) {
+              <div class="info-row">
+                <div>{{ item.label }}</div>
+                <div>{{ item.value }}</div>
+              </div>
+            }
+          </div>
+        </nx-card>
+      </div>
+    </nx-tab>
+  </nx-tab-group>
+</div>
+
+<!--</div>-->

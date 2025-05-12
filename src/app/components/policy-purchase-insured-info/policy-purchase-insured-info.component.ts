@@ -7,7 +7,7 @@ import {debounceTime, Subject, takeUntil} from 'rxjs';
 import {nricValidator} from '../../validators/nric.validator';
 import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
 import {PolicyPersonalDetails} from '../../models/policy.model';
-import {SubmitPersonalDetailsInfo} from '../../store/policy/policy-purchase.action';
+import {GetTermsAndConditions, SubmitPersonalDetailsInfo} from '../../store/policy/policy-purchase.action';
 import {NxButtonComponent, NxIconButtonComponent} from '@aposin/ng-aquila/button';
 import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aquila/grid';
 import {NxDropdownComponent, NxDropdownItemComponent} from '@aposin/ng-aquila/dropdown';
@@ -18,6 +18,8 @@ import {NxPopoverComponent, NxPopoverTriggerDirective} from '@aposin/ng-aquila/p
 import {NxStepperPreviousDirective} from '@aposin/ng-aquila/progress-stepper';
 import {NxSwitcherComponent} from '@aposin/ng-aquila/switcher';
 import {NgClass} from '@angular/common';
+import {HttpResponseBody} from '../../models/http-body.model';
+import {PolicyService} from '../../services/policy.service';
 
 @Component({
   selector: 'app-policy-purchase-insured-info',
@@ -50,6 +52,7 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
 
   store: Store = inject(Store);
   formBuilder: FormBuilder = inject(FormBuilder);
+  policyService: PolicyService = inject(PolicyService);
   nricPipe: NricPipe = inject(NricPipe);
 
   personalDetailsForm!: FormGroup;
@@ -66,10 +69,10 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
       { value: 'Mrs', label: 'Mrs' },
     ],
     nationality: [
-      { value: 'MY', label: 'Malaysian' },
+      { value: 'Malaysia', label: 'Malaysia' },
     ],
     countryOfBirth: [
-      { value: 'MY', label: 'Malaysia' },
+      { value: 'Malaysia', label: 'Malaysia' },
     ],
     countryCode: [
       { value: '60', label: '60' },
@@ -211,9 +214,27 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
     return this.store.selectSnapshot(PolicyPurchaseState.getAge);
   }
 
+  getTermsandConditions(): void {
+    this.policyService.getTermsConditions().subscribe({
+      next: (response: HttpResponseBody): void => {
+        const isSuccess: boolean = response?.code === 200 && response?.data;
+        if (isSuccess) {
+          const termsAndConditions = response?.data;
+          this.store.dispatch(new GetTermsAndConditions(termsAndConditions));
+        } else {
+          console.warn('⚠️ API responded with an unexpected status or missing data:', response?.message);
+        }
+      },
+      error: (error): void => {
+        console.error('❌ API call failed:', error);
+      }
+    });
+  }
+
   onSubNext(): void {
     if (this.personalDetailsForm.valid && !this.usPersonError) {
       this.submitForm();
+      this.getTermsandConditions();
       this.nextSubStep();
     } else {
       console.log("Form is invalid, cannot proceed.");

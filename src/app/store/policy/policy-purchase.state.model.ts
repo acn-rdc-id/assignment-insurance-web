@@ -5,9 +5,9 @@ export interface PolicyPurchaseStateModel {
     subSteps: PolicyPurchaseStep[];
     currentMainStep: PolicyPurchaseStep;
     currentSubStep: PolicyPurchaseStep;
-    quotationDetails: PolicyDetails
+    quotationDetails: PolicyDetails;
     plans: PolicyPlanDto[];
-    termsAndConditions: TermsConditions[]
+    termsAndConditions: TermsConditions[];
 }
 
 // export const POLICY_PURCHASE_STATE_DEFAULTS: PolicyPurchaseStateModel = {

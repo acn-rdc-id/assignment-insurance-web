@@ -17,7 +17,7 @@ export class SubmitInitialInfoSuccess {
 
 export class GetTermsAndConditions {
   static readonly type = 'Get Terms And Conditions';
-  constructor(){}
+  constructor(public payload: TermsConditions[]) {}
 }
 
 export class SubmitPersonalDetailsInfo {

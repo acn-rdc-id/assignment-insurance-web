@@ -1,23 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { NxButtonComponent } from '@aposin/ng-aquila/button';
-import {
-  NxDropdownComponent,
-  NxDropdownItemComponent,
-} from '@aposin/ng-aquila/dropdown';
-import {
-  NxFormfieldComponent,
-  NxFormfieldModule,
-  NxFormfieldSuffixDirective,
-} from '@aposin/ng-aquila/formfield';
-import { NxInputDirective } from '@aposin/ng-aquila/input';
+import {Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {NxButtonComponent} from '@aposin/ng-aquila/button';
+import {NxDropdownComponent, NxDropdownItemComponent,} from '@aposin/ng-aquila/dropdown';
+import {NxFormfieldComponent, NxFormfieldModule, NxFormfieldSuffixDirective,} from '@aposin/ng-aquila/formfield';
+import {NxInputDirective} from '@aposin/ng-aquila/input';
 import {
   NxDatefieldDirective,
   NxDatefieldModule,
@@ -25,14 +11,14 @@ import {
   NxDatepickerToggleComponent,
   NxNativeDateModule,
 } from '@aposin/ng-aquila/datefield';
-import { NxErrorComponent } from '@aposin/ng-aquila/base';
-import { Router, RouterModule } from '@angular/router';
-import { Store } from '@ngxs/store';
-import { SubmitInitialInfoSuccess } from '../../store/policy/policy-purchase.action';
-import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
-import { take } from 'rxjs';
-import { PolicyService } from '../../services/policy.service';
-import { NxStepperNextDirective } from '@aposin/ng-aquila/progress-stepper';
+import {NxErrorComponent} from '@aposin/ng-aquila/base';
+import {Router, RouterModule} from '@angular/router';
+import {Store} from '@ngxs/store';
+import {SubmitInitialInfo} from '../../store/policy/policy-purchase.action';
+import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
+import {take} from 'rxjs';
+import {PolicyService} from '../../services/policy.service';
+import {HttpResponseBody} from '../../models/http-body.model';
 
 @Component({
   selector: 'app-policy-purchase-initial-info',
@@ -55,7 +41,7 @@ import { NxStepperNextDirective } from '@aposin/ng-aquila/progress-stepper';
     NxNativeDateModule,
     NxDatepickerComponent,
     RouterModule,
-    NxStepperNextDirective,
+
   ],
   templateUrl: './policy-purchase-initial-info.component.html',
   styleUrl: './policy-purchase-initial-info.component.scss',
@@ -135,124 +121,51 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit {
   onNext(): void {
     this.submitted = true;
 
-    // API implementation
-
-    // if (this.infoForm.valid) {
-    //   const formData = this.infoForm.value;
-
-    //   const payload = {
-    //     gender: formData.gender,
-    //     dateOfBirth: this.formatDate(formData.birthDate)
-    //   };
-
-    //   this.store.dispatch(new SubmitInitialInfo(payload));
-
-    //   console.log('Sending to backend:', formData);
-    // } else {
-    //   this.infoForm.markAllAsTouched();
-    //   console.log('Form is invalid');
-    // }
-
-    // if(this.infoForm.valid) {
-    //   const formData = this.infoForm.value;
-
-    //   const payload = {
-    //     gender: formData.gender,
-    //     dateOfBirth: this.formatDate(formData.dateOfBirth)
-    //   };
-
-    //   this.policyService.getPlans(payload).subscribe(plans => {
-    //       const response = {
-    //         quotationNumber: '',
-    //         plan: undefined,
-    //         personalDetails: {
-    //           gender: payload.gender,
-    //           dateOfBirth: payload.dateOfBirth,
-    //           age: 0,
-    //           title: '',
-    //           fullName: '',
-    //           nationality: '',
-    //           idNo: '',
-    //           otherId: '',
-    //           isUsPerson: false,
-    //           countyOfBirth: '',
-    //           isSmoker: false,
-    //           cigarettesPerDay: 0,
-    //           countryCode: '',
-    //           mobileNo: '',
-    //           occupation: '',
-    //           email: '',
-    //           transactionPurpose: ''
-    //         },
-    //         plans
-    //       };
-
-    //       const response = {
-    //         gender: payload.gender,
-    //         dateOfBirth: payload.dateOfBirth
-    //       }
-
-    //       this.store.dispatch(new SubmitInitialInfo(response));
-    //       this.router.navigate(['/policy-purchase-plan']);
-    //     });
-    //   } else {
-    //     this.infoForm.markAllAsTouched();
-    //     console.log('Form is invalid');
-    //   }
-
-    if (this.infoForm.valid) {
-      const mockResponse = {
-        quotationNumber: 'Q270178334',
-        plan: undefined,
-        personalDetails: {
-          gender: this.infoForm.value.gender,
-          dateOfBirth: this.formatDate(this.infoForm.value.birthDate),
-          age: 25,
-          title: '',
-          fullName: '',
-          nationality: '',
-          idNo: '',
-          otherId: '',
-          isUsPerson: false,
-          countryOfBirth: '',
-          isSmoker: false,
-          cigarettesPerDay: 0,
-          countryCode: '',
-          mobileNo: '',
-          occupation: '',
-          email: '',
-          transactionPurpose: '',
-        },
-        plans: [
-          {
-            planName: 'Plan 200k',
-            sumAssured: 200000,
-            coverageTerm: '20 years',
-            monthlyPremium: 90,
-            yearlyPremium: 1080,
-          },
-          {
-            planName: 'Plan 300k',
-            sumAssured: 300000,
-            coverageTerm: '20 years',
-            monthlyPremium: 135,
-            yearlyPremium: 1620,
-          },
-          {
-            planName: 'Plan 500k',
-            sumAssured: 500000,
-            coverageTerm: '20 years',
-            monthlyPremium: 225,
-            yearlyPremium: 2700,
-          },
-        ],
-      };
-      this.store.dispatch(new SubmitInitialInfoSuccess(mockResponse));
-      this.nextStep();
-    } else {
+    if (!this.infoForm.valid) {
       this.infoForm.markAllAsTouched();
-      console.log('Form is invalid');
+      console.warn('⚠️ Form is invalid');
+      return;
     }
+
+    const formValues = this.infoForm.value;
+
+    const requestPayload = {
+      gender: formValues.gender.toUpperCase(),
+      dateOfBirth: this.formatDate(formValues.birthDate)
+    };
+
+    this.policyService.getPlans(requestPayload).subscribe({
+      next: (response: HttpResponseBody): void => {
+        const isSuccess: boolean = response?.code === 200 && response?.data;
+
+        if (isSuccess) {
+          const initialInfo = {
+            age: response.data.ageNearestBirthday,
+            dateOfBirth: response.data.dateOfBirth,
+            gender: this.formatCamelCase(response.data.gender),
+            referenceNumber: response.data.referenceNumber,
+            plans: response.data.plans
+          };
+
+          this.store.dispatch(new SubmitInitialInfo(initialInfo));
+          this.nextStep();
+        } else {
+          console.warn('⚠️ API responded with an unexpected status or missing data:', response?.message);
+        }
+      },
+      error: (error): void => {
+        console.error('❌ API call failed:', error);
+      }
+    });
+  }
+
+  formatCamelCase(path: string): string {
+    return path
+      .split('-')
+      .map((word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      })
+      .join(' ');
   }
 
   formatDate(date: Date): string {

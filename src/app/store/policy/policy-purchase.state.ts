@@ -1,5 +1,5 @@
 import {Action, Selector, State, StateContext} from '@ngxs/store';
-import {inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
   GetTermsAndConditions,
   SelectPlan,
@@ -10,8 +10,6 @@ import {
   SubmitPolicyPurchaseSubStep
 } from './policy-purchase.action';
 import {POLICY_PURCHASE_STATE_DEFAULTS, PolicyPurchaseStateModel} from './policy-purchase.state.model';
-import {PolicyService} from '../../services/policy.service';
-import {map} from 'rxjs';
 import {PolicyDetails, PolicyPersonalDetails, PolicyPurchaseStep} from '../../models/policy.model';
 
 @State<PolicyPurchaseStateModel>({
@@ -21,8 +19,6 @@ import {PolicyDetails, PolicyPersonalDetails, PolicyPurchaseStep} from '../../mo
 
 @Injectable()
 export class PolicyPurchaseState {
-  private policyService = inject(PolicyService);
-
   @Selector()
   static getGender(state: PolicyPurchaseStateModel): string | undefined {
     return state.quotationDetails.personalDetails?.gender
@@ -88,13 +84,22 @@ export class PolicyPurchaseState {
 
   @Action(SubmitInitialInfo)
   submitInitialInfo(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: SubmitInitialInfo) {
-    return this.policyService.getPlans(payload).pipe(
-      map(response => {
-        // ctx.setState({
-        //   ...response,
-        // });
-      })
-    );
+    const state: PolicyPurchaseStateModel = ctx.getState();
+
+    const quotationDetails: PolicyDetails = {
+      quotationNumber: payload.referenceNumber,
+      personalDetails: {
+        age: payload.age,
+        dateOfBirth: payload.dateOfBirth,
+        gender:  payload.gender,
+      }
+    };
+
+    ctx.setState({
+      ...state,
+      quotationDetails: quotationDetails,
+      plans: payload.plans || []
+    });
   }
 
   @Action(SubmitInitialInfoSuccess)
@@ -219,44 +224,12 @@ export class PolicyPurchaseState {
   }
 
   @Action(GetTermsAndConditions)
-  setTermsAndConditions({getState, patchState}: StateContext<GetTermsAndConditions> ){
-    const state = getState();
-    return patchState({ termsAndConditions: this.tableElements1 })
-    // return this.policyService.getTermsConditions().pipe(
-    //   map(res =>{
-    //     console.log("result:: ", res)
-    //     patchState(
-    //       {
-    //         termsAndConditions:res.data.termsAndConditions
-    //     })
-    //   })
-    // )
+  setTermsAndConditions(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: GetTermsAndConditions) {
+    const state = ctx.getState();
 
+    ctx.setState({
+      ...state,
+      termsAndConditions: payload || []
+    });
   }
-
-  tableElements1 = [{
-    id: 1,
-    termsHtml: `<p>Are you aware that this product pays out benefits:</p>
-  <p>&emsp;(i)  Upon Death. / Selepas Kematian.</p>
-  <p>&emsp;(ii) Upon Total and Permanent Disability (TPD). / Selepas Hilang Upaya Menyeluruh dan Kekal (TPD).</p>`,
-  isRequired: 1
-
-  },
-  {
-    id: 2,
-    termsHtml: `<p>Are you aware that this product does not pay out benefits:</p>
-  <p>&emsp;(i) In the event of death caused by suicide within 1 year from policy issue date.</p>
-  <p>&emsp;(ii) In the event of TPD caused by attempting suicide or self-inflicted bodily injuries while sane or insane.</p>
-  <p>&emsp;(iii) In the event of TPD caused by Pre-existing Conditions.</p>`,
-    isRequired: 0
-  },
-  {
-    id: 3,
-    termsHtml: `<p>Are you aware that:</p>
-  <p>&emsp;(i) If you change your mind, you have 15 days to return the policy from the date you receive the policy and you can obtain a refund.</p>
-  <p>&emsp;(ii) You can nominate your beneficiaries in the policy servicing (you may wish to inform them about the policy to make payment of future claims easier)</p>`,
-  isRequired: 1
-  },
-];
-
 }

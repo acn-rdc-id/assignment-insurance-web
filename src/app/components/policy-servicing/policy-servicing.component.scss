@@ -1,0 +1,80 @@
+$primary-color: grey;
+$badge-green-color: #28a745;
+$text-color: #333;
+$banner-height: 700px;
+$font-size-large: 45px;
+$line-height-tight: 1.2;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.policy-servicing-banner {
+  height: $banner-height;
+  color: $text-color;
+  display: flex;
+  justify-content: center;
+  background-size: cover;
+  background-image: url('../../../assets/content-bg.jpg');
+}
+
+.banner-content {
+  position: absolute;
+  text-align: center;
+  color: white;
+  padding: 20px;
+  margin-top: 1rem;
+}
+
+.banner-title {
+  font-size: $font-size-large;
+  line-height: $line-height-tight;
+  margin: 0;
+  color: $text-color;
+}
+
+.tab-content {
+  padding-top: 7rem;
+
+  p {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-size: 1.4rem;
+  }
+}
+
+.scroll-container {
+  overflow-x: auto;
+  display: block;
+}
+
+thead {
+  background-color: #f4f4f4;
+}
+
+tr th {
+  color: $primary-color;;
+  font-weight: bold;
+}
+
+tr td {
+  color: $primary-color;
+}
+
+tbody tr:hover {
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+
+.badge-green {
+  background-color: $badge-green-color;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+}

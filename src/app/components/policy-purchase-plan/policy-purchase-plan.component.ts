@@ -9,8 +9,6 @@ import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
 import {PolicyPlan, PolicyPlanDto} from '../../models/policy.model';
 import {SelectPlan} from '../../store/policy/policy-purchase.action';
 import {CommonModule} from '@angular/common';
-import {Router} from '@angular/router';
-import {NxStepperNextDirective, NxStepperPreviousDirective} from '@aposin/ng-aquila/progress-stepper';
 import {NxButtonComponent} from '@aposin/ng-aquila/button';
 import { QuotationSummaryComponent } from '../quotation-summary/quotation-summary.component';
 
@@ -24,9 +22,7 @@ import { QuotationSummaryComponent } from '../quotation-summary/quotation-summar
     NxRadioModule,
     ReactiveFormsModule,
     CommonModule,
-    NxStepperNextDirective,
     NxButtonComponent,
-    NxStepperPreviousDirective,
     NxButtonComponent,
     QuotationSummaryComponent
   ],
@@ -43,10 +39,10 @@ export class PolicyPurchasePlanComponent implements OnInit {
   selectedPlan$: Observable<PolicyPlan | undefined> | undefined;
 
   infoForm!: FormGroup;
-  selectedPlan: any; 
+  selectedPlan: any;
   latestPlan!: PolicyPlan | undefined;
 
-  constructor(private fb: FormBuilder, private store: Store, private router: Router) {}
+  constructor(private fb: FormBuilder, private store: Store) {}
 
   ngOnInit(): void {
     this.infoForm = this.fb.group({
@@ -78,7 +74,7 @@ export class PolicyPurchasePlanComponent implements OnInit {
   //   console.log('Dispatching selected plans: ', selectedPlan);
   //   this.store.dispatch(new SelectPlan(selectedPlan));
   // }
-  
+
   onPaymentPeriodChange(newPeriod: string) {
     this.infoForm.patchValue({ paymentPeriod: newPeriod })
   }
@@ -88,15 +84,6 @@ export class PolicyPurchasePlanComponent implements OnInit {
     this.prevStep();
   }
 
-  // onNext(): void {
-  //   if (!this.infoForm.value.planSelection){
-  //     console.warn("No plan selected");
-  //     return;
-  //   }
-  //   console.log("Proceeding with plan: ", this.infoForm.value.planSelection);
-  //   this.router.navigate(['/policy-purchase-initial-info']);
-  // }
-
   onNext(): void {
     this.nextStep();
     if (!this.infoForm.value.planSelection){
@@ -104,7 +91,6 @@ export class PolicyPurchasePlanComponent implements OnInit {
       return;
     }
     console.log("Proceeding with plan: ", this.infoForm.value.planSelection);
-    // this.router.navigate(['/policy-purchase-initial-info']);
 
     const selectedPlanName = this.infoForm.value.planSelection;
     const paymentPeriod  = this.infoForm.value.paymentPeriod;
@@ -136,22 +122,17 @@ export class PolicyPurchasePlanComponent implements OnInit {
       }
 
       const selectedPlan: PolicyPlan = {
+        id: matchedPlan.id,
         planName: matchedPlan.planName,
         sumAssured: matchedPlan.sumAssured,
         coverageTerm: matchedPlan.coverageTerm,
-        premiumAmount: paymentPeriod === 'monthly' ? matchedPlan.monthlyPremium : matchedPlan.yearlyPremium, 
-        paymentPeriod
+        premiumAmount: paymentPeriod === 'monthly' ? matchedPlan.monthlyPremium : matchedPlan.yearlyPremium,
+        premiumMode: paymentPeriod === 'monthly' ? "MONTHLY" : "YEARLY",
       };
 
       this.store.dispatch(new SelectPlan(selectedPlan));
       console.log('Dispatch selected plan', selectedPlan);
-
-      // this.router.navigate(['policy-initial-info']);
     })
-  }
-
-  goBack() {
-    this.router.navigate(['/policy-purchase']);
   }
 
   // onPlanSelect(plan: PolicyPlanDto) {

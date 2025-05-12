@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpContext } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { HttpResponseBody } from '../models/http-body.model';
-import { PolicyDetails, PolicyPlanDto, PolicySummary } from '../models/policy.model';
-import { environment } from '../../environments/environment';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {HttpResponseBody} from '../models/http-body.model';
+import {PolicySummary} from '../models/policy.model';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,19 +14,24 @@ export class PolicyService {
 
   constructor() {}
 
-  getPlans(payload: any): Observable<HttpResponseBody[]> {
-    return this.http.post<HttpResponseBody[]>(this.apiUrl + 'plan/get-quotationPlan', payload);
+  getPlans(payload: any): Observable<HttpResponseBody> {
+    return this.http.post<HttpResponseBody>(this.apiUrl + 'plan/get-quotation-plan', payload);
   }
 
   getTermsConditions(): Observable<HttpResponseBody> {
-    return this.http
-      .get<HttpResponseBody>(this.apiUrl + 'terms');
+    return this.http.get<HttpResponseBody>(this.apiUrl + 'terms');
   }
 
-  purchasePlan(payload: PolicySummary): 
-  Observable<HttpResponseBody> {
-    const httpContext = new HttpContext();
-    return this.http.post<HttpResponseBody>(`${this.apiUrl}/purchase-plans`, payload, { context: httpContext });
+  createApplication(payload: any): Observable<HttpResponseBody> {
+    const userId: string = payload.personDto?.userId ?? '';
+    const headers = new HttpHeaders({
+      'userId': userId
+    });
+    return this.http.post<HttpResponseBody>(this.apiUrl + 'policy/create-application', payload, { headers });
+  }
+
+  createPayment(payload: any): Observable<HttpResponseBody> {
+    return this.http.post<HttpResponseBody>(this.apiUrl + 'payment/handle-payment', payload);
   }
 
   getPolicyDetails(payload: { id: string }): Observable<HttpResponseBody> {
