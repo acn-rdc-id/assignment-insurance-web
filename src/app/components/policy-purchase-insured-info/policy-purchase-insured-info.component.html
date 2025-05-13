@@ -1,10 +1,15 @@
-<form [formGroup]="personalDetailsForm" style="margin-bottom: 2rem">
+@if (submitted && (personalDetailsForm.invalid)) {
+  <nx-error class="nx-margin-bottom-xs">
+    One or more required fields are incomplete or contain errors. Please correct them to continue.
+  </nx-error>
+}
+<form [formGroup]="personalDetailsForm" (ngSubmit)="onSubmit()" style="margin-bottom: 2rem">
   <div nxLayout="list" style="margin-top: 2rem;">
     <div nxRow>
-      <div nxCol="6" class="docs-grid-colored-col" >
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <div nxRow class="docs-grid-colored-row">
-            <div nxCol="6" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield label="Title *" appearance="outline" floatLabel="always">
                 <nx-dropdown formControlName="title">
                   @for (field of FIELD_OPTIONS.title; track field;) {
@@ -13,7 +18,7 @@
                 </nx-dropdown>
               </nx-formfield>
             </div>
-            <div nxCol="6" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield label="Name as per NRIC *" appearance="outline" floatLabel="always">
                 <input nxInput type="text" formControlName="fullName" autocomplete="fullname" />
               </nx-formfield>
@@ -21,15 +26,15 @@
           </div>
         </div>
       </div>
-      <div nxCol="6" class="docs-grid-colored-col" >
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <div nxRow class="docs-grid-colored-row">
-            <div nxCol="6" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield label="Gender *" appearance="outline" floatLabel="always">
                 <input nxInput type="text" [value]="personalDetailsForm.get('gender')?.value" disabled />
               </nx-formfield>
             </div>
-            <div nxCol="6" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield label="Date of Birth *" appearance="outline" floatLabel="always">
                 <input nxInput [value]="personalDetailsForm.get('dateOfBirth')?.value" disabled />
               </nx-formfield>
@@ -39,10 +44,10 @@
       </div>
     </div>
     <div nxRow>
-      <div nxCol="6" class="docs-grid-colored-col" >
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <div nxRow class="docs-grid-colored-row">
-            <div nxCol="6" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield label="Nationality / Citizenship *" appearance="outline" floatLabel="always">
                 <nx-dropdown formControlName="nationality">
                   @for (field of FIELD_OPTIONS.nationality; track field;) {
@@ -51,7 +56,7 @@
                 </nx-dropdown>
               </nx-formfield>
             </div>
-            <div nxCol="6" [ngClass]="{ 'error-border': idNoError }" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" [ngClass]="{ 'error-border': idNoError }" class="docs-grid-colored-col nested">
               <nx-formfield label="NRIC No. *" appearance="outline" floatLabel="always" autocomplete="idNo">
                 <input
                   nxInput
@@ -74,15 +79,15 @@
           </div>
         </div>
       </div>
-      <div nxCol="6" class="docs-grid-colored-col" >
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <div nxRow class="docs-grid-colored-row">
-            <div nxCol="6" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield label="NRIC No. (Old) / Passport No./ OtherID *" appearance="outline" floatLabel="always">
                 <input nxInput type="text" formControlName="otherId" />
               </nx-formfield>
             </div>
-            <div nxCol="6" [ngClass]="{ 'error-border': usPersonError }">
+            <div nxCol="12,12,12,6" [ngClass]="{ 'error-border': usPersonError }">
               <label>U.S Persons</label>
               <button
                 nxFormfieldAppendix
@@ -122,7 +127,7 @@
       </div>
     </div>
     <div nxRow>
-      <div nxCol="6" class="docs-grid-colored-col" >
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <nx-formfield
             label="Country of Birth *"
@@ -137,11 +142,11 @@
           </nx-formfield>
         </div>
       </div>
-      <div nxCol="6" class="docs-grid-colored-col" >
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <div nxRow class="docs-grid-colored-row">
-            <div nxCol="6" class="docs-grid-colored-col nested">
-              <div nxCol="12" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <div nxCol="12,12,12,12" class="docs-grid-colored-col nested">
                 <div>Are you a smoker?</div>
                 <br>
                 <nx-switcher
@@ -150,7 +155,7 @@
                 ></nx-switcher>
               </div>
             </div>
-            <div nxCol="6" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield
                 label="No. of cigarette(s) daily"
                 appearance="outline"
@@ -164,10 +169,10 @@
       </div>
     </div>
     <div nxRow>
-      <div nxCol="6" class="docs-grid-colored-col" >
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <div nxRow class="docs-grid-colored-row">
-            <div nxCol="6" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield
                 label="Country Code"
                 appearance="outline"
@@ -180,7 +185,7 @@
                 </nx-dropdown>
               </nx-formfield>
             </div>
-            <div nxCol="6" class="docs-grid-colored-col nested">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield
                 label="Mobile Number *"
                 appearance="outline"
@@ -193,7 +198,7 @@
           </div>
         </div>
       </div>
-      <div nxCol="6" class="docs-grid-colored-col" >
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <div nxRow class="docs-grid-colored-row">
             <div nxCol="12" class="docs-grid-colored-col nested">
@@ -215,7 +220,7 @@
     </div>
 
     <div nxRow>
-      <div nxCol="6" class="docs-grid-colored-col" [ngClass]="{ 'error-border': emailError }">
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" [ngClass]="{ 'error-border': emailError }">
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <nx-formfield
             label="Email *"
@@ -237,7 +242,7 @@
           </nx-formfield>
         </div>
       </div>
-      <div nxCol="6" class="docs-grid-colored-col" >
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <div nxRow class="docs-grid-colored-row">
             <div nxCol="12" class="docs-grid-colored-col nested">
@@ -259,7 +264,7 @@
     </div>
 
     <div nxRow>
-      <div nxCol="12" class="docs-grid-colored-col" style="margin-top: 1rem;">
+      <div nxCol="12" class="docs-grid-colored-col display-button" style="margin-top: 1rem;">
         <button
           nxButton="primary medium"
           nxStepperPrevious
@@ -267,12 +272,10 @@
           style="margin-right: 1rem;"
           (click)="onBack()"
         >Back</button>
-        <button
-          nxButton="primary medium"
-          type="button"
-          (click)="onSubNext()"
-          [disabled]="personalDetailsForm.invalid || personalDetailsForm.get('isUsPerson')?.value === true"
-        >Next</button>
+        <button nxButton="danger" type="submit" >
+          <nx-icon name="arrow-right" nxIconPositionEnd aria-hidden="true"></nx-icon>
+          Next
+        </button>
       </div>
     </div>
   </div>

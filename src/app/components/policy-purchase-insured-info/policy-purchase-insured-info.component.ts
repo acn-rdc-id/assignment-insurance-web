@@ -20,6 +20,7 @@ import {NxSwitcherComponent} from '@aposin/ng-aquila/switcher';
 import {NgClass} from '@angular/common';
 import {HttpResponseBody} from '../../models/http-body.model';
 import {PolicyService} from '../../services/policy.service';
+import {NxErrorComponent} from '@aposin/ng-aquila/base';
 
 @Component({
   selector: 'app-policy-purchase-insured-info',
@@ -40,7 +41,8 @@ import {PolicyService} from '../../services/policy.service';
     NxSwitcherComponent,
     NxPopoverComponent,
     NxPopoverTriggerDirective,
-    NgClass
+    NgClass,
+    NxErrorComponent
   ],
   providers: [NricPipe],
   templateUrl: './policy-purchase-insured-info.component.html',
@@ -62,6 +64,7 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
   usPersonError: boolean = false;
   emailError: boolean = false;
   idNoError: boolean = false;
+  submitted = false;
 
   FIELD_OPTIONS = {
     title: [
@@ -232,13 +235,17 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSubNext(): void {
-    if (this.personalDetailsForm.valid && !this.usPersonError) {
-      this.submitForm();
-      this.getTermsandConditions();
-    } else {
+  onSubmit(): void{
+    this.submitted = true;
+
+    if (this.personalDetailsForm.invalid) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       console.log("Form is invalid, cannot proceed.");
+      return;
     }
+
+    this.submitForm();
+    this.getTermsandConditions();
   }
 
   submitForm(): void {

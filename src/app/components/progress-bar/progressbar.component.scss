@@ -1,13 +1,15 @@
 .progress-container {
+    margin: 0.5rem;
+    padding-bottom: 1rem;
     position: relative;
     width: 100%;
   }
-  
+
   .progress-bar {
     width: 100%;
     color: white;
   }
-  
+
   .progress-text {
     position: absolute;
     left: 0;
