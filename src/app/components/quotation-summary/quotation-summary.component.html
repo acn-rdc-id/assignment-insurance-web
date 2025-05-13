@@ -1,19 +1,10 @@
 <table nxTable class="info_table">
-  @for (item of quotationSummary; track $index) {
-    @if ($index === 0) {
-      <tr nxTableRow class="text-red summary-row">
-        <td colspan="2"><b>{{ item.title }}</b></td>
-      </tr>
-    } @else if ($index === quotationSummary.length - 1) {
-      <tr nxTableRow class="text-red summary-last">
-        <td><b>{{ item.title }}</b></td>
-        <td class="text-right"><b>{{ item.desc }}</b></td>
-      </tr>
-    } @else {
-      <tr nxTableRow class="text-gray summary-row">
-        <td>{{ item.title }}</td>
-        <td class="text-right">{{ item.desc }}</td>
+  <tbody>
+    @for (item of quotationSummary; track $index) {
+      <tr nxTableRow [class.premium-row]="item.title === 'Premium Payable'">
+        <td nxTableCell>{{ item.title }}</td>
+        <td nxTableCell>{{ item.desc }}</td>
       </tr>
     }
-  }
+  </tbody>
 </table>

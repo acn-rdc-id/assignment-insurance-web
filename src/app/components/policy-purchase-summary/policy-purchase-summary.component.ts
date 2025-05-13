@@ -3,7 +3,6 @@ import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aqui
 import {CommonModule} from '@angular/common';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {NxTableCellComponent, NxTableComponent, NxTableRowComponent,} from '@aposin/ng-aquila/table';
-import {TermsConditions} from '../../models/policy.model';
 import {Store} from '@ngxs/store';
 import {NxCheckboxComponent} from '@aposin/ng-aquila/checkbox';
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -16,6 +15,7 @@ import {PolicyService} from '../../services/policy.service';
 import {HttpResponseBody} from '../../models/http-body.model';
 import {UserState} from '../../store/user/user.state';
 import {QuotationSummaryComponent} from '../quotation-summary/quotation-summary.component';
+import {NxErrorComponent} from '@aposin/ng-aquila/base';
 
 type MyDialogResult = 'success' | 'failed';
 
@@ -34,7 +34,8 @@ type MyDialogResult = 'success' | 'failed';
     NxButtonComponent,
     NxIconComponent,
     NxModalCloseDirective,
-    QuotationSummaryComponent
+    QuotationSummaryComponent,
+    NxErrorComponent
   ],
   templateUrl: './policy-purchase-summary.component.html',
   styleUrl: './policy-purchase-summary.component.scss'
@@ -46,9 +47,9 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   quotationId: number = 0;
   premiumMode: string = "";
   duration: number = 0;
-  planInfo = "";
+  submitted: boolean = false;
   finalConfirmation: FormControl<boolean | null> | undefined;
-  termsAndConditions:Array<TermsConditions> = [];
+  termsAndConditions: any[] = [];
   displayPersonalInfo: any[] = [];
 
   form: FormGroup;
@@ -128,7 +129,6 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   }
 
   getFormControlAt(index: number): FormControl {
-    // return this.termsFormArray.at(index) as FormControl;
     return this.formArray.at(index) as FormControl;
   }
 
@@ -136,22 +136,50 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     return this.form.get('terms') as FormArray;
   }
 
-  loadTermsAndConditions(){
-    this.termsAndConditions = this.store.selectSnapshot(PolicyPurchaseState.getTermsAndConditions);
-    this.formArray.clear();
+  loadTermsAndConditions(): void {
+    const termsList = this.store.selectSnapshot(PolicyPurchaseState.getTermsAndConditions);
+    if (!termsList?.length || !termsList[0].termsHtml) return;
 
-    this.termsAndConditions.forEach(term => {
-      const control = term.isRequired === 1
-        ? new FormControl(false, Validators.requiredTrue)
-        : new FormControl(false);
-      this.formArray.push(control);
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = termsList[0].termsHtml;
+
+    const ol = wrapper.querySelector('ol');
+    if (!ol) {
+      console.warn('⚠️ No <ol> found in terms HTML.');
+      return;
+    }
+
+    const liNodes = ol.querySelectorAll(':scope > li');
+    if (!liNodes.length) {
+      console.warn('⚠️ No <li> inside <ol>.');
+      return;
+    }
+
+    this.termsAndConditions = Array.from(liNodes).map((li, index) => {
+      const cleanedContent = li.innerHTML
+        // .replace(/<\/?(ul|ol)>/gi, '')
+        .trim();
+
+      return {
+        id: index + 1,
+        termsHtml: cleanedContent,
+        isRequired: true,
+      };
     });
+
+    this.formArray.clear();
+    this.termsAndConditions.forEach(term =>
+      this.formArray.push(
+        new FormControl(false, term.isRequired ? Validators.requiredTrue : [])
+      )
+    );
 
     this.formArray.push(new FormControl(false, Validators.requiredTrue));
   }
 
   sanitizeHtml(html: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    const cleanedHtml = html.replace(/<strong>Yes<\/strong>/gi, '');
+    return this.sanitizer.bypassSecurityTrustHtml(cleanedHtml);
   }
 
   hasUncheckedRequiredTerms(): boolean {
@@ -161,8 +189,10 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
   }
 
   onSubmit(): void{
+    this.submitted = true;
+
     if (this.form.invalid || this.hasUncheckedRequiredTerms()) {
-      alert('Please check all required boxes!');
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       return;
     }
 
@@ -257,10 +287,6 @@ export class PolicyPurchaseSummaryComponent implements OnInit {
     this.paymentResult.emit(this.paymentStatus);
     this.nextSubStep();
   }
-
-  closeDialog(result: MyDialogResult): void {
-    this.modalRef.close(result);
-}
 
   onBack(): void {
     this.prevSubStep();

@@ -9,6 +9,7 @@ export const SUMMARY_FORM_LABELS: Record<string, string> = {
   isUsPerson: 'U.S. Person',
   email: 'Email Address',
   isSmoker: 'Smoker',
+  mobileNo: 'Mobile Number',
   occupation: 'Occupation',
   transactionPurpose: 'Purpose of Transaction',
 };
@@ -23,6 +24,7 @@ export const SUMMARY_FORM_ORDERS = [
   'countryOfBirth',
   'isUsPerson',
   'email',
+  'isSmoker',
   'mobileNo',
   'occupation',
   'transactionPurpose'
