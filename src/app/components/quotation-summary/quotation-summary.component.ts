@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, Input, OnInit, OnChanges} from '@angular/core';
 import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
 import {Store} from '@ngxs/store';
 import {
@@ -18,7 +18,11 @@ import {NxLinkComponent} from '@aposin/ng-aquila/link';
   templateUrl: './quotation-summary.component.html',
   styleUrl: './quotation-summary.component.scss'
 })
-export class QuotationSummaryComponent implements OnInit {
+
+export class QuotationSummaryComponent implements OnInit, OnChanges {
+  @Input() quotation: PolicyDetails | null = null;
+  @Input() paymentMode: string = '';
+
   store: Store = inject(Store);
   quotationSummary: Array<{ title: string; desc: string }> = [];
 
@@ -38,21 +42,31 @@ export class QuotationSummaryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const quotation: PolicyDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
+    if (!this.quotation) {
+      this.quotation = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
+      this.ngOnChanges();
+    }
+  }
 
-    if (!quotation) return;
-    const mode:string = quotation.plan?.premiumMode ?? '';
+  ngOnChanges(): void {
+    // const quotation: PolicyDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
+
+    // if (!quotation) return;
+    // const mode:string = quotation.plan?.premiumMode ?? '';
+    if (!this.quotation) return;
+
+    const mode = this.quotation.plan?.premiumMode ?? this.paymentMode;
 
     this.quotationSummary = [
       {title: 'Plan Information Summary', desc: ''},
-      {title: 'Reference Number', desc: quotation.quotationNumber ?? '—'},
-      {title: 'Gender', desc: quotation.personalDetails?.gender ?? '—'},
-      {title: 'Date of Birth', desc: quotation.personalDetails?.dateOfBirth ?? '—'},
-      {title: 'Age Nearest Birthday', desc: quotation.personalDetails?.age?.toString() ?? '—'},
-      {title: 'Selected Plan', desc: quotation.plan?.planName ?? '—'},
+      {title: 'Reference Number', desc: this.quotation.quotationNumber ?? '—'},
+      {title: 'Gender', desc: this.quotation.personalDetails?.gender ?? '—'},
+      {title: 'Date of Birth', desc: this.quotation.personalDetails?.dateOfBirth ?? '—'},
+      {title: 'Age Nearest Birthday', desc: this.quotation.personalDetails?.age?.toString() ?? '—'},
+      {title: 'Selected Plan', desc: this.quotation.plan?.planName ?? '—'}, //
       {title: 'Premium Mode', desc: this.formatCamelCase(mode) ?? '—'},
-      {title: 'Coverage Term', desc: quotation.plan?.coverageTerm ?? '—'},
-      {title: 'Premium Payable', desc: this.formatPremium(quotation.plan?.premiumAmount, mode)},
+      {title: 'Coverage Term', desc: this.quotation.plan?.coverageTerm ?? '—'}, //
+      {title: 'Premium Payable', desc: this.formatPremium(this.quotation.plan?.premiumAmount, mode)}, //
     ];
   }
 }
