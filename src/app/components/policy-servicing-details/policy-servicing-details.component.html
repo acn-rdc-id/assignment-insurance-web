@@ -1,10 +1,3 @@
-<!--<div nxCol="12,12,12,12" class="policy-servicing-banner">-->
-<!--  <div class="banner-content">-->
-<!--    <div class="banner-title">-->
-<!--      <p>Policies</p>-->
-<!--    </div>-->
-<!--  </div>-->
-
 <div class="profile-background">
   <div class="overlay"></div>
   <div class="profile-container">
@@ -62,25 +55,35 @@
   <nx-tab-group [(selectedIndex)]="currentIndex">
     <nx-tab label="Policy Details">
       <p class="tab__content">
+        <nx-accordion>
+          <nx-expansion-panel
+            [scrollIntoViewActive]="scrollIntoViewActive"
+            [scrollIntoViewOptions]="scrollIntoViewOptions"
+          >
+            <nx-expansion-panel-header>
+              <nx-expansion-panel-title
+              >Insured Info</nx-expansion-panel-title
+              >
+            </nx-expansion-panel-header>
+            <h2 nxHeadline="subsection-medium" class="nx-margin-bottom-2m">
 
+            </h2>
+            <p nxCopytext="normal">Lorem ipsum</p>
+          </nx-expansion-panel>
+          <nx-expansion-panel
+            [scrollIntoViewActive]="scrollIntoViewActive"
+            [scrollIntoViewOptions]="scrollIntoViewOptions"
+          >
+            <nx-expansion-panel-header>
+              <nx-expansion-panel-title>Beneficiary</nx-expansion-panel-title>
+            </nx-expansion-panel-header>
+            <h2 nxHeadline="subsection-small" class="nx-margin-bottom-2m">
+
+            </h2>
+            <p nxCopytext="normal">Lorem ipsum</p>
+          </nx-expansion-panel>
+        </nx-accordion>
       </p>
-    </nx-tab>
-
-    <nx-tab label="e-Medical Card">
-      <div class="tab__content">
-        <nx-card clickable class="card-background">
-          <div class="card-info">
-            @for (item of cardFields; track item;) {
-              <div class="info-row">
-                <div>{{ item.label }}</div>
-                <div>{{ item.value }}</div>
-              </div>
-            }
-          </div>
-        </nx-card>
-      </div>
     </nx-tab>
   </nx-tab-group>
 </div>
-
-<!--</div>-->

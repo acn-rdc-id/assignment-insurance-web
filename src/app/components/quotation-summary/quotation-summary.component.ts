@@ -1,20 +1,14 @@
 import {CommonModule} from '@angular/common';
-import {Component, inject, Input, OnInit, OnChanges} from '@angular/core';
+import {Component, inject, Input, OnChanges, OnInit} from '@angular/core';
 import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
 import {Store} from '@ngxs/store';
-import {
-  NxHeaderCellDirective,
-  NxTableCellComponent,
-  NxTableComponent,
-  NxTableRowComponent
-} from '@aposin/ng-aquila/table';
+import {NxTableCellComponent, NxTableComponent, NxTableRowComponent} from '@aposin/ng-aquila/table';
 import {PolicyDetails} from '../../models/policy.model';
-import {NxBadgeComponent} from '@aposin/ng-aquila/badge';
-import {NxLinkComponent} from '@aposin/ng-aquila/link';
+import {formatCamelCase, formatPremium} from '../../utils/string-utils';
 
 @Component({
   selector: 'app-quotation-summary',
-  imports: [CommonModule, NxTableComponent, NxTableComponent, NxTableRowComponent, NxTableCellComponent, NxBadgeComponent, NxLinkComponent, NxHeaderCellDirective],
+  imports: [CommonModule, NxTableComponent, NxTableComponent, NxTableRowComponent, NxTableCellComponent],
   templateUrl: './quotation-summary.component.html',
   styleUrl: './quotation-summary.component.scss'
 })
@@ -25,21 +19,6 @@ export class QuotationSummaryComponent implements OnInit, OnChanges {
 
   store: Store = inject(Store);
   quotationSummary: Array<{ title: string; desc: string }> = [];
-
-  formatPremium(amount?: number, mode: string = ''): string {
-    if (!amount) return '—';
-    const normalizedMode = mode.toLowerCase();
-    return `RM ${amount} / ${normalizedMode}`;
-  }
-
-  formatCamelCase(path: string): string {
-    return path
-      .split('-')
-      .map((word) => {
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-      })
-      .join(' ');
-  }
 
   ngOnInit(): void {
     if (!this.quotation) {
@@ -64,9 +43,9 @@ export class QuotationSummaryComponent implements OnInit, OnChanges {
       {title: 'Date of Birth', desc: this.quotation.personalDetails?.dateOfBirth ?? '—'},
       {title: 'Age Nearest Birthday', desc: this.quotation.personalDetails?.age?.toString() ?? '—'},
       {title: 'Selected Plan', desc: this.quotation.plan?.planName ?? '—'}, //
-      {title: 'Premium Mode', desc: this.formatCamelCase(mode) ?? '—'},
+      {title: 'Premium Mode', desc: formatCamelCase(mode) ?? '—'},
       {title: 'Coverage Term', desc: this.quotation.plan?.coverageTerm ?? '—'}, //
-      {title: 'Premium Payable', desc: this.formatPremium(this.quotation.plan?.premiumAmount, mode)}, //
+      {title: 'Premium Payable', desc: formatPremium(this.quotation.plan?.premiumAmount, mode)}, //
     ];
   }
 }
