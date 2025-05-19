@@ -19,6 +19,7 @@ import {
 } from '../policy-purchase-insured-info/policy-purchase-insured-info.component';
 import {PolicyPurchaseReceiptComponent} from '../policy-purchase-receipt/policy-purchase-receipt.component';
 import {NgClass} from '@angular/common';
+import {formatCamelCase} from '../../utils/string-utils';
 
 @Component({
   selector: 'app-policy-purchase',
@@ -79,15 +80,6 @@ export class PolicyPurchaseComponent implements OnInit {
     this.paymentStatus = status;
   }
 
-  formatCamelCase(path: string): string {
-    return path
-      .split('-')
-      .map((word) => {
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-      })
-      .join(' ');
-  }
-
   ngOnInit(): void {
     this.initSteps();
   }
@@ -131,4 +123,6 @@ export class PolicyPurchaseComponent implements OnInit {
       this.currentSubStep--;
     }
   }
+
+  protected readonly formatCamelCase = formatCamelCase;
 }

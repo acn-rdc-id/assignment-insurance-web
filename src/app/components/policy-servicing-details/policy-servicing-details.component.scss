@@ -24,9 +24,7 @@ $line-height-tight: 1.2;
 }
 
 .page-wrapper {
-  display: flex;
   justify-content: center;
-  padding: 0 1rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -42,17 +40,6 @@ $line-height-tight: 1.2;
   background-position: center;
   background-repeat: no-repeat;
   padding: 2rem 0;
-}
-
-.card-background {
-  position: relative;
-  width: 130%;
-  padding: 2rem 0;
-  background-image: url('../../../assets/e-medical-card-mi-care.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  overflow: hidden;
 }
 
 .card-info {

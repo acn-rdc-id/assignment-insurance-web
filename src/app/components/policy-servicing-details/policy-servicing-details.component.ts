@@ -4,10 +4,17 @@ import {NxBreadcrumbComponent, NxBreadcrumbItemComponent} from '@aposin/ng-aquil
 import {RouterLink} from '@angular/router';
 import {NxBadgeComponent} from '@aposin/ng-aquila/badge';
 import {NxTabComponent, NxTabGroupComponent} from '@aposin/ng-aquila/tabs';
-import {NxCardComponent} from '@aposin/ng-aquila/card';
 import {PolicyDetails} from '../../models/policy.model';
 import {PolicyProductState} from '../../store/policy-product/policy-product.state';
 import {Store} from '@ngxs/store';
+import {
+  NxAccordionDirective,
+  NxExpansionPanelComponent,
+  NxExpansionPanelHeaderComponent,
+  NxExpansionPanelTitleDirective
+} from '@aposin/ng-aquila/accordion';
+import {NxHeadlineComponent} from '@aposin/ng-aquila/headline';
+import {NxCopytextComponent} from '@aposin/ng-aquila/copytext';
 
 @Component({
   selector: 'app-policy-servicing-details',
@@ -21,7 +28,12 @@ import {Store} from '@ngxs/store';
     NxBadgeComponent,
     NxTabGroupComponent,
     NxTabComponent,
-    NxCardComponent
+    NxAccordionDirective,
+    NxExpansionPanelComponent,
+    NxExpansionPanelHeaderComponent,
+    NxExpansionPanelTitleDirective,
+    NxHeadlineComponent,
+    NxCopytextComponent
   ],
   templateUrl: './policy-servicing-details.component.html',
   styleUrl: './policy-servicing-details.component.scss'
@@ -61,6 +73,12 @@ export class PolicyServicingDetailsComponent implements OnInit {
   ];
 
   store: Store = inject(Store);
+
+  scrollIntoViewActive = true;
+
+  scrollIntoViewOptions: ScrollIntoViewOptions = {
+    behavior: 'smooth',
+  };
 
   ngOnInit(): void {
     const policyDetails: PolicyDetails[] = this.store.selectSnapshot(PolicyProductState.getPolicyDetailsList);

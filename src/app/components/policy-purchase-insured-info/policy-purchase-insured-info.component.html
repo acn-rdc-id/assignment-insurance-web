@@ -1,4 +1,4 @@
-@if (submitted && (personalDetailsForm.invalid)) {
+@if (submitted && (personalDetailsForm.invalid || this.usPersonError)) {
   <nx-error class="nx-margin-bottom-xs">
     One or more required fields are incomplete or contain errors. Please correct them to continue.
   </nx-error>
@@ -30,9 +30,14 @@
         <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
           <div nxRow class="docs-grid-colored-row">
             <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
-              <nx-formfield label="Gender *" appearance="outline" floatLabel="always">
-                <input nxInput type="text" [value]="personalDetailsForm.get('gender')?.value" disabled />
-              </nx-formfield>
+              <label class="form-label">Gender *</label>
+              <nx-radio-toggle formControlName="gender" [disabled]="true">
+                @for (item of gender; track item) {
+                  <nx-radio-toggle-button [value]="item">
+                    {{ item }}
+                  </nx-radio-toggle-button>
+                }
+              </nx-radio-toggle>
             </div>
             <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield label="Date of Birth *" appearance="outline" floatLabel="always">
@@ -51,7 +56,7 @@
               <nx-formfield label="Nationality / Citizenship *" appearance="outline" floatLabel="always">
                 <nx-dropdown formControlName="nationality">
                   @for (field of FIELD_OPTIONS.nationality; track field;) {
-                    <nx-dropdown-item value="{{ field.value }}">{{ field.label }}</nx-dropdown-item>
+                    <nx-dropdown-item value="{{ field.label }}">{{ field.label }}</nx-dropdown-item>
                   }
                 </nx-dropdown>
               </nx-formfield>
@@ -174,7 +179,7 @@
           <div nxRow class="docs-grid-colored-row">
             <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield
-                label="Country Code"
+                label="Country Code *"
                 appearance="outline"
                 floatLabel="always"
               >
@@ -209,7 +214,7 @@
               >
                 <nx-dropdown formControlName="occupation">
                   @for (field of FIELD_OPTIONS.occupation; track field;) {
-                    <nx-dropdown-item value="{{ field.value }}">{{ field.label }}</nx-dropdown-item>
+                    <nx-dropdown-item value="{{ field.label }}">{{ field.label }}</nx-dropdown-item>
                   }
                 </nx-dropdown>
               </nx-formfield>
@@ -253,7 +258,7 @@
               >
                 <nx-dropdown formControlName="transactionPurpose">
                   @for (field of FIELD_OPTIONS.transactionPurpose; track field;) {
-                    <nx-dropdown-item value="{{ field.value }}">{{ field.label }}</nx-dropdown-item>
+                    <nx-dropdown-item value="{{ field.label }}">{{ field.label }}</nx-dropdown-item>
                   }
                 </nx-dropdown>
               </nx-formfield>

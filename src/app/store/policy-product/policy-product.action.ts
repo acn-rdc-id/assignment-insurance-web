@@ -1,4 +1,4 @@
-export class PolicyProductDetails {
-  static readonly type = 'POLICY PRODUCT DETAILS';
-  constructor(public payload: any) {}
+export class LoadAllPolicies {
+  static readonly type = '[POLICY] LOAD ALL POLICIES';
+  constructor() {};
 }

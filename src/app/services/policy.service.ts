@@ -9,10 +9,10 @@ import {POLICY_PURCHASE_API, POLICY_SERVICING_API} from '../constants/api.consta
   providedIn: 'root'
 })
 export class PolicyService {
-  private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl;
+  private http: HttpClient = inject(HttpClient);
+  private apiUrl: string = environment.apiUrl;
 
-  getQuotationPlans(payload: any): Observable<HttpResponseBody> {
+  postQuotationPlans(payload: any): Observable<HttpResponseBody> {
     return this.http.post<HttpResponseBody>(
       this.apiUrl + POLICY_PURCHASE_API.GET_QUOTATION_PLANS, payload
     );
@@ -24,21 +24,17 @@ export class PolicyService {
     );
   }
 
-  createPolicyApplication(applicationPayload: any): Observable<HttpResponseBody> {
-    const userId: string = applicationPayload.personDto?.userId ?? '';
-    const headers = new HttpHeaders({ userId });
-
+  postPolicyApplication(payload: any): Observable<HttpResponseBody> {
     return this.http.post<HttpResponseBody>(
       this.apiUrl + POLICY_PURCHASE_API.CREATE_APPLICATION,
-      applicationPayload,
-      { headers }
+      payload
     );
   }
 
-  initiatePayment(paymentPayload: any): Observable<HttpResponseBody> {
+  postPayment(payload: any): Observable<HttpResponseBody> {
     return this.http.post<HttpResponseBody>(
       this.apiUrl + POLICY_PURCHASE_API.CREATE_PAYMENT,
-      paymentPayload
+      payload
     );
   }
 

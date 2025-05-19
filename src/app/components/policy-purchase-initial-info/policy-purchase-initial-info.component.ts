@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
 import {NxButtonComponent} from '@aposin/ng-aquila/button';
 import {NxDropdownComponent, NxDropdownItemComponent,} from '@aposin/ng-aquila/dropdown';
@@ -14,11 +14,13 @@ import {
 import {NxErrorComponent} from '@aposin/ng-aquila/base';
 import {Router, RouterModule} from '@angular/router';
 import {Store} from '@ngxs/store';
-import {SubmitInitialInfo} from '../../store/policy/policy-purchase.action';
+import {PostQuotationPlans} from '../../store/policy/policy-purchase.action';
 import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
-import {take} from 'rxjs';
-import {PolicyService} from '../../services/policy.service';
-import {HttpResponseBody} from '../../models/http-body.model';
+import {Subject, take} from 'rxjs';
+import {HttpErrorBody} from '../../models/http-body.model';
+import {MessageModalData} from '../../models/message-modal-data.model';
+import {MessageModalComponent} from '../message-modal/message-modal.component';
+import {NxDialogService, NxModalRef} from '@aposin/ng-aquila/modal';
 
 @Component({
   selector: 'app-policy-purchase-initial-info',
@@ -46,9 +48,12 @@ import {HttpResponseBody} from '../../models/http-body.model';
   templateUrl: './policy-purchase-initial-info.component.html',
   styleUrl: './policy-purchase-initial-info.component.scss',
 })
-export class PolicyPurchaseInitialInfoComponent implements OnInit {
+export class PolicyPurchaseInitialInfoComponent implements OnInit, OnDestroy {
   @Input() nextStep!: () => void;
   @Input() prevStep!: () => void;
+  private dialogService = inject(NxDialogService);
+  private dialogRef?: NxModalRef<any>;
+  unsubscribe$ = new Subject();
 
   infoForm!: FormGroup;
 
@@ -65,7 +70,6 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit {
     private fb: FormBuilder,
     private store: Store,
     private router: Router,
-    private policyService: PolicyService
   ) {
     this.maxDate = new Date();
     this.maxDate.setFullYear(this.today.getFullYear() - this.minAge);
@@ -128,43 +132,23 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit {
 
     const formValues = this.infoForm.value;
 
-    const requestPayload = {
+    const payload = {
       gender: formValues.gender.toUpperCase(),
       dateOfBirth: this.formatDate(formValues.birthDate)
     };
 
-    this.policyService.getQuotationPlans(requestPayload).subscribe({
-      next: (response: HttpResponseBody): void => {
-        const isSuccess: boolean = response?.code === 200 && response?.data;
-
-        if (isSuccess) {
-          const initialInfo = {
-            age: response.data.ageNearestBirthday,
-            dateOfBirth: response.data.dateOfBirth,
-            gender: this.formatCamelCase(response.data.gender),
-            referenceNumber: response.data.referenceNumber,
-            plans: response.data.plans
-          };
-
-          this.store.dispatch(new SubmitInitialInfo(initialInfo));
-          this.nextStep();
-        } else {
-          console.warn('⚠️ API responded with an unexpected status or missing data:', response?.message);
-        }
+    this.store.dispatch(new PostQuotationPlans(payload)).subscribe({
+      complete: () => {
+        this.nextStep();
       },
-      error: (error): void => {
-        console.error('❌ API call failed:', error);
+      error: (err: HttpErrorBody) => {
+        const messageData: MessageModalData = {
+          header: 'Error',
+          message: err.message ?? 'Unexpected error occurred.'
+        };
+        this.openErrorModal(messageData);
       }
     });
-  }
-
-  formatCamelCase(path: string): string {
-    return path
-      .split('-')
-      .map((word) => {
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-      })
-      .join(' ');
   }
 
   formatDate(date: Date): string {
@@ -182,5 +166,18 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit {
       if (value < min || value > max) return { outOfRange: true };
       return null;
     };
+  }
+
+  private openErrorModal(messageData?: MessageModalData): void {
+    this.dialogRef = this.dialogService.open(MessageModalComponent, {
+      data: messageData,
+      disableClose: true,
+      ariaLabel: 'Error dialog'
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next('');
+    this.unsubscribe$.complete();
   }
 }

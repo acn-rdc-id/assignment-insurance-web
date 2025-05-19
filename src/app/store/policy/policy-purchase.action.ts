@@ -1,9 +1,4 @@
-import {PolicyPersonalDetails, PolicyPlan, PolicyPlanDto, TermsConditions, PolicyPurchaseStep} from '../../models/policy.model';
-
-export class SubmitInitialInfo {
-  static readonly type = '[Policy] Submit Initial Info';
-  constructor(public payload: any) {}
-}
+import {PolicyPersonalDetails, PolicyPlan, PolicyPurchaseStep} from '../../models/policy.model';
 
 export class SelectPlan {
   static readonly type = '[Policy] Select Plan';
@@ -16,8 +11,23 @@ export class SubmitInitialInfoSuccess {
 }
 
 export class GetTermsAndConditions {
-  static readonly type = 'Get Terms And Conditions';
-  constructor(public payload: TermsConditions[]) {}
+  static readonly type = '[POLICY] GET TERMS AND CONDITIONS';
+  constructor() {}
+}
+
+export class PostQuotationPlans {
+  static readonly type = '[POLICY] POST QUOTATION PLANS';
+  constructor(public payload: any) {}
+}
+
+export class PostPolicyApplication {
+  static readonly type = '[POLICY] POST POLICY APPLICATION';
+  constructor(public payload: any) {}
+}
+
+export class PostPayment {
+  static readonly type = '[POLICY] POST PAYMENT';
+  constructor(public payload: any) {}
 }
 
 export class SubmitPersonalDetailsInfo {
