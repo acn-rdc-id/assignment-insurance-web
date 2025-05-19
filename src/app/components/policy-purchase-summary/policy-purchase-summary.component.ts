@@ -212,32 +212,19 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
     console.log('Form submitted:', result);
 
     const payload = this.buildApplicationPayload();
-
-    this.policyService.postPolicyApplication(payload).subscribe({
-      next: (response: any): void => {
-        this.quotationId = response.data.id;
-        this.premiumMode = response.data.planResponseDto?.premiumMode;
-        this.duration = this.modeToDurationMap[this.premiumMode];
+    
+    this.store.dispatch(new PostPolicyApplication(payload)).subscribe({
+      next: (): void => {
+        this.quotationDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
         this.openModal();
       },
-      error: (error): void => {
-        console.error('❌ API call failed:', error);
+      error: (err: HttpErrorBody): void => {
+        this.openErrorModal({
+          header: 'Error',
+          message: err.message ?? 'Unexpected error occurred.'
+        });
       }
     });
-
-    // todo fix this later
-    // this.store.dispatch(new PostPolicyApplication(payload)).subscribe({
-    //   next: (): void => {
-    //     this.quotationDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
-    //     this.openModal();
-    //   },
-    //   error: (err: HttpErrorBody): void => {
-    //     this.openErrorModal({
-    //       header: 'Error',
-    //       message: err.message ?? 'Unexpected error occurred.'
-    //     });
-    //   }
-    // });
   }
 
   buildApplicationPayload() {
@@ -279,7 +266,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
     const selectedPlan = this.store.selectSnapshot(PolicyPurchaseState.selectedPlan);
 
     const payload = {
-      quotationId: this.quotationId,//this.quotationDetails.quotationId, todo fix this later
+      quotationId: this.quotationDetails.quotationId,
       paymentAmount: selectedPlan?.premiumAmount,
       duration: this.modeToDurationMap[this.quotationDetails.premiumMode],
       paymentStatus: result.toUpperCase(),
