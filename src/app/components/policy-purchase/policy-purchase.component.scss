@@ -1,0 +1,21 @@
+.particulars-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1rem;
+  margin: 2rem auto 0;
+}
+
+nx-progress-stepper {
+  margin-bottom: 3rem;
+  padding: 2.5rem;
+}
+
+.step-1-background {
+  background-image: url(../../../assets/hero-banner.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top center;
+  height: 350px;
+}

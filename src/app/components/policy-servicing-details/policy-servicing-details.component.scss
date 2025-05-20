@@ -1,0 +1,78 @@
+$primary-color: grey;
+$badge-green-color: #28a745;
+$text-color: #333;
+$banner-height: 450px;
+$font-size-large: 45px;
+$line-height-tight: 1.2;
+
+:host {
+  overflow-x: hidden;
+  display: block;
+}
+
+.policy-servicing-banner {
+  height: $banner-height;
+  color: $text-color;
+  display: flex;
+  justify-content: center;
+  background-size: cover;
+  background-image: url('../../../assets/profile-bg.jpg');
+}
+
+.tab__content {
+  padding-top: 16px;
+}
+
+.page-wrapper {
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.badge-green {
+  background-color: #28a745;
+  color: white;
+}
+
+.profile-background {
+  background-image: url('../../../assets/profile-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 2rem 0;
+}
+
+.card-info {
+  margin-top: 1rem;
+  font-size: 13px;
+}
+
+.info-row {
+  justify-content: space-between;
+  padding: 0.1rem 0;
+}
+
+.profile-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.breadcrumb-nav {
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+}
+
+.sub-heading {
+  margin-bottom: 3rem;
+}
+
+.policy-grid {
+  padding-bottom: 1rem;
+}
+
+.policy-row {
+  margin-bottom: 3rem;
+}

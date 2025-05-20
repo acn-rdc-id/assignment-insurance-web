@@ -1,0 +1,89 @@
+<div class="profile-background">
+  <div class="overlay"></div>
+  <div class="profile-container">
+    <div nxLayout="grid" class="docs-grid-colored-grid">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol nxBreadcrumb appearance="link">
+          @for (item of breadcrumbs; track item; let i = $index; let isLast = $last) {
+            <li>
+              <a nxBreadcrumbItem [routerLink]="!isLast ? item.link : null" style="color: #666666">
+                {{ item.label }}
+              </a>
+            </li>
+          }
+        </ol>
+      </nav>
+
+      <div nxRow>
+        <div nxCol="12" class="docs-grid-colored-col" style="color: #666666">
+          <h1 >
+            {{ policyDetails.companyName }}
+            <span>
+              <nx-badge class="badge-green">{{ policyDetails.status }}</nx-badge>
+            </span>
+          </h1>
+          <div class="sub-heading" style="color: #666666; font-size: 1.4rem;">
+            {{ policyDetails.subCompany }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div nxLayout="grid nogutters" class="docs-grid-colored-grid policy-grid">
+      <div nxRow class="policy-row">
+        @for (item of firstRow; track item;) {
+          <div nxCol="2,3" class="docs-grid-colored-col" style="color: #666666; font-size: 1.1rem;">
+            {{ item.label }}
+            <div style="font-size: 1.3rem;">{{ item.value }}</div>
+          </div>
+        }
+      </div>
+
+      <div nxRow class="policy-row">
+        @for (item of secondRow; track item;) {
+          <div nxCol="2,3" class="docs-grid-colored-col" style="color: #666666; font-size: 1.1rem;">
+            {{ item.label }}
+            <div style="font-size: 1.3rem;">{{ item.value }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrapper" style="margin-top: 2rem">
+  <nx-tab-group [(selectedIndex)]="currentIndex">
+    <nx-tab label="Policy Details">
+      <p class="tab__content">
+        <nx-accordion>
+          <nx-expansion-panel
+            [scrollIntoViewActive]="scrollIntoViewActive"
+            [scrollIntoViewOptions]="scrollIntoViewOptions"
+          >
+            <nx-expansion-panel-header>
+              <nx-expansion-panel-title
+              >Insured Info</nx-expansion-panel-title
+              >
+            </nx-expansion-panel-header>
+            <h2 nxHeadline="subsection-medium" class="nx-margin-bottom-2m">
+
+            </h2>
+            <p nxCopytext="normal">Lorem ipsum</p>
+          </nx-expansion-panel>
+          <nx-expansion-panel
+            [scrollIntoViewActive]="scrollIntoViewActive"
+            [scrollIntoViewOptions]="scrollIntoViewOptions"
+          >
+            <nx-expansion-panel-header>
+              <nx-expansion-panel-title>Beneficiary</nx-expansion-panel-title>
+            </nx-expansion-panel-header>
+            <h2 nxHeadline="subsection-small" class="nx-margin-bottom-2m">
+
+            </h2>
+            <p nxCopytext="normal">Lorem ipsum</p>
+          </nx-expansion-panel>
+        </nx-accordion>
+      </p>
+    </nx-tab>
+  </nx-tab-group>
+</div>

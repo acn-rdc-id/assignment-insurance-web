@@ -1,0 +1,50 @@
+<div nxCol="12,12,12,12" class="policy-servicing-banner">
+  <div class="banner-content">
+    <div class="banner-title">
+      <p>Policies</p>
+    </div>
+  </div>
+
+  <div class="tab-content">
+    <nx-tab-group>
+      <nx-tab [label]="'Allianz Life (' + (policyProduct?.length || 0) + ')'">
+        @if (policyProduct) {
+          <p>You have {{ policyProduct.length }} policies</p>
+        }
+        <div class="scroll-container">
+          <table nxTable nxSort (sortChange)="sortTable($event)">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell nxSortHeaderCell="referenceNumber">Reference No</th>
+                <th nxHeaderCell nxSortHeaderCell="policyNumber">Policy No</th>
+                <th nxHeaderCell nxSortHeaderCell="insuredName">Insured Name</th>
+                <th nxHeaderCell>Premium Amount</th>
+                <th nxHeaderCell nxSortHeaderCell="dueDate">Due Date</th>
+                <th nxHeaderCell nxSortHeaderCell="status">Status</th>
+<!--                <th nxHeaderCell>Action</th>-->
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of policyProduct; track item) {
+                <tr nxTableRow>
+                  <td nxTableCell style="color: deepskyblue">
+                    <a (click)="goToDetail(item.plan.policyId)">{{ item.plan.referenceNumber }}</a>
+                  </td>
+                  <td nxTableCell style="color: grey">{{item.plan.policyNo}}</td>
+                  <td nxTableCell>{{item.personalDetails.fullName}}</td>
+                  <td nxTableCell>{{item.plan.premiumAmount}}</td>
+                  <td nxTableCell>{{ item.plan.endDate | date: 'dd MMM yyyy' }}</td>
+                  <td nxTableCell>
+                    <nx-badge [ngClass]="{ 'badge-green': item.plan.status === 'ACTIVE' }">
+                      {{ item.plan.status === 'ACTIVE' ? 'In Force' : item.plan.status }}
+                    </nx-badge>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </nx-tab>
+    </nx-tab-group>
+  </div>
+</div>

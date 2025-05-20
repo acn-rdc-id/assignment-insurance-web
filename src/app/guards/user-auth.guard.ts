@@ -1,6 +1,18 @@
-import { CanActivateFn } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { Store } from '@ngxs/store';
+import { UserState } from '../store/user/user.state';
+import { User } from '../models/user.model';
 
 export const userAuthGuard: CanActivateFn = (route, state) => {
-  // TODO: Implement user authentication based on token and user details in session storage
-  return true;
+  const store = inject(Store);
+  const router = inject(Router);
+
+  const isLoggedIn = store.selectSnapshot(UserState.isLoggedIn);
+  if (isLoggedIn) {
+    return true;
+  } else {
+    router.navigate(['login']);
+    return false;
+  }
 };

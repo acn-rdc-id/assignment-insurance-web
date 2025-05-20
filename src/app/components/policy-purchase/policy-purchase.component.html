@@ -1,0 +1,116 @@
+<nx-progress-stepper
+  [linear]="true"
+  [selectedIndex]="currentStep - 1"
+  currentStepLabel="Step"
+  [ngClass]="{ 'step-1-background': currentStep === 1 }">
+>
+  @for (item of mainSteps; track item; let i = $index) {
+    <nx-step [label]="formatCamelCase(item.path)">
+      <br>
+      @if (item.path === 'basic-information' && item.step === 1) {
+        <app-policy-purchase-initial-info
+          [nextStep]="nextStep.bind(this)"
+          [prevStep]="prevStep.bind(this)">
+        </app-policy-purchase-initial-info>
+      }
+
+      @if (item.path === 'get-quote' && item.step === 2) {
+        <app-policy-purchase-plan
+          [nextStep]="nextStep.bind(this)"
+          [prevStep]="prevStep.bind(this)">
+        </app-policy-purchase-plan>
+      }
+
+      @if (item.path === 'apply-now' && item.step === 3) {
+        @switch (currentSubStep) {
+          @case (1) {
+            <div class="particulars-container">
+              <nx-card style="width: 1200px">
+                <div nxLayout="list">
+                  <div nxRow>
+                    <div nxCol="12,12,12,6" class="docs-grid-colored-col">
+                      <h3 nxHeadline size="l" class="card-title">Allianz i-EssentialCover</h3>
+                      <p nxCardSecondaryInfo class="card-subtitle">
+                        Life Assured's Particulars
+                      </p>
+                    </div>
+                    <div nxCol="12,12,12,6" class="docs-grid-colored-col">
+                      <app-progressbar
+                        style="display: flex; justify-content: flex-end; margin-top: 2rem;"
+                        [currentPath]="currentSubStep"
+                        [totalPath]="subSteps.length">
+                      </app-progressbar>
+                    </div>
+                  </div>
+                </div>
+
+                <app-policy-purchase-insured-info
+                  [nextSubStep]="nextSubStep.bind(this)"
+                  [prevStep]="prevStep.bind(this)">
+                </app-policy-purchase-insured-info>
+              </nx-card>
+            </div>
+          }
+
+          @case (2) {
+            <div class="particulars-container">
+              <nx-card style="width: 1200px">
+                <div nxLayout="list">
+                  <div nxRow>
+                    <div nxCol="12,12,12,6" class="docs-grid-colored-col">
+                      <h3 nxHeadline size="l" class="card-title">Allianz i-EssentialCover</h3>
+                      <p nxCardSecondaryInfo class="card-subtitle">
+                        Life Assured's Particulars
+                      </p>
+                    </div>
+                    <div nxCol="12,12,12,6" class="docs-grid-colored-col">
+                      <app-progressbar
+                        style="display: flex; justify-content: flex-end; margin-top: 2rem;"
+                        [currentPath]="currentSubStep"
+                        [totalPath]="subSteps.length">
+                      </app-progressbar>
+                    </div>
+                  </div>
+                </div>
+
+                <app-policy-purchase-summary
+                  [nextSubStep]="nextSubStep.bind(this)"
+                  [prevSubStep]="prevSubStep.bind(this)"
+                  (paymentResult)="onPaymentResult($event)">
+                </app-policy-purchase-summary>
+              </nx-card>
+            </div>
+          }
+
+          @case (3) {
+            <div class="particulars-container">
+              <nx-card style="width: 1200px">
+                <div nxLayout="list">
+                  <div nxRow>
+                    <div nxCol="12,12,12,6" class="docs-grid-colored-col">
+                      <h3 nxHeadline size="l" class="card-title">Allianz i-EssentialCover</h3>
+                      <p nxCardSecondaryInfo class="card-subtitle">
+                        Life Assured's Particulars
+                      </p>
+                    </div>
+                    <div nxCol="12,12,12,6" class="docs-grid-colored-col">
+                      <app-progressbar
+                        style="display: flex; justify-content: flex-end; margin-top: 2rem;"
+                        [currentPath]="currentSubStep"
+                        [totalPath]="subSteps.length">
+                      </app-progressbar>
+                    </div>
+                  </div>
+                </div>
+
+                <app-policy-purchase-receipt
+                  [paymentStatus]="paymentStatus">
+                </app-policy-purchase-receipt>
+              </nx-card>
+            </div>
+          }
+        }
+      }
+    </nx-step>
+  }
+</nx-progress-stepper>

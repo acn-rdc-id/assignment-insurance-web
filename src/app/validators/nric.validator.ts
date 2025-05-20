@@ -10,13 +10,16 @@ export function nricValidator(): ValidatorFn {
     
     if (!value)
       return null;
-    
+
     const isNricRegex: boolean = nricRegex.test(value);
 
     if (value.length > 6 && typeof value === 'string') {
       const dateString = `${value.substring(0, 2)}-${value.substring(2, 4)}-${value.substring(4, 6)}`;
       try {
-        const formattedDate: string | null = datePipe.transform(dateString, 'yy-MM-dd');
+        const date = new Date();
+        date.setMonth(parseInt(value.substring(2, 4)) - 1, parseInt(value.substring(4, 6)));
+        date.setFullYear(parseInt('20' + value.substring(0, 2)));
+        const formattedDate: string | null = datePipe.transform(date, 'yy-MM-dd');
         const isValidDate: boolean = formattedDate === dateString;
         
         const isValidNric = isNricRegex && isValidDate;

@@ -1,0 +1,305 @@
+@if (submitted && (personalDetailsForm.invalid || this.usPersonError)) {
+  <nx-error class="nx-margin-bottom-xs">
+    One or more required fields are incomplete or contain errors. Please correct them to continue.
+  </nx-error>
+}
+<form [formGroup]="personalDetailsForm" (ngSubmit)="onSubmit()" style="margin-bottom: 2rem">
+  <div nxLayout="list" style="margin-top: 2rem;">
+    <div nxRow>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
+        <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
+          <div nxRow class="docs-grid-colored-row">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <nx-formfield label="Title *" appearance="outline" floatLabel="always">
+                <nx-dropdown formControlName="title">
+                  @for (field of FIELD_OPTIONS.title; track field;) {
+                    <nx-dropdown-item value="{{ field.value }}">{{ field.label }}</nx-dropdown-item>
+                  }
+                </nx-dropdown>
+              </nx-formfield>
+            </div>
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <nx-formfield label="Name as per NRIC *" appearance="outline" floatLabel="always">
+                <input nxInput type="text" formControlName="fullName" autocomplete="fullname" />
+              </nx-formfield>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
+        <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
+          <div nxRow class="docs-grid-colored-row">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <label class="form-label">Gender *</label>
+              <nx-radio-toggle formControlName="gender" [disabled]="true">
+                @for (item of gender; track item) {
+                  <nx-radio-toggle-button [value]="item">
+                    {{ item }}
+                  </nx-radio-toggle-button>
+                }
+              </nx-radio-toggle>
+            </div>
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <nx-formfield label="Date of Birth *" appearance="outline" floatLabel="always">
+                <input nxInput [value]="personalDetailsForm.get('dateOfBirth')?.value" disabled />
+              </nx-formfield>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div nxRow>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
+        <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
+          <div nxRow class="docs-grid-colored-row">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <nx-formfield label="Nationality / Citizenship *" appearance="outline" floatLabel="always">
+                <nx-dropdown formControlName="nationality">
+                  @for (field of FIELD_OPTIONS.nationality; track field;) {
+                    <nx-dropdown-item value="{{ field.label }}">{{ field.label }}</nx-dropdown-item>
+                  }
+                </nx-dropdown>
+              </nx-formfield>
+            </div>
+            <div nxCol="12,12,12,6" [ngClass]="{ 'error-border': idNoError }" class="docs-grid-colored-col nested">
+              <nx-formfield label="NRIC No. *" appearance="outline" floatLabel="always" autocomplete="idNo">
+                <input
+                  nxInput
+                  type="text"
+                  formControlName="idNo"
+                />
+                @if (idNoError) {
+                  <nx-icon
+                    name="exclamation-triangle"
+                    size="s"
+                    aria-hidden="true"
+                    style="color: red; cursor: pointer"
+                    [nxPopoverTriggerFor]="idNoErrorTooltip"
+                    nxPopoverTrigger="hover"
+                    aria-label="More information">
+                  </nx-icon>
+                }
+              </nx-formfield>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
+        <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
+          <div nxRow class="docs-grid-colored-row">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <nx-formfield label="NRIC No. (Old) / Passport No./ OtherID *" appearance="outline" floatLabel="always">
+                <input nxInput type="text" formControlName="otherId" />
+              </nx-formfield>
+            </div>
+            <div nxCol="12,12,12,6" [ngClass]="{ 'error-border': usPersonError }">
+              <label>U.S Persons</label>
+              <button
+                nxFormfieldAppendix
+                nxIconButton="tertiary small"
+                nxPopoverDirection="right"
+                [nxPopoverTriggerFor]="usPersonDefinitionTooltip"
+                nxPopoverTrigger="hover"
+                type="button"
+                aria-label="More information"
+              >
+                <nx-icon name="info-circle" size="s" aria-hidden="true" style="color: #0077a6"> </nx-icon>
+              </button>
+              @if (usPersonError) {
+                <button
+                  nxFormfieldAppendix
+                  nxIconButton="tertiary small"
+                  nxPopoverDirection="right"
+                  [nxPopoverTriggerFor]="usPersonTooltip"
+                  nxPopoverTrigger="hover"
+                  type="button"
+                  aria-label="More information"
+                >
+                  <nx-icon name="exclamation-triangle" size="s" aria-hidden="true" style="color: red"> </nx-icon>
+                </button>
+              }
+              <nx-switcher formControlName="isUsPerson" labelSize="small"></nx-switcher>
+              <nx-popover #usPersonTooltip>
+                @if (usPersonError) {
+                  <div style="max-width: 300px">
+                    This application is only open to non-U.S. persons. For more info, contact PDD.Support&#64;Allianz.com.my
+                  </div>
+                }
+              </nx-popover>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div nxRow>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
+        <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
+          <nx-formfield
+            label="Country of Birth *"
+            appearance="outline"
+            floatLabel="always"
+          >
+            <nx-dropdown formControlName="countryOfBirth">
+              @for (field of FIELD_OPTIONS.countryOfBirth; track field;) {
+                <nx-dropdown-item value="{{ field.value }}">{{ field.label }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
+          </nx-formfield>
+        </div>
+      </div>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
+        <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
+          <div nxRow class="docs-grid-colored-row">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <div nxCol="12,12,12,12" class="docs-grid-colored-col nested">
+                <div>Are you a smoker?</div>
+                <br>
+                <nx-switcher
+                  formControlName="isSmoker"
+                  labelSize="small"
+                ></nx-switcher>
+              </div>
+            </div>
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <nx-formfield
+                label="No. of cigarette(s) daily"
+                appearance="outline"
+                floatLabel="always"
+              >
+                <input nxInput type="number" formControlName="cigarettesPerDay" />
+              </nx-formfield>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div nxRow>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
+        <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
+          <div nxRow class="docs-grid-colored-row">
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <nx-formfield
+                label="Country Code *"
+                appearance="outline"
+                floatLabel="always"
+              >
+                <nx-dropdown formControlName="countryCode">
+                  @for (field of FIELD_OPTIONS.countryCode; track field;) {
+                    <nx-dropdown-item value="{{ field.value }}">{{ field.label }}</nx-dropdown-item>
+                  }
+                </nx-dropdown>
+              </nx-formfield>
+            </div>
+            <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
+              <nx-formfield
+                label="Mobile Number *"
+                appearance="outline"
+                floatLabel="always"
+                autocomplete="mobileNo"
+              >
+                <input nxInput maxlength=10 formControlName="mobileNo" />
+              </nx-formfield>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
+        <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
+          <div nxRow class="docs-grid-colored-row">
+            <div nxCol="12" class="docs-grid-colored-col nested">
+              <nx-formfield
+                label="Occupation *"
+                appearance="outline"
+                floatLabel="always"
+              >
+                <nx-dropdown formControlName="occupation">
+                  @for (field of FIELD_OPTIONS.occupation; track field;) {
+                    <nx-dropdown-item value="{{ field.label }}">{{ field.label }}</nx-dropdown-item>
+                  }
+                </nx-dropdown>
+              </nx-formfield>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div nxRow>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" [ngClass]="{ 'error-border': emailError }">
+        <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
+          <nx-formfield
+            label="Email *"
+            appearance="outline"
+            floatLabel="always"
+          >
+            <input nxInput type="email" required formControlName="email" />
+            @if (emailError) {
+              <nx-icon
+                name="exclamation-triangle"
+                size="s"
+                aria-hidden="true"
+                style="color: red; cursor: pointer"
+                [nxPopoverTriggerFor]="emailErrorTooltip"
+                nxPopoverTrigger="hover"
+                aria-label="More information">
+              </nx-icon>
+            }
+          </nx-formfield>
+        </div>
+      </div>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
+        <div nxLayout="grid nopadding" class="docs-grid-colored-grid">
+          <div nxRow class="docs-grid-colored-row">
+            <div nxCol="12" class="docs-grid-colored-col nested">
+              <nx-formfield
+                label="Purpose of Transaction *"
+                appearance="outline"
+                floatLabel="always"
+              >
+                <nx-dropdown formControlName="transactionPurpose">
+                  @for (field of FIELD_OPTIONS.transactionPurpose; track field;) {
+                    <nx-dropdown-item value="{{ field.label }}">{{ field.label }}</nx-dropdown-item>
+                  }
+                </nx-dropdown>
+              </nx-formfield>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div nxRow>
+      <div nxCol="12" class="docs-grid-colored-col display-button" style="margin-top: 1rem;">
+        <button
+          nxButton="primary medium"
+          nxStepperPrevious
+          type="button"
+          style="margin-right: 1rem;"
+          (click)="onBack()"
+        >Back</button>
+        <button nxButton="danger" type="submit" >
+          <nx-icon name="arrow-right" nxIconPositionEnd aria-hidden="true"></nx-icon>
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<nx-popover #usPersonDefinitionTooltip>
+  <div style="max-width: 300px">
+    Definition of U.S. Person: U.S. citizenship or U.S. residence. U.S. place of birth. U.S. address including U.S. P.O. Box.U.S. telephone number.
+    Standing instructions to transfer funds to an account maintained in the U.S. A U.S. 'in care of' address or a 'hold mail' address that is the sole address
+    for the account holder.A power of attorney or signatory authority granted to a person with a U.S. address.
+  </div>
+</nx-popover>
+<nx-popover #idNoErrorTooltip>
+  <div style="max-width: 300px">
+    Invalid Id Number
+  </div>
+</nx-popover>
+<nx-popover #emailErrorTooltip>
+  <div style="max-width: 300px">
+    Invalid Email
+  </div>
+</nx-popover>

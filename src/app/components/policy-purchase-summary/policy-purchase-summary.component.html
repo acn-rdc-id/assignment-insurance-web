@@ -1,0 +1,77 @@
+@if (submitted && (form.invalid || hasUncheckedRequiredTerms())) {
+  <nx-error class="nx-margin-bottom-xs">
+    Please check all required boxes!
+  </nx-error>
+}
+
+<div nxLayout="grid nogutters" class="grid">
+  <div nxRow class="grid-row">
+    <div nxCol="12,12,12,7">
+      <div class="personal-details-wrapper">
+        <table nxTable class="info-table">
+          <tbody >
+          <tr nxTableRow>
+            <td nxTableCell style="color:red;">Basic & Personal Details</td>
+          </tr>
+            @for (item of displayPersonalInfo; track item) {
+              <tr nxTableRow>
+                <td nxTableCell>{{item.label}}</td>
+                <td nxTableCell style="color: #d32f2f">{{item.content}}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div nxCol="12,12,12,5">
+      <div class="mini-summary-wrapper">
+        <app-quotation-summary></app-quotation-summary>
+      </div>
+    </div>
+  </div>
+  <div nxRow class="grid-row">
+      <div class="terms-condition-wrapper nx-margin-bottom-3xs">
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              <h4>You are required to carefully read and answer</h4>
+
+              @for (term of termsAndConditions; let i = $index; track $index) {
+                <div nxRow class="term-item grid-row">
+                  <div style="padding-right: 1rem;">{{ $index + 1 }}</div>
+                  <div nxCol="11">
+                    <div [innerHTML]="sanitizeHtml(term.termsHtml)"></div>
+                  </div>
+                </div>
+                <div class="term-checkbox">
+                  <div nxRow class="term-checkbox grid-row">
+                    <nx-checkbox [formControl]="getFormControlAt(i)">Yes</nx-checkbox>
+                  </div>
+                </div>
+              }
+              <div nxRow class="grid-row" style="margin-top: 3rem;">
+                  <nx-checkbox [formControl]="getFormControlAt(termsAndConditions.length)">I confirm that I have read your <b style="color: red;"><u>Privacy Notice</u></b> and agree to provide the relevant information for the purposes stated in the Privacy Notice. I understand that I can choose to unsubscribe at any time if I no longer wish to receive any marketing/promotions from Allianz by writing to <b style="color: red;"><u>cust.serv&#64;allianz.co</u></b></nx-checkbox>
+              </div>
+              <div nxRow class="grid-row">
+                  <div nxCol="8">
+                      <p>Upon clicking on the "Pay Now" button below, you will be redirected to the payment gateway to proceed with your first premium payment via your credit/debit card and subsequent premium(s) will also be debited from same credit/debit card. Kindly follow the instructions and once payment is successful, please do not click on refresh or close your internet browser until the entire payment process is completed.</p>
+                  </div>
+                  <div nxCol="4" class="display-button">
+                      <button nxButton="back" type="button" (click)="onBack()">Back</button>
+                      <button nxButton="payNow danger" type="submit" >
+                          <nx-icon name="arrow-right" nxIconPositionEnd aria-hidden="true"></nx-icon>
+                          Submit
+                      </button>
+                  </div>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
+
+<ng-template #paymentDialog>
+    <div class="payment-dialog">
+        <p>Select how do you like to simulate the payment</p>
+        <button nxButton="fail" type="button" (click)="handlePayment('failed')" nxModalClose="failed">Fail</button>
+        <button nxButton="success" type="button" (click)="handlePayment('success')" nxModalClose="success" >Success</button>
+    </div>
+</ng-template>
+

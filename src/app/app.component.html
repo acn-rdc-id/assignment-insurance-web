@@ -1,4 +1,8 @@
+<app-loading-spinner></app-loading-spinner>
 <div class="site-wrapper">
+  @if (showSiteHeader == true) {
+    <app-site-header [isLoggedIn]="isLoggedIn()"></app-site-header>
+  }
   <div class="site-main" #siteMain>
     <router-outlet></router-outlet>
   </div>

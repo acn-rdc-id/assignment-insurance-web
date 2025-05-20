@@ -5,6 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:development": "ng build --configuration development",
+    "build:staging": "ng build --configuration staging",
+    "build:production": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -23,6 +26,7 @@
     "@ngxs/devtools-plugin": "19.0.0",
     "@ngxs/logger-plugin": "19.0.0",
     "@ngxs/router-plugin": "19.0.0",
+    "@ngxs/storage-plugin": "^19.0.0",
     "@ngxs/store": "^19.0.0",
     "dayjs": "^1.11.5",
     "decimal.js": "^10.3.1",

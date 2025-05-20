@@ -1,0 +1,72 @@
+<body>
+  <div nxLayout="grid nogutters" class="grid">
+    <div nxRow class="grid-row">
+      <div
+        nxCol="12,12,12,12"
+        style="background-image: url(../assets/banner_policy-purchase.jpeg)"
+        class="policy-product-banner"
+      >
+        <div class="banner-content">
+          <div class="banner-title">
+            <p>Allianz i-Essential <br />Cover Life Insurance</p>
+          </div>
+          <p>
+            An affordable life insurance plan that covers death and total
+            permanent disability
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="navbar">
+      <a class="title">Allianz i-EssentialCover</a>
+      <nx-link class="banner-buy-button" (click)="goToInitialForm()"
+        >Buy now</nx-link
+      >
+    </div>
+
+
+    <div class="section">
+      <div class="policy-banner-overlay">
+        <img src="assets/person-wave.svg" alt="Allianz-Logo" class="overlay-img" />
+        <nx-link class="banner-policies" (click)="goToUserPolicies()">
+          {{ numOfPolicy }} <b> Allianz Life</b> Policies
+        </nx-link>
+      </div>
+
+      <br />
+      <br />
+      <br />
+      <h4>An online-exclusive product</h4>
+      <br />
+      <h1>Product info</h1>
+      <p>
+        Protect your family during difficult times with an affordable life
+        insurance plan. Ensure their needs are taken care of in the event of
+        death or total and permanent disability with Allianz i-EssentialCover.
+      </p>
+
+      <div class="features">
+        <div class="feature">
+          <img src="../assets/icon_capital.png" alt="Coverage Icon" />
+          <p>Coverage up to RM500,000</p>
+        </div>
+
+        <div class="feature">
+          <img
+            src="../assets/icon_thumbs-up.png"
+            alt="Guaranteed Premium Icon"
+          />
+          <p>Guaranteed yearly premium</p>
+        </div>
+
+        <div class="feature">
+          <img src="../assets/icon_benefit.png" alt="Fast Enrolment Icon" />
+          <p>Fast, hassle-free enrolment</p>
+        </div>
+      </div>
+
+      <a class="buy-button" (click)="goToInitialForm()">BUY NOW</a>
+    </div>
+  </div>
+</body>

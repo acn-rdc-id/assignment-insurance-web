@@ -1,0 +1,37 @@
+<div class="site-header">
+  <div class="site-header-fixed">
+    <div class="site-header-wrapper">
+      <div class="site-header-container">
+        <div class="site-header-table">
+          <div class="site-header__row">
+            @if (isLoggedIn) {
+              <div class="site-header__cell site-header__branch">
+                <nx-link class="branch-link">Allianz Indonesia</nx-link>
+              </div>
+              <div class="site-header__cell site-header__user-info">
+                <span style="vertical-align: middle;">Welcome, {{username()}}</span>
+              </div>
+              <div class="site-header__cell site-header__logout side-border">
+                <nx-link nxStyle="block">
+                  <a (click)="logout()">
+                    <nx-icon name="arrow-last"></nx-icon>
+                    Log Out
+                  </a>
+                </nx-link>
+              </div>
+            } @else {
+              <div class="site-header__cell">
+                <a routerLink="/policy-product" class="allianz-logo">
+                  <img src="assets/logo.png" alt="Allianz-Logo">
+                </a>
+              </div>
+              <div class="site-header__cell site-header__branch std-ta-right">
+                <nx-link class="branch-link">Allianz Indonesia</nx-link>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
