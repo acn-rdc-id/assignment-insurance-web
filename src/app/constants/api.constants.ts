@@ -8,6 +8,7 @@ export const POLICY_PURCHASE_API = {
 export const POLICY_SERVICING_API = {
   GET_ALL_POLICIES: 'policy/getAll',
   GET_POLICY_DETAILS: 'get-policy-details',
+  CREATE_BENEFICIARIES: 'policy/beneficiary',
 };
 
 export const POLICY_CLAIM_API = {};

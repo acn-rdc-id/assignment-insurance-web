@@ -19,13 +19,13 @@ import {formatCamelCase} from '../../utils/string-utils';
 import {HttpResponseBody} from '../../models/http-body.model';
 
 @State<PolicyPurchaseStateModel>({
-  name: 'PolicyState',
+  name: 'PolicyPurchaseState',
   defaults: POLICY_PURCHASE_STATE_DEFAULTS
 })
 
 @Injectable()
 export class PolicyPurchaseState {
-  private policyService:PolicyService =  inject(PolicyService);
+  private policyService:PolicyService = inject(PolicyService);
 
   @Selector()
   static getGender(state: PolicyPurchaseStateModel): string | undefined {

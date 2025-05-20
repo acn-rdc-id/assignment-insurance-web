@@ -4,6 +4,14 @@ export interface PolicyDetails {
     personalDetails?: PolicyPersonalDetails
 }
 
+export interface PolicyBeneficiaries {
+  id?: string;
+  beneficiaryName: string;
+  relationshipToInsured: string;
+  share: number;
+  action?: string;
+}
+
 export interface PolicyPlanDto {
     id: string;
     planName: string;

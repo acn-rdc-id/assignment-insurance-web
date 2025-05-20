@@ -2,7 +2,7 @@ import {Action, Selector, State, StateContext} from '@ngxs/store';
 import {POLICY_PRODUCT_STATE_DEFAULT, PolicyStateModel,} from './policy-product.state.model';
 import {inject, Injectable} from '@angular/core';
 import {PolicyDetails} from '../../models/policy.model';
-import {LoadAllPolicies} from './policy-product.action';
+import {LoadAllPolicies, PostListBeneficiaries} from './policy-product.action';
 import {PolicyProductService} from '../../services/policy-product.service';
 import {map, tap} from 'rxjs';
 import {HttpResponseBody} from '../../models/http-body.model';
@@ -18,6 +18,11 @@ export class PolicyProductState {
   @Selector()
   static getPolicyDetailsList(state: PolicyStateModel): PolicyDetails[] {
     return structuredClone(state.policyList);
+  }
+
+  @Selector()
+  static getPolicyBeneficiaries(state: PolicyStateModel): any {
+    return structuredClone(state.policyBeneficiaries);
   }
 
   @Action(LoadAllPolicies)
@@ -57,12 +62,29 @@ export class PolicyProductState {
           }
         }));
 
+        const policyBeneficiaries: any = response.data.map((item: any)=> ({
+          policyNo: item.policyNo,
+          beneficiaryList: item.beneficiaryList,
+        }))
+
         ctx.setState({
           ...state,
-          policyList: transformedPolicies
+          policyList: transformedPolicies,
+          policyBeneficiaries: policyBeneficiaries,
         });
       }),
       map((response: HttpResponseBody) => response.message)
+    );
+  }
+
+  @Action(PostListBeneficiaries)
+  postListBeneficiaries(ctx: StateContext<PolicyStateModel>, { payload }: PostListBeneficiaries) {
+    return this.policyProductService.postListBeneficiaries(payload).pipe(
+      map((response: HttpResponseBody) => {
+        return {
+          message: response.message
+        };
+      })
     );
   }
 }

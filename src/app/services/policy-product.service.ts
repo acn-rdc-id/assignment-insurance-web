@@ -17,4 +17,11 @@ export class PolicyProductService {
       this.apiUrl + POLICY_SERVICING_API.GET_ALL_POLICIES
     );
   }
+
+  postListBeneficiaries(payload: any): Observable<HttpResponseBody> {
+    return this.http.post<HttpResponseBody>(
+      this.apiUrl + POLICY_SERVICING_API.CREATE_BENEFICIARIES,
+      payload
+    );
+  }
 }
