@@ -26,7 +26,7 @@ export const routes: Routes = [
     canActivate: [userAuthGuard]
   },
   {
-    path: 'policy-servicing-details/:id',
+    path: 'policy-servicing-details/:policyNo',
     loadComponent: () => import('./components/policy-servicing-details/policy-servicing-details.component').then(m => m.PolicyServicingDetailsComponent),
     canActivate: [userAuthGuard]
   },

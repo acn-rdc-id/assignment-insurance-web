@@ -70,7 +70,7 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
   usPersonError: boolean = false;
   emailError: boolean = false;
   idNoError: boolean = false;
-  submitted = false;
+  submitted: boolean = false;
 
   readonly gender = ['Male', 'Female'];
   FIELD_OPTIONS = {

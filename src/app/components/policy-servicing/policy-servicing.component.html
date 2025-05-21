@@ -15,11 +15,11 @@
           <table nxTable nxSort (sortChange)="sortTable($event)">
             <thead>
               <tr nxTableRow>
-                <th nxHeaderCell nxSortHeaderCell="referenceNumber">Reference No</th>
                 <th nxHeaderCell nxSortHeaderCell="policyNumber">Policy No</th>
                 <th nxHeaderCell nxSortHeaderCell="insuredName">Insured Name</th>
                 <th nxHeaderCell>Premium Amount</th>
-                <th nxHeaderCell nxSortHeaderCell="dueDate">Due Date</th>
+                <th nxHeaderCell nxSortHeaderCell="effectiveDate">Effective Date</th>
+                <th nxHeaderCell nxSortHeaderCell="expiryDate">Expiry Date</th>
                 <th nxHeaderCell nxSortHeaderCell="status">Status</th>
 <!--                <th nxHeaderCell>Action</th>-->
               </tr>
@@ -28,11 +28,11 @@
               @for (item of policyProduct; track item) {
                 <tr nxTableRow>
                   <td nxTableCell style="color: deepskyblue">
-                    <a (click)="goToDetail(item.plan.policyId)">{{ item.plan.referenceNumber }}</a>
+                    <a (click)="goToDetail(item.plan.policyNo)">{{item.plan.policyNo}}</a>
                   </td>
-                  <td nxTableCell style="color: grey">{{item.plan.policyNo}}</td>
                   <td nxTableCell>{{item.personalDetails.fullName}}</td>
                   <td nxTableCell>{{item.plan.premiumAmount}}</td>
+                  <td nxTableCell>{{ item.plan.startDate | date: 'dd MMM yyyy' }}</td>
                   <td nxTableCell>{{ item.plan.endDate | date: 'dd MMM yyyy' }}</td>
                   <td nxTableCell>
                     <nx-badge [ngClass]="{ 'badge-green': item.plan.status === 'ACTIVE' }">

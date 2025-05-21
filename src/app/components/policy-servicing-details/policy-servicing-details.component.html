@@ -61,29 +61,161 @@
             [scrollIntoViewOptions]="scrollIntoViewOptions"
           >
             <nx-expansion-panel-header>
-              <nx-expansion-panel-title
-              >Insured Info</nx-expansion-panel-title
-              >
+            <nx-expansion-panel-title>Insured Info</nx-expansion-panel-title>
             </nx-expansion-panel-header>
-            <h2 nxHeadline="subsection-medium" class="nx-margin-bottom-2m">
 
-            </h2>
-            <p nxCopytext="normal">Lorem ipsum</p>
+            <form [formGroup]="insuredForm" (ngSubmit)="onSaveInsuredInfo()" >
+
+              <div nxRow class="nx-margin-bottom-2m">
+                <div nxCol="6">
+                <nx-formfield label="Title">
+                  <nx-dropdown formControlName="title">
+                    @for (field of FIELD_OPTIONS.title; track field) {
+                      <nx-dropdown-item value="{{ field.value }}">{{ field.label }}</nx-dropdown-item>
+                    }
+                  </nx-dropdown>
+                </nx-formfield>
+                </div>
+
+                <div nxCol="6">
+                  <nx-formfield label="Full Name">
+                    <input nxInput formControlName="fullName" [readOnly]="!editMode"/>
+                  </nx-formfield>
+                </div>
+              </div>
+
+              <div nxRow class="nx-margin-bottom-2m">
+                <div nxCol="6">
+                  <nx-formfield label="Email">
+                    <input nxInput formControlName="email" type="email" [readOnly]="!editMode"/>
+                  </nx-formfield>
+                </div>
+
+                <div nxCol="6">
+                  <nx-formfield label="Identification Number">
+                    <input nxInput formControlName="identificationNo"/>
+                  </nx-formfield>
+                </div>
+              </div>
+
+              <div nxRow class="nx-margin-bottom-2m">
+                <div nxCol="6">
+                  <nx-formfield label="Gender">
+                    <input nxInput formControlName="gender"/>
+                  </nx-formfield>
+                </div>
+
+                <div nxCol="6">
+                  <nx-formfield label="Date Of Birth">
+                    <input nxInput formControlName="dob"/>
+                  </nx-formfield>
+                </div>
+              </div>
+
+              <div nxRow class="nx-margin-bottom-2m">
+                <div nxCol="6">
+                  <!-- <nx-formfield label="Country Code">
+                    <input nxInput formControlName="countryCode" [readOnly]="!editMode"/>
+                  </nx-formfield> -->
+                  <nx-formfield label="Country Code">
+                  <nx-dropdown formControlName="countryCode">
+                    @for (field of FIELD_OPTIONS.countryCode; track field) {
+                      <nx-dropdown-item value="{{ field.value }}">{{ field.label }}</nx-dropdown-item>
+                    }
+                  </nx-dropdown>
+                </nx-formfield>
+                </div>
+
+                <div nxCol="6">
+                  <nx-formfield label="Mobile Number">
+                    <input nxInput formControlName="phoneNo" [readOnly]="!editMode"/>
+                  </nx-formfield>
+                </div>
+              </div>
+
+              <div nxRow class="nx-margin-bottom-2m">
+                <div nxCol="6">
+                  <nx-formfield label="Country of Birth">
+                    <input nxInput formControlName="countryOfBirth"/>
+                  </nx-formfield>
+                </div>
+
+                <div nxCol="6">
+                  <nx-formfield label="Nationality">
+                    <input nxInput formControlName="nationality"/>
+                  </nx-formfield>
+                </div>
+              </div>
+
+              <!-- <div nxRow class="nx-margin-bottom-2m">
+                <div nxCol="6">
+                  <nx-formfield label="Occupation">
+                    <input nxInput formControlName="occupation"/>
+                  </nx-formfield>
+                </div>
+
+                <div nxCol="6">
+                  <nx-formfield label="Purpose of Transaction">
+                    <input nxInput formControlName="purposeOfTransaction"/>
+                  </nx-formfield>
+                </div>
+              </div> -->
+
+              <div class="nx-margin-top-2m">
+                @if (!editMode) {
+                  <button nxButton="secondary" type="button" aria-label="Edit Insured Info" (click)="openEdit()">
+                    Edit
+                  </button>
+                }
+
+                @if (editMode) {
+                  <button nxButton="primary" type="submit" [disabled]="insuredForm.invalid || !insuredForm.dirty">
+                    Save Changes
+                  </button>
+                  <button nxButton="secondary" type="button" (click)="onCancelEdit()">
+                    Cancel
+                  </button>
+                }
+              </div>
+
+              <!-- <div class="nx-margin-top-2m">
+                <button nxButton="primary small" type="submit" [disabled]="insuredForm.invalid || !insuredForm.dirty">Save Changes</button>
+              </div>
+               -->
+            </form>
+
           </nx-expansion-panel>
           <nx-expansion-panel
             [scrollIntoViewActive]="scrollIntoViewActive"
             [scrollIntoViewOptions]="scrollIntoViewOptions"
           >
             <nx-expansion-panel-header>
-              <nx-expansion-panel-title>Beneficiary</nx-expansion-panel-title>
+              <nx-expansion-panel-title>
+                Beneficiary
+                <button
+                  nxFormfieldAppendix
+                  nxIconButton="tertiary small"
+                  nxPopoverDirection="right"
+                  [nxPopoverTriggerFor]="beneficiaryInfo"
+                  nxPopoverTrigger="hover"
+                  type="button"
+                  aria-label="More information"
+                >
+                  <nx-icon name="info-circle" size="s" aria-hidden="true" style="color: #0077a6"> </nx-icon>
+                </button>
+              </nx-expansion-panel-title>
             </nx-expansion-panel-header>
             <h2 nxHeadline="subsection-small" class="nx-margin-bottom-2m">
-
+              <app-policy-servicing-beneficiary></app-policy-servicing-beneficiary>
             </h2>
-            <p nxCopytext="normal">Lorem ipsum</p>
           </nx-expansion-panel>
         </nx-accordion>
       </p>
     </nx-tab>
   </nx-tab-group>
 </div>
+<nx-popover #beneficiaryInfo>
+  <div style="max-width: 300px">
+    You can add up to 2 beneficiaries only.
+  </div>
+</nx-popover>

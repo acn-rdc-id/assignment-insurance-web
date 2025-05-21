@@ -1,13 +1,15 @@
 import {Action, Selector, State, StateContext} from '@ngxs/store';
 import {inject, Injectable} from '@angular/core';
 import {
-  PostQuotationPlans,
   GetTermsAndConditions,
+  PostPayment,
+  PostPolicyApplication,
+  PostQuotationPlans,
   SelectPlan,
   SubmitInitialInfoSuccess,
   SubmitPersonalDetailsInfo,
   SubmitPolicyPurchaseStep,
-  SubmitPolicyPurchaseSubStep, PostPolicyApplication, PostPayment
+  SubmitPolicyPurchaseSubStep
 } from './policy-purchase.action';
 import {POLICY_PURCHASE_STATE_DEFAULTS, PolicyPurchaseStateModel} from './policy-purchase.state.model';
 import {PolicyDetails, PolicyPersonalDetails, PolicyPurchaseStep} from '../../models/policy.model';
@@ -17,13 +19,13 @@ import {formatCamelCase} from '../../utils/string-utils';
 import {HttpResponseBody} from '../../models/http-body.model';
 
 @State<PolicyPurchaseStateModel>({
-  name: 'PolicyState',
+  name: 'PolicyPurchaseState',
   defaults: POLICY_PURCHASE_STATE_DEFAULTS
 })
 
 @Injectable()
 export class PolicyPurchaseState {
-  private policyService:PolicyService =  inject(PolicyService);
+  private policyService:PolicyService = inject(PolicyService);
 
   @Selector()
   static getGender(state: PolicyPurchaseStateModel): string | undefined {
@@ -255,12 +257,14 @@ export class PolicyPurchaseState {
         const state: PolicyPurchaseStateModel = ctx.getState();
 
         ctx.setState({
+          ...state,
           quotationDetails: {
             ...state.quotationDetails,
             quotationId: response.data.id,
             premiumMode: response.data.planResponseDto.premiumMode,
           }
         });
+
       }),
       map((response: any) => response.message)
     );

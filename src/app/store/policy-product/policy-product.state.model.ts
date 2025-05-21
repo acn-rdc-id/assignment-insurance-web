@@ -1,7 +1,8 @@
-import { PolicyDetails } from '../../models/policy.model';
+import {PolicyDetails} from '../../models/policy.model';
 
 export interface PolicyStateModel {
   policyList: PolicyDetails[];
+  policyBeneficiaries: any;
 }
 
 export const POLICY_PRODUCT_STATE_DEFAULT: PolicyStateModel = {
@@ -30,4 +31,13 @@ export const POLICY_PRODUCT_STATE_DEFAULT: PolicyStateModel = {
       },
     },
   ],
+  policyBeneficiaries: [
+    {
+      id: '',
+      beneficiaryName: '',
+      relationshipToInsured: '',
+      share: '',
+      action: ''
+    }
+  ]
 };

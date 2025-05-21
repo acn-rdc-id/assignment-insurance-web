@@ -1,0 +1,83 @@
+@if (submitted && (beneficiaryDetailsForm.invalid || this.isBeneficiaryError)) {
+  <nx-error class="nx-margin-bottom-xs"> {{ errorMessage }}</nx-error>
+}
+
+@if (successMessage) {
+  <nx-message context="success">
+    Beneficiaries updated successfully.
+  </nx-message>
+}
+
+<form [formGroup]="beneficiaryDetailsForm" (ngSubmit)="submitForm()" style="margin-top: 1rem;">
+  <div nxLayout="list">
+    <div nxRow>
+      <div nxCol="12,12,12,12" class="docs-grid-colored-col" >
+        <table nxTable class="nx-margin-bottom-xs">
+          <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell><span>Full Name</span></th>
+            <th nxHeaderCell><span>Relationship</span></th>
+            <th nxHeaderCell><span>Shares</span></th>
+            <th nxHeaderCell></th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (control of formArray.controls; track control; let i = $index) {
+              <tr nxTableRow [formGroup]="control">
+                <td nxTableCell>
+                  <nx-formfield>
+                    <input nxInput placeholder="e.g. John Doe" formControlName="beneficiaryName" required />
+                  </nx-formfield>
+                </td>
+                <td nxTableCell>
+                  <nx-formfield
+                    appearance="outline"
+                    floatLabel="always"
+                  >
+                    <nx-dropdown formControlName="relationshipToInsured">
+                      @for (field of RELATIONSHIP_OPTIONS; track field;) {
+                        <nx-dropdown-item [value]="field">{{ field }}</nx-dropdown-item>
+                      }
+                    </nx-dropdown>
+                  </nx-formfield>
+                </td>
+                <td nxTableCell>
+                  <nx-formfield>
+                    <input
+                      nxInput
+                      type="number"
+                      formControlName="share"
+                      placeholder="e.g. 50"
+                      min="0"
+                      max="100"
+                      required
+                    />
+                  </nx-formfield>
+                </td>
+                <td nxTableCell>
+                  <button nxPlainButton type="button" (click)="removeRow(i)">
+                    <nx-icon name="trash-o" aria-hidden="true" style="color: #d32f2f" title="Delete beneficiary"></nx-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+      </table>
+      </div>
+    </div>
+    <div nxRow>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" >
+        <button nxPlainButton type="button" (click)="addRow()" [disabled]="formArray.length >= 2">
+          <nx-icon name="plus" nxIconPositionStart aria-hidden="true"></nx-icon>
+          Add Beneficiary
+        </button>
+      </div>
+      <div nxCol="12,12,12,6" class="docs-grid-colored-col" style="text-align: right; align-content: end">
+        <button nxButton="danger" type="submit">
+          <nx-icon name="arrow-right" nxIconPositionEnd aria-hidden="true"></nx-icon>
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
