@@ -2,7 +2,7 @@ import {Action, Selector, State, StateContext} from '@ngxs/store';
 import {POLICY_PRODUCT_STATE_DEFAULT, PolicyStateModel,} from './policy-product.state.model';
 import {inject, Injectable} from '@angular/core';
 import {PolicyDetails} from '../../models/policy.model';
-import {LoadAllPolicies, PostListBeneficiaries} from './policy-product.action';
+import {LoadAllPolicies, PostListBeneficiaries, UpdateInsuredInfo} from './policy-product.action';
 import {PolicyProductService} from '../../services/policy-product.service';
 import {map, tap} from 'rxjs';
 import {HttpResponseBody} from '../../models/http-body.model';
@@ -59,6 +59,8 @@ export class PolicyProductState {
             cigarettesNo: item.applicationResponseDto.cigarettesNo,
             occupation: item.applicationResponseDto.occupation,
             purposeOfTransaction: item.applicationResponseDto.purposeOfTransaction,
+            title: item.applicationResponseDto.title,
+            countryCode: item.applicationResponseDto.countryCode
           }
         }));
 
@@ -87,4 +89,27 @@ export class PolicyProductState {
       })
     );
   }
+
+@Action(UpdateInsuredInfo)
+updateInsuredInfo(ctx: StateContext<PolicyStateModel>, action: UpdateInsuredInfo) {
+  const state = ctx.getState();
+  const { policyNo, updatedInfo } = action;
+
+  const updatedPolicies = state.policyList.map(policy =>
+    policy.quotationNumber === policyNo
+      ? {
+          ...policy,
+          personalDetails: {
+            ...policy.personalDetails,
+            ...updatedInfo
+          }
+        }
+      : policy
+  );
+
+  ctx.patchState({
+    ...state,
+    policyList: updatedPolicies
+  });
+}
 }
