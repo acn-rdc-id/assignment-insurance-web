@@ -1,0 +1,31 @@
+<p>claim-list works!</p>
+<div NxCol="12,6,6,6">
+<table NxTable class="dtc__table">
+
+    <thead class="border-bottom">
+        <tr class="dtc__tr">
+            <th NxTableHeader class="dtc__thead">No</th>
+            <th NxTableHeader class="dtc__thead">Claim Type</th>
+            <th NxTableHeader class="dtc__thead">Policy ID</th>
+            <th NxTableHeader class="dtc__thead">Claim Status</th>
+            <th NxTableHeader class="dtc__thead">Claim Date</th>
+            <th NxTableHeader class="dtc__thead">Details</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    @for(items of try; track $index){
+        <tr class="dtc__tr">
+            <td NxTableCell class="dtc__td">{{$index  + 1}}</td>
+            <td NxTableCell class="dtc__td">{{items.claimType}}</td>
+            <td NxTableCell class="dtc__td">{{items.policyId}}</td>
+            <td NxTableCell class="dtc__td">{{items.claimStatus}}</td>
+            <td NxTableCell class="dtc__td">{{items.claim_date}}</td>
+            <td NxTableCell class="dtc__td" ><button (click)="onButtonClick()">👁</button></td>
+        </tr>
+    
+
+    }
+    </tbody>
+</table>
+</div>

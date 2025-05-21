@@ -98,3 +98,7 @@ export interface PolicySummary {
     isRequired: number;
     status: string;
   }
+
+  export interface Claims {
+    
+  }

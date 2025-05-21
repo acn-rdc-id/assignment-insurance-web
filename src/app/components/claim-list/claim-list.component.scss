@@ -1,0 +1,118 @@
+/* Base table styling */
+// table {
+//   width: 100%;
+//   border-collapse: collapse;
+//   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+//   font-size: 16px;
+//   background-color: #fff;
+//   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+//   border-radius: 8px;
+//   overflow: hidden;
+// }
+
+table{
+  overflow: hidden;
+}
+/* Table header */
+thead tr{
+  background-color: #ffffff;
+  text-align: center;
+  color: gray;
+  border-bottom: 2px solid #414141;
+}
+
+.border-bottom{
+  border-bottom: 2px solid #414141;
+}
+
+th, td {
+  padding: 12px 16px;  
+  border-bottom: 2px ;
+}
+
+/* Zebra striping for rows */
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.border-bottom {
+  border-bottom: 2px solid #414141;
+}
+
+/* Hover effect */
+tbody tr:hover {
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+    @media (min-width: 991.98px) {
+    .dtc__table{
+        display: table;
+        width: 100%;
+        background-color: #ffffff;
+        border-bottom: 2px solid #414141;
+        }
+    }
+
+    @media (min-width: 991.98px) {
+    .dtc__th-label {
+        position: relative;
+        display: inline-block;
+        padding-right: 24px;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 22px;
+        }
+    }
+
+    @media (min-width: 991.98px) {
+    .dtc__tr {
+        display: table-row;
+    }
+    }
+
+    @media (min-width: 991.98px) {
+    .dtc__td {
+        padding-left: 20px;
+        padding: 20px 0;
+        color: gray
+        
+    }
+}
+
+/* Responsive handling */
+@media screen and (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 15px;
+    border: 1px solid #ffffff;
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  td {
+    padding-left: 50%;
+    position: relative;
+    text-align: left;
+  }
+
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    font-weight: bold;
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+
+
+}
+

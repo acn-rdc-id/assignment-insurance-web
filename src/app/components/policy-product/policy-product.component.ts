@@ -11,10 +11,11 @@ import {MessageModalData} from '../../models/message-modal-data.model';
 import {MessageModalComponent} from '../message-modal/message-modal.component';
 import {NxDialogService, NxModalRef} from '@aposin/ng-aquila/modal';
 import {Subject} from 'rxjs';
+import { ClaimListComponent } from '../claim-list/claim-list.component';
 
 @Component({
   selector: 'app-policy-product',
-  imports: [NxLayoutComponent, NxColComponent, NxRowComponent, NxLinkComponent],
+  imports: [NxLayoutComponent, NxColComponent, NxRowComponent, NxLinkComponent,ClaimListComponent],
   templateUrl: './policy-product.component.html',
   styleUrl: './policy-product.component.scss',
 })
