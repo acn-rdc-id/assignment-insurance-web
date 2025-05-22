@@ -54,7 +54,10 @@ export class PolicyClaimState {
       map((res) => {
         ctx.setState({
           ...state,
-          policyClaim: res.data.policyClaim,
+          policyClaim: {
+            policyId: res.data.policyId,
+            claimPolicyDocument: res.data.claimPolicyDocument,
+          },
           mainSteps: [
             { path: 'claim-selection', step: 1 },
             { path: 'claim-upload', step: 2 },
