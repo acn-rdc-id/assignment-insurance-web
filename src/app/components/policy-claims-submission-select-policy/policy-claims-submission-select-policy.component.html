@@ -1,0 +1,46 @@
+<body>
+  <div nxLayout="grid nogutters" class="form-container">
+    <div nxRow class="grid-row">
+      <form [formGroup]="infoForm" (ngSubmit)="onNext()">
+        <div nxRow class="nx-margin-bottom-m">
+          <div>
+            <nx-formfield
+              label="Policy Id"
+              appearance="outline"
+              floatLabel="always"
+            >
+              <nx-dropdown formControlName="policyId">
+                @for (field of policyId; track field;) {
+                <nx-dropdown-item value="{{ field }}">{{
+                  field
+                }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+          </div>
+
+          @if (infoForm.get('policyId')?.value) {
+          <div>
+            <nx-formfield
+              label="Type of Claim"
+              appearance="outline"
+              floatLabel="always"
+            >
+              <nx-dropdown formControlName="typeOfClaim">
+                @for (field of typeOfClaim; track field;) {
+                <nx-dropdown-item value="{{ field }}">{{
+                  field
+                }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+          </div>
+          }
+        </div>
+        <button nxButton="primary" type="submit" [disabled]="!infoForm.valid">
+          Next
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
