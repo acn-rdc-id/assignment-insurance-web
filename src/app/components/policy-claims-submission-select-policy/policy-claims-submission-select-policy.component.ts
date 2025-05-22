@@ -75,7 +75,6 @@ export class PolicyClaimsSubmissionSelectPolicyComponent
         this.policyClaim = this.store.selectSnapshot(
           PolicyClaimState.getPolicyClaimList
         );
-
         this.policyId = this.policyClaim.policyId;
         this.typeOfClaim = this.policyClaim.claimPolicyDocument.map(
           (it) => it.claimTypeName

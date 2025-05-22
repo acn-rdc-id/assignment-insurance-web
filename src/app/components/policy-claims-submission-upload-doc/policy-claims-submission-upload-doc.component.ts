@@ -43,7 +43,7 @@ const successToastConfig: NxMessageToastConfig = {
 };
 
 const noFilesToastConfig: NxMessageToastConfig = {
-  duration: 7000,
+  duration: 9000,
   context: 'info',
   announcementMessage: 'Information: Files not uploaded.',
 };
@@ -134,13 +134,6 @@ export class PolicyClaimsSubmissionUploadDocComponent
         return files.length > 0;
       });
 
-    const errors = this.validateFileNames();
-
-    if (errors.length > 0) {
-      this.messageToastService.open(errors.join('\n'), noFilesToastConfig);
-      return;
-    }
-
     // show toast if no files to upload
     if (uploadersWithFilesToUpload.length === 0) {
       this.messageToastService.open(
@@ -152,6 +145,12 @@ export class PolicyClaimsSubmissionUploadDocComponent
         'Must upload all required documents!',
         noFilesToastConfig
       );
+    } else if (this.validateFileNames().length !== 0) {
+      const errors = this.validateFileNames();
+      if (errors.length > 0) {
+        this.messageToastService.open(errors.join('\n'), noFilesToastConfig);
+        return;
+      }
     } else if (uploadersWithFilesToUpload.length === this.requiredDoc?.length) {
       this.uploadFilesForUploaders(uploadersWithFilesToUpload);
     }
@@ -169,12 +168,11 @@ export class PolicyClaimsSubmissionUploadDocComponent
           errors.push(`Please upload a file for "${doc}".`);
         } else {
           const expectedName = doc.toLowerCase().replace(/\s+/g, '');
-          const fileName = files[0].name;
-          //  const fileName = files[0].name.toLowerCase().replace(/\s+/g, '');
+          const fileName = files[0].name.toLowerCase().replace(/\s+/g, '');
 
           if (!fileName.includes(expectedName)) {
             errors.push(
-              `Filename for "${fileName}" must be the same as "${doc}".`
+              `Filename for "${files[0].name}" must be the same as "${doc}".`
             );
           }
         }
