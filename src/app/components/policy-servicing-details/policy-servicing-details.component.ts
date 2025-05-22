@@ -179,7 +179,9 @@ onSaveInsuredInfo(): void {
     this.insuredForm.markAllAsTouched();
     return;
   }
-    const updatedInfo = this.insuredForm.value;
+    // const updatedInfo = this.insuredForm.value;
+    const { fullName, title, countryCode, phoneNo, email } = this.insuredForm.getRawValue();
+    const updatedInfo = { fullName, title, countryCode, phoneNo, email };
     
     this.store.dispatch(new UpdateInsuredInfo(this.currentPolicyNo!, updatedInfo)).subscribe(() => {
       this.editMode = false;

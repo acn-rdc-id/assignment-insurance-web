@@ -24,4 +24,10 @@ export class PolicyProductService {
       payload
     );
   }
+
+  updateInsuredInfo(policyNo: string, updatedInfo: any): Observable<HttpResponseBody> {
+    console.log('Link log: ', this.apiUrl + POLICY_SERVICING_API.UPDATE_INSURED_INFO(policyNo), updatedInfo)
+    return this.http.patch<HttpResponseBody>(
+      this.apiUrl + POLICY_SERVICING_API.UPDATE_INSURED_INFO(policyNo), updatedInfo);
+  }
 }
