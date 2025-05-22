@@ -9,7 +9,7 @@ export const POLICY_SERVICING_API = {
   GET_ALL_POLICIES: 'policy/getAll',
   GET_POLICY_DETAILS: 'get-policy-details',
   CREATE_BENEFICIARIES: 'policy/beneficiary',
-  UPDATE_INSURED_INFO: (policyId: string) => `policy/${policyId}`
+  UPDATE_INSURED_INFO: (policyId: number) => `policy/${policyId}`
 };
 
 export const POLICY_CLAIM_API = {

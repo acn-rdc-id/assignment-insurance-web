@@ -10,5 +10,5 @@ export class PostListBeneficiaries {
 
 export class UpdateInsuredInfo {
   static readonly type = '[Policy] Update Insured Info';
-  constructor(public policyNo: string, public updatedInfo: any) {}
+  constructor(public policyId: number, public updatedInfo: any) {}
 }

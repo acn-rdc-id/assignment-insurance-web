@@ -34,6 +34,7 @@ export interface PolicyPlan {
 
 export interface PolicyPersonalDetails {
   [key: string]: any;
+  policyId?: number,
   title?: string;
   fullName?: string;
   gender?: string;

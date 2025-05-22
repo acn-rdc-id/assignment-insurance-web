@@ -47,6 +47,7 @@ export class PolicyProductState {
             policyId: item.id,
           },
           personalDetails: {
+            policyId: item.id,
             fullName: item.applicationResponseDto.fullName,
             gender: item.applicationResponseDto.gender,
             nationality: item.applicationResponseDto.nationality,
@@ -92,14 +93,14 @@ export class PolicyProductState {
 
 @Action(UpdateInsuredInfo)
 updateInsuredInfo(ctx: StateContext<PolicyStateModel>, action: UpdateInsuredInfo) {
-  const { policyNo, updatedInfo } = action;
+  const { policyId, updatedInfo } = action;
   const state = ctx.getState();
 
-  return this.policyProductService.updateInsuredInfo(policyNo, updatedInfo).pipe(
+  return this.policyProductService.updateInsuredInfo(policyId, updatedInfo).pipe(
     tap((response: HttpResponseBody) => {
       if (response.status === 'Success' && response.code === 200) {
         const updatedPolicies = state.policyList.map(policy => 
-          policy.quotationNumber === policyNo
+          policy.personalDetails?.policyId === policyId
           ? {
             ...policy,
             personalDetails : {
