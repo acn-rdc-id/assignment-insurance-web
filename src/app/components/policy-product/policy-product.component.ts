@@ -59,6 +59,10 @@ export class PolicyProductComponent implements OnInit, OnDestroy {
     this.router.navigate(['policy-purchase']);
   }
 
+  goToClaimList(): void {
+    this.router.navigate(['claim-list']);
+  }
+
   ngOnDestroy(): void {
     this.unsubscribe$.next('');
     this.unsubscribe$.complete();

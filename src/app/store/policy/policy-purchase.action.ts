@@ -44,3 +44,9 @@ export class SubmitPolicyPurchaseSubStep {
   static readonly type = '[Policy] Submit Inital Policy Purchase Sub Step';
   constructor(public payload: PolicyPurchaseStep) {}
 }
+
+export class getClaimList {
+  static readonly type = '[Claim] Get ClaimList';
+  constructor() {}
+}
+

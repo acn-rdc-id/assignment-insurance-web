@@ -1,33 +1,104 @@
-/* Base table styling */
+// /* Base table styling */
 // table {
 //   width: 100%;
 //   border-collapse: collapse;
-//   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+//   padding-top: 3rem;
+//   max-width: 1200px;
+//   //font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 //   font-size: 16px;
 //   background-color: #fff;
-//   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-//   border-radius: 8px;
+//   //border-radius: 8px;
 //   overflow: hidden;
 // }
+$primary-color: grey;
+$text-color: #333;
+$banner-height: 808px;
+$font-size-large: 45px;
+$line-height-tight: 1.2;
 
-table{
-  overflow: hidden;
-}
+
 /* Table header */
-thead tr{
-  background-color: #ffffff;
-  text-align: center;
-  color: gray;
-  border-bottom: 2px solid #414141;
+// thead tr{
+//   background-color: #ffffff;
+//   text-align: center;
+//   color: gray;
+//   border-bottom: 2px solid #414141;
+// }
+
+.nxbutton {
+  display: grid;
+  place-items: center;
+  padding: 12px 28px;
+  background-color: #007ab3;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 25px;
+
+  &:hover,
+  &:focus {
+    background-color: #00527a;
+    outline: none;
+  }
+
+  &:active {
+    background-color: #003f5c;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+
 }
 
-.border-bottom{
-  border-bottom: 2px solid #414141;
+.button-center-container {
+  display: grid;
+  place-items: center;
 }
+
+.policy-servicing-banner {
+  height: $banner-height;
+  color: $text-color;
+  display: flex;
+  justify-content: center;
+  background-size: cover;
+  background-image: url('../../../assets/content-bg.jpg');
+}
+
+.banner-content {
+  position: absolute;
+  text-align: center;
+  color: white;
+  padding: 10px;
+  margin-top: 1rem;
+}
+
+.banner-title {
+  font-size: $font-size-large;
+  line-height: $line-height-tight;
+  margin: 0;
+  color: #333;
+}
+
+.tab-content {
+  padding-top: 10rem;
+
+}
+
 
 th, td {
-  padding: 12px 16px;  
+  padding:10px 20px;  
   border-bottom: 2px ;
+  text-align: left;
+}
+
+td{
+  padding-left: 20px;
 }
 
 /* Zebra striping for rows */
@@ -47,8 +118,10 @@ tbody tr:hover {
 
     @media (min-width: 991.98px) {
     .dtc__table{
+        padding-top: 3rem;
         display: table;
         width: 100%;
+        max-width: 1200px;
         background-color: #ffffff;
         border-bottom: 2px solid #414141;
         }
@@ -73,15 +146,15 @@ tbody tr:hover {
 
     @media (min-width: 991.98px) {
     .dtc__td {
-        padding-left: 20px;
-        padding: 20px 0;
-        color: gray
-        
+        padding-left: 0px;
+        padding: 20px 20px;
+        color: gray;
+        text-align: left;
     }
 }
 
 /* Responsive handling */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 991.98px) {
   table, thead, tbody, th, td, tr {
     display: block;
   }
@@ -98,7 +171,7 @@ tbody tr:hover {
   }
 
   td {
-    padding-left: 50%;
+    padding-left: 20px;
     position: relative;
     text-align: left;
   }
@@ -113,6 +186,22 @@ tbody tr:hover {
     white-space: nowrap;
   }
 
+.scroll-container {
+  overflow-x: auto;
+  display: block;
+}
+}
 
+.green {
+  background-color: rgb(0, 255, 51);
+  border-radius: 12px;
+}
+
+.yellow {
+  background-color: rgb(255, 255, 0);
+}
+
+.red{
+  background-color: rgb(255, 0, 0);
 }
 

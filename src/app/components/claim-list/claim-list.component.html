@@ -1,31 +1,55 @@
-<p>claim-list works!</p>
-<div NxCol="12,6,6,6">
-<table NxTable class="dtc__table">
+<div nxCol="12,12,12,12" class="policy-servicing-banner">
+  <div class="banner-content">
+    <div class="banner-title">
+      <p>Claims</p>
+    </div>
+  </div>
+<div>
+    <div class="tab-content">
+        <nx-tab-group>
+            
+                <nx-tab [label]="'Allianz Life (' + (claimList?.length || 0) + ')'">
+                    <div class="button-center-container">
+                        <button class="nxbutton" click="onButtonClick('new claim')">SUBMIT A CLAIM</button>
+                    </div>
+<table NxTable class="dtc__table"  nxSort (sortChange)="sortTable($event)">
 
-    <thead class="border-bottom">
+    <thead>
         <tr class="dtc__tr">
-            <th NxTableHeader class="dtc__thead">No</th>
-            <th NxTableHeader class="dtc__thead">Claim Type</th>
-            <th NxTableHeader class="dtc__thead">Policy ID</th>
-            <th NxTableHeader class="dtc__thead">Claim Status</th>
-            <th NxTableHeader class="dtc__thead">Claim Date</th>
-            <th NxTableHeader class="dtc__thead">Details</th>
+            <th NxTableHeader class="dtc__thead" >No</th>
+            <th NxTableHeader class="dtc__thead" nxSortHeaderCell="claimType">Claim Type</th>
+            <th NxTableHeader class="dtc__thead" nxSortHeaderCell="policyId">Policy ID</th>
+            <th NxTableHeader class="dtc__thead" nxSortHeaderCell="claim_date">Claim Date</th>
+            <th NxTableHeader class="dtc__thead" nxSortHeaderCell="claimStatus">Claim Status</th>
+            <th NxTableHeader class="dtc__thead" >Details</th>
         </tr>
     </thead>
     <tbody>
 
-    @for(items of try; track $index){
+    @for(items of claimList; track $index){
         <tr class="dtc__tr">
             <td NxTableCell class="dtc__td">{{$index  + 1}}</td>
             <td NxTableCell class="dtc__td">{{items.claimType}}</td>
             <td NxTableCell class="dtc__td">{{items.policyId}}</td>
-            <td NxTableCell class="dtc__td">{{items.claimStatus}}</td>
             <td NxTableCell class="dtc__td">{{items.claim_date}}</td>
-            <td NxTableCell class="dtc__td" ><button (click)="onButtonClick()">👁</button></td>
+            @if (items.claimStatus == 'Pending') {
+                <td NxTableCell class="dtc__td" ><nx-badge class="yellow">{{items.claimStatus}}</nx-badge></td>
+            }@else if (items.claimStatus == 'Approved') {
+                <td NxTableCell class="dtc__td" ><nx-badge class="green">{{items.claimStatus}}</nx-badge></td>
+            }@else if (items.claimStatus == 'Rejected') {
+                <td NxTableCell class="dtc__td" ><nx-badge class="red">{{items.claimStatus}}</nx-badge></td>
+            }
+            <td NxTableCell class="dtc__td" ><button (click)="onButtonClick('detail')">👁</button></td>
         </tr>
     
 
     }
     </tbody>
-</table>
+    </table>
+        </nx-tab>
+</nx-tab-group>
+    </div>
+
+</div>
+
 </div>

@@ -1,6 +1,7 @@
 import {Action, Selector, State, StateContext} from '@ngxs/store';
 import {inject, Injectable} from '@angular/core';
 import {
+  getClaimList,
   GetTermsAndConditions,
   PostPayment,
   PostPolicyApplication,
@@ -11,21 +12,30 @@ import {
   SubmitPolicyPurchaseStep,
   SubmitPolicyPurchaseSubStep
 } from './policy-purchase.action';
-import {POLICY_PURCHASE_STATE_DEFAULTS, PolicyPurchaseStateModel} from './policy-purchase.state.model';
+import {ClaimListStateModel, POLICY_PURCHASE_STATE_DEFAULTS, PolicyPurchaseStateModel} from './policy-purchase.state.model';
 import {PolicyDetails, PolicyPersonalDetails, PolicyPurchaseStep} from '../../models/policy.model';
 import {map, tap} from 'rxjs';
 import {PolicyService} from '../../services/policy.service';
 import {formatCamelCase} from '../../utils/string-utils';
 import {HttpResponseBody} from '../../models/http-body.model';
+import { ClaimService } from '../../services/claim.service';
+import { Claims } from '../../models/claim.model';
 
 @State<PolicyPurchaseStateModel>({
   name: 'PolicyPurchaseState',
   defaults: POLICY_PURCHASE_STATE_DEFAULTS
 })
 
+
 @Injectable()
 export class PolicyPurchaseState {
   private policyService:PolicyService = inject(PolicyService);
+  private claimService = inject(ClaimService);
+
+  @Selector()
+  static getClaimList(state: ClaimListStateModel): Claims  {
+    return state.claimList;
+  }
 
   @Selector()
   static getGender(state: PolicyPurchaseStateModel): string | undefined {
@@ -280,4 +290,26 @@ export class PolicyPurchaseState {
       })
     );
   }
+
+  @Action(getClaimList)
+      getClaimList(ctx: StateContext<ClaimListStateModel>) {
+        return this.claimService.getClaimList().pipe(
+          tap((response: HttpResponseBody) => {
+            const state: ClaimListStateModel = ctx.getState();
+            const transformedClaims: Claims = response.data.map((item: any) => ({
+              claimId: item.claimId,
+              policyId: item.policyId,
+              claim_date: item.claim_date,
+              claimStatus: item.claimStatus,
+              claimType: item.claimType,
+              claimdetails: undefined,
+              claimdocuments: undefined,}))
+            ctx.setState({
+              ...state,
+              claimList: transformedClaims || []
+            });
+          }),
+          map((response: HttpResponseBody) => response.message)
+        );
+      }
 }

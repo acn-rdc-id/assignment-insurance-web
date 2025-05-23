@@ -31,6 +31,11 @@ export const routes: Routes = [
     canActivate: [userAuthGuard]
   },
   {
+    path: 'claim-list',
+    loadComponent: () => import('./components/claim-list/claim-list.component').then(m => m.ClaimListComponent),
+    canActivate: [userAuthGuard]
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'

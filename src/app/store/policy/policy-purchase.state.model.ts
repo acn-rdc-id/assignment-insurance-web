@@ -1,3 +1,4 @@
+import { Claims } from "../../models/claim.model";
 import {PolicyDetails, PolicyPlanDto, TermsConditions, PolicyPurchaseStep} from "../../models/policy.model";
 
 export interface PolicyPurchaseStateModel {
@@ -8,6 +9,24 @@ export interface PolicyPurchaseStateModel {
     quotationDetails: PolicyDetails;
     plans: PolicyPlanDto[];
     termsAndConditions: TermsConditions[];
+}
+
+export interface ClaimListStateModel {
+    claimList: Claims,
+    claimdetails?: any,
+    claimdocuments?: any
+}
+
+export const CLAIM_LIST_STATE_DEFAULTS: ClaimListStateModel = {
+    claimList: {
+    claimId: '',
+    policyId: '',
+    claim_date: '',
+    claimStatus: '',
+    claimType: '',
+    claimdetails:undefined,
+    claimdocuments:undefined
+    }
 }
 
 // export const POLICY_PURCHASE_STATE_DEFAULTS: PolicyPurchaseStateModel = {

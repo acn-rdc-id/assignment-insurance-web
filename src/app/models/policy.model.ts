@@ -107,6 +107,4 @@ export interface PolicySummary {
     status: string;
   }
 
-  export interface Claims {
-    
-  }
+ 
