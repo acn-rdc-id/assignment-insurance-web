@@ -1,7 +1,6 @@
 import {Action, Selector, State, StateContext} from '@ngxs/store';
 import {inject, Injectable} from '@angular/core';
 import {
-  getClaimList,
   GetTermsAndConditions,
   PostPayment,
   PostPolicyApplication,
@@ -107,10 +106,9 @@ export class PolicyPurchaseState {
     // quotationDetails.dateOfBirth = payload.dateOfBirth;
     // quotationDetails.quotationNumber = payload.referenceNumber;
     // quotationDetails.age = payload.ageNearestBirthday,
-    const prevPlan = ctx.getState().quotationDetails.plan;
     const updatedDetails = {
       quotationNumber: payload.quotationNumber,
-      plan: prevPlan,
+      plan: undefined,
       personalDetails: {
         // gender: payload.gender,
         // dateOfBirth: payload.dateOfBirth,
@@ -242,15 +240,13 @@ export class PolicyPurchaseState {
     return this.policyService.postQuotationPlans(payload).pipe(
       tap((response: HttpResponseBody) => {
         const state: PolicyPurchaseStateModel = ctx.getState();
-        const existingPlan = ctx.getState().quotationDetails.plan;
         const quotationDetails: PolicyDetails = {
           quotationNumber: response.data.referenceNumber,
           personalDetails: {
             age: response.data.ageNearestBirthday,
             dateOfBirth: response.data.dateOfBirth,
             gender: formatCamelCase(response.data.gender),
-          },
-          plan: existingPlan
+          }
         };
 
         ctx.setState({
@@ -294,25 +290,5 @@ export class PolicyPurchaseState {
     );
   }
 
-  @Action(getClaimList)
-      getClaimList(ctx: StateContext<ClaimListStateModel>) {
-        return this.claimService.getClaimList().pipe(
-          tap((response: HttpResponseBody) => {
-            const state: ClaimListStateModel = ctx.getState();
-            const transformedClaims: Claims = response.data.map((item: any) => ({
-              claimId: item.claimId,
-              policyId: item.policyId,
-              claim_date: item.claim_date,
-              claimStatus: item.claimStatus,
-              claimType: item.claimType,
-              claimdetails: undefined,
-              claimdocuments: undefined,}))
-            ctx.setState({
-              ...state,
-              claimList: transformedClaims || []
-            });
-          }),
-          map((response: HttpResponseBody) => response.message)
-        );
-      }
+
 }

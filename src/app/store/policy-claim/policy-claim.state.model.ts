@@ -1,3 +1,4 @@
+import { Claims } from '../../models/claim.model';
 import {
   ClaimPolicyDocument,
   PolicyClaim,
@@ -10,9 +11,19 @@ export interface PolicyClaimStateModel {
   currentMainStep: PolicyClaimStep;
   selectedPolicyId: string;
   selectedTypeOfClaim: ClaimPolicyDocument;
+  claimList: Claims
 }
 
 export const POLICY_CLAIM_STATE_DEFAULTS: PolicyClaimStateModel = {
+  claimList: {
+    claimId: '',
+    policyId: '',
+    claim_date: '',
+    claimStatus: '',
+    claimType: '',
+    claimdetails:undefined,
+    claimdocuments:undefined
+    },
   policyClaim: {
     policyId: [],
     claimPolicyDocument: [],

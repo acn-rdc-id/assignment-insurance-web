@@ -14,3 +14,8 @@ export class SetPolicyClaimSelection {
   static readonly type = '[POLICY CLAIM] SET SELECTED POLICY CLAIM SELECTION';
   constructor(public payload: any) {}
 }
+
+export class getClaimList {
+  static readonly type = '[Claim] Get ClaimList';
+  constructor() {}
+}

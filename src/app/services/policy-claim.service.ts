@@ -17,4 +17,12 @@ export class PolicyClaimService {
       this.apiUrl + POLICY_CLAIM_API.CREATE_CLAIM_POLICY_DOCUMENT
     );
   }
+
+    getClaimList(): Observable<HttpResponseBody>{
+    return this.http.get<HttpResponseBody>(
+      this.apiUrl + POLICY_CLAIM_API.GET_CLAIM_LIST
+    );
+
+  }
+  
 }

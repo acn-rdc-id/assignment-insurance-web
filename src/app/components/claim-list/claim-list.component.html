@@ -10,7 +10,7 @@
             
                 <nx-tab [label]="'Allianz Life (' + (claimList?.length || 0) + ')'">
                     <div class="button-center-container">
-                        <button class="nxbutton" click="onButtonClick('new claim')">SUBMIT A CLAIM</button>
+                        <button class="nxbutton" (click)="goToSubmit()">SUBMIT A CLAIM</button>
                     </div>
 <table NxTable class="dtc__table"  nxSort (sortChange)="sortTable($event)">
 
@@ -39,7 +39,7 @@
             }@else if (items.claimStatus == 'Rejected') {
                 <td NxTableCell class="dtc__td" ><nx-badge class="red">{{items.claimStatus}}</nx-badge></td>
             }
-            <td NxTableCell class="dtc__td" ><button (click)="onButtonClick('detail')">👁</button></td>
+            <td NxTableCell class="dtc__td" ><button (click)="goToDetails(items.claimId)">👁</button></td>
         </tr>
     
 

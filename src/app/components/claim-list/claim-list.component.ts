@@ -12,8 +12,10 @@ import { Store } from '@ngxs/store';
 import { MessageModalData } from '../../models/message-modal-data.model';
 import { NxDialogService, NxModalRef } from '@aposin/ng-aquila/modal';
 import { MessageModalComponent } from '../message-modal/message-modal.component';
-import { getClaimList } from '../../store/policy/policy-purchase.action';
 import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
+import { getClaimList } from '../../store/policy-claim/policy-claim.action';
+import { PolicyClaimState } from '../../store/policy-claim/policy-claim.state';
+import { PolicyClaim } from '../../models/policy-claim.model';
 
 
 @Component({
@@ -43,9 +45,9 @@ export class ClaimListComponent implements OnInit {
   ngOnInit(): void {
     this.store.dispatch(new getClaimList).subscribe({
       complete: () => {
-        const claimList: Claims = this.store.selectSnapshot(PolicyPurchaseState.getClaimList);
+        const claimList: Claims = this.store.selectSnapshot(PolicyClaimState.getClaimList);
         this.claimList = claimList;
-        console.log(this.store.selectSnapshot(PolicyPurchaseState.getClaimList));  
+        console.log(this.store.selectSnapshot(PolicyClaimState.getPolicyClaimList));  
       },
       error: (err) => {
         const messageData: MessageModalData = {
@@ -80,8 +82,13 @@ constructor(private router: Router) {
     })
   }
 
-onButtonClick(action: string): void {
-  console.log(action);
+goToSubmit(): void {
+    this.router.navigate(['policy-claims-submission']);
+  // Add your button click logic here
+}
+
+goToDetails(claimId: string): void {
+    this.router.navigate(['claim-details',claimId]);
   // Add your button click logic here
 }
 
