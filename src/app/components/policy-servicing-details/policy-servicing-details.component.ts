@@ -94,6 +94,7 @@ export class PolicyServicingDetailsComponent implements OnInit {
   policyBeneficiaries: any;
   currentIndex: number = 0;
   currentPolicyNo: string | null = '';
+  currentPolicyId: number | undefined;
 
   breadcrumbs: Breadcrumb[] = [];
 
@@ -179,9 +180,11 @@ onSaveInsuredInfo(): void {
     this.insuredForm.markAllAsTouched();
     return;
   }
-    const updatedInfo = this.insuredForm.value;
-    
-    this.store.dispatch(new UpdateInsuredInfo(this.currentPolicyNo!, updatedInfo)).subscribe(() => {
+    // const updatedInfo = this.insuredForm.value;
+    const { fullName, title, countryCode, phoneNo, email } = this.insuredForm.getRawValue();
+    const updatedInfo = { fullName, title, countryCode, phoneNo, email };
+
+    this.store.dispatch(new UpdateInsuredInfo(this.currentPolicyId!, updatedInfo)).subscribe(() => {
       this.editMode = false;
       this.loadSelectedPolicy();
     })
@@ -210,22 +213,26 @@ onCancelEdit(): void {
     if (!this.currentPolicyNo) return;
 
     const policyDetailsList = this.store.selectSnapshot(PolicyProductState.getPolicyDetailsList);
+    console.log('policyDetailsList', policyDetailsList)
     const policyBeneficiaryList = this.store.selectSnapshot(PolicyProductState.getPolicyBeneficiaries);
+
+    const selectedQuotationNo = this.currentPolicyNo?.trim(); 
 
     const policyDetail = policyDetailsList.find(
       (entry: { quotationNumber: string }) =>
-        entry.quotationNumber?.trim() === this.currentPolicyNo!.trim()
+        entry.quotationNumber?.trim() === selectedQuotationNo
     );
 
     const policyBeneficiaries = policyBeneficiaryList.find(
       (entry: { policyNo: string }) =>
-        entry.policyNo?.trim() === this.currentPolicyNo!.trim()
+        entry.policyNo?.trim() === selectedQuotationNo
     );
 
     if (!policyDetail) return;
 
     this.policyDetail = policyDetail;
     this.policyBeneficiaries = policyBeneficiaries;
+    this.currentPolicyId = policyDetail.personalDetails?.policyId;
 
     console.log(this.policyDetail);
     this.setupBreadcrumbs();

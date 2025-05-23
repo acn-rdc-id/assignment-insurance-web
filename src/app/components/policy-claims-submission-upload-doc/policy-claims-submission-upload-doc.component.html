@@ -1,0 +1,84 @@
+<body>
+  <div nxLayout="grid nogutters" class="form-container">
+    <div nxRow class="grid-row">
+      <div class="scroll-container">
+        <nx-label
+          size="small"
+          class="nx-margin-bottom-3xs"
+          id="file-upload-label"
+        >
+          Upload your documents
+        </nx-label>
+        <span class="nx-margin-bottom-s" nxFileUploadHint id="file-upload-hint">
+          JPG, PNG or PDF • less than 1MB <br />**IMPORTANT: Please ensure the
+          uploaded file name is same name as document type.
+        </span>
+
+        <nx-label size="small" class="uploader-row" id="document-type-label">
+          Document Type
+        </nx-label>
+
+        <!-- Error Message -->
+        <nx-error *ngIf="getFileErrors().length > 0" id="file-upload-error">
+          <div class="nx-font-weight-bold">Error</div>
+          <ul>
+            <li *ngFor="let item of getFileErrors()">
+              <ng-container *ngIf="item.type === 'fileSize'">
+                File size of {{ item.filename }} exceeds limit of 1 MB
+              </ng-container>
+              <ng-container *ngIf="item.type === 'upload'">
+                Upload error for {{ item.filename }}
+              </ng-container>
+            </li>
+          </ul>
+        </nx-error>
+
+        @for (doc of requiredDoc; track doc;) {
+        <nx-file-uploader
+          #driverDocumentUpload
+          [uploader]="uploaders[doc]"
+          maxFileSize="{{ 1 * 1024 * 1024 }}"
+          ariaDescribedBy="file-upload-label file-upload-hint file-upload-error"
+        >
+          <div class="uploader-row">
+            {{ doc }}
+            <span>
+              <button
+                nxPlainButton
+                type="button"
+                nxFileUploadButton
+                aria-label="Add Driver Documents"
+              >
+                <nx-icon
+                  name="plus"
+                  nxIconPositionStart
+                  aria-hidden="true"
+                ></nx-icon>
+                Add File
+              </button>
+            </span>
+          </div>
+        </nx-file-uploader>
+        }
+
+        <button
+          nxButton="secondary small"
+          (click)="onBack()"
+          type="button"
+          class="nx-margin-end-s"
+        >
+          Back
+        </button>
+
+        <button
+          nxButton="secondary small"
+          (click)="triggerUpload()"
+          type="button"
+          class="nx-margin-s"
+        >
+          Submit Claim
+        </button>
+      </div>
+    </div>
+  </div>
+</body>

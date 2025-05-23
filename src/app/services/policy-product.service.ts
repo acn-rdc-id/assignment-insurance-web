@@ -24,4 +24,9 @@ export class PolicyProductService {
       payload
     );
   }
+
+  updateInsuredInfo(policyId: number, updatedInfo: any): Observable<HttpResponseBody> {
+      return this.http.patch<HttpResponseBody>(
+      this.apiUrl + POLICY_SERVICING_API.UPDATE_INSURED_INFO(policyId), updatedInfo);
+  }
 }

@@ -1,34 +1,60 @@
-import {Routes} from '@angular/router';
-import {userAuthGuard} from './guards/user-auth.guard';
+import { Routes } from '@angular/router';
+import { userAuthGuard } from './guards/user-auth.guard';
 
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () => import('./components/login-page/login-page.component').then(m => m.LoginPageComponent)
+    loadComponent: () =>
+      import('./components/login-page/login-page.component').then(
+        (m) => m.LoginPageComponent
+      ),
   },
   {
     path: 'registration',
-    loadComponent: () => import('./components/user-registration/user-registration.component').then(m => m.UserRegistrationComponent)
+    loadComponent: () =>
+      import('./components/user-registration/user-registration.component').then(
+        (m) => m.UserRegistrationComponent
+      ),
   },
   {
     path: 'policy-product',
-    loadComponent: () => import('./components/policy-product/policy-product.component').then(m => m.PolicyProductComponent),
-    canActivate: [userAuthGuard]
+    loadComponent: () =>
+      import('./components/policy-product/policy-product.component').then(
+        (m) => m.PolicyProductComponent
+      ),
+    canActivate: [userAuthGuard],
   },
   {
     path: 'policy-purchase',
-    loadComponent: () => import('./components/policy-purchase/policy-purchase.component').then(m => m.PolicyPurchaseComponent),
-    canActivate: [userAuthGuard]
+    loadComponent: () =>
+      import('./components/policy-purchase/policy-purchase.component').then(
+        (m) => m.PolicyPurchaseComponent
+      ),
+    canActivate: [userAuthGuard],
   },
   {
     path: 'policy-servicing',
-    loadComponent: () => import('./components/policy-servicing/policy-servicing.component').then(m => m.PolicyServicingComponent),
-    canActivate: [userAuthGuard]
+    loadComponent: () =>
+      import('./components/policy-servicing/policy-servicing.component').then(
+        (m) => m.PolicyServicingComponent
+      ),
+    canActivate: [userAuthGuard],
   },
   {
     path: 'policy-servicing-details/:policyNo',
-    loadComponent: () => import('./components/policy-servicing-details/policy-servicing-details.component').then(m => m.PolicyServicingDetailsComponent),
-    canActivate: [userAuthGuard]
+    loadComponent: () =>
+      import(
+        './components/policy-servicing-details/policy-servicing-details.component'
+      ).then((m) => m.PolicyServicingDetailsComponent),
+    canActivate: [userAuthGuard],
+  },
+  {
+    path: 'policy-claims-submission',
+    loadComponent: () =>
+      import(
+        './components/policy-claims-submission/policy-claims-submission.component'
+      ).then((m) => m.PolicyClaimsSubmissionComponent),
+    canActivate: [userAuthGuard],
   },
   {
     path: 'claim-list',
@@ -38,10 +64,13 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: 'login',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: '**',
-    loadComponent: () => import('./components/not-found/not-found.component').then(m => m.NotFoundComponent)
-  }
+    loadComponent: () =>
+      import('./components/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent
+      ),
+  },
 ];

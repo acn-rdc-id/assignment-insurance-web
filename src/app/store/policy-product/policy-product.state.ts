@@ -47,6 +47,7 @@ export class PolicyProductState {
             policyId: item.id,
           },
           personalDetails: {
+            policyId: item.id,
             fullName: item.applicationResponseDto.fullName,
             gender: item.applicationResponseDto.gender,
             nationality: item.applicationResponseDto.nationality,
@@ -92,24 +93,48 @@ export class PolicyProductState {
 
 @Action(UpdateInsuredInfo)
 updateInsuredInfo(ctx: StateContext<PolicyStateModel>, action: UpdateInsuredInfo) {
+  const { policyId, updatedInfo } = action;
   const state = ctx.getState();
-  const { policyNo, updatedInfo } = action;
 
-  const updatedPolicies = state.policyList.map(policy =>
-    policy.quotationNumber === policyNo
-      ? {
-          ...policy,
-          personalDetails: {
-            ...policy.personalDetails,
-            ...updatedInfo
+  return this.policyProductService.updateInsuredInfo(policyId, updatedInfo).pipe(
+    tap((response: HttpResponseBody) => {
+      if (response.status === 'Success' && response.code === 200) {
+        const updatedPolicies = state.policyList.map(policy => 
+          policy.personalDetails?.policyId === policyId
+          ? {
+            ...policy,
+            personalDetails : {
+              ...policy.personalDetails,
+              ...updatedInfo
+            }
           }
-        }
-      : policy
-  );
+          : policy
+        );
 
-  ctx.patchState({
-    ...state,
-    policyList: updatedPolicies
-  });
+        ctx.patchState({
+          ...state,
+          policyList: updatedPolicies
+        });
+      } else {
+        console.warn('Update failed on backend')
+      }
+    })
+  );
+  // const updatedPolicies = state.policyList.map(policy =>
+  //   policy.quotationNumber === policyNo
+  //     ? {
+  //         ...policy,
+  //         personalDetails: {
+  //           ...policy.personalDetails,
+  //           ...updatedInfo
+  //         }
+  //       }
+  //     : policy
+  // );
+
+  // ctx.patchState({
+  //   ...state,
+  //   policyList: updatedPolicies
+  // });
 }
 }

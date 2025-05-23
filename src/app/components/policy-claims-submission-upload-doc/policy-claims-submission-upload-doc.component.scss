@@ -1,0 +1,38 @@
+.particulars-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+    margin: 2rem auto 0;
+  }
+
+  .form-container {
+    //max-width: 500px;
+    margin: 0 auto;
+    padding: 7rem;
+    border-radius: 8px;
+    //box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.scroll-container {
+    overflow-x: auto;
+    display: block;
+}
+
+.uploader-row {
+  border: none;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--file-uploader-file-row-border-bottom-color);
+  padding: 16px 8px;
+  gap: 16px;
+  font-weight: var(--paragraph-04-font-weight);
+
+  span {
+      display: flex;
+      align-items: center;
+  }
+}

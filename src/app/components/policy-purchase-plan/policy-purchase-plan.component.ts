@@ -59,6 +59,7 @@ export class PolicyPurchasePlanComponent implements OnInit {
     // })
 
     this.selectedPlan$.subscribe(plan => {
+      console.log('Selected plan from state:', plan)
       this.latestPlan = plan;
       if (plan) {
         this.infoForm.patchValue({ planSelection: plan.planName });
