@@ -9,7 +9,7 @@ export interface PolicyClaimStateModel {
   policyClaim: PolicyClaim;
   mainSteps: PolicyClaimStep[];
   currentMainStep: PolicyClaimStep;
-  selectedPolicyId: string;
+  selectedPolicyId: number;
   selectedTypeOfClaim: ClaimPolicyDocument;
   claimList: Claims
 }
@@ -33,7 +33,7 @@ export const POLICY_CLAIM_STATE_DEFAULTS: PolicyClaimStateModel = {
     { path: 'claim-upload', step: 2 },
   ],
   currentMainStep: { path: 'claim-selection', step: 1 },
-  selectedPolicyId: '',
+  selectedPolicyId: 0,
   selectedTypeOfClaim: {
     claimTypeId: 0,
     claimTypeName: '',

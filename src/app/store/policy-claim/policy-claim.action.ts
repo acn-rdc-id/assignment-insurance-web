@@ -19,3 +19,8 @@ export class getClaimList {
   static readonly type = '[Claim] Get ClaimList';
   constructor() {}
 }
+
+export class PostSubmitClaim {
+  static readonly type = '[POLICY CLAIM] POST SUBMIT CLAIM';
+  constructor(public payload: any) {}
+}

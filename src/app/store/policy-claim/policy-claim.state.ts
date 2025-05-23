@@ -1,24 +1,18 @@
-import { Action, Selector, State, StateContext } from '@ngxs/store';
-import {
-  PolicyClaimStateModel,
-  POLICY_CLAIM_STATE_DEFAULTS,
-} from './policy-claim.state.model';
-import { inject, Injectable } from '@angular/core';
-import { PolicyClaimService } from '../../services/policy-claim.service';
-import {
-  ClaimPolicyDocument,
-  PolicyClaim,
-  PolicyClaimStep,
-} from '../../models/policy-claim.model';
-import { map, tap } from 'rxjs';
+import {Action, Selector, State, StateContext} from '@ngxs/store';
+import {POLICY_CLAIM_STATE_DEFAULTS, PolicyClaimStateModel,} from './policy-claim.state.model';
+import {inject, Injectable} from '@angular/core';
+import {PolicyClaimService} from '../../services/policy-claim.service';
+import {ClaimPolicyDocument, PolicyClaim, PolicyClaimStep,} from '../../models/policy-claim.model';
+import {map, tap} from 'rxjs';
 import {
   getClaimList,
   LoadPolicyClaim,
+  PostSubmitClaim,
   SetPolicyClaimSelection,
   SubmitPolicyClaimStep,
 } from './policy-claim.action';
-import { HttpResponseBody } from '../../models/http-body.model';
-import { Claims } from '../../models/claim.model';
+import {HttpResponseBody} from '../../models/http-body.model';
+import {Claims} from '../../models/claim.model';
 
 @State<PolicyClaimStateModel>({
   name: 'PolicyClaimState',
@@ -28,10 +22,10 @@ import { Claims } from '../../models/claim.model';
 export class PolicyClaimState {
   private policyClaimService: PolicyClaimService = inject(PolicyClaimService);
 
-    @Selector()
+  @Selector()
     static getClaimList(state: PolicyClaimStateModel): Claims  {
       return state.claimList;
-    }
+  }
 
   @Selector()
   static getPolicyClaimList(state: PolicyClaimStateModel): PolicyClaim {
@@ -39,7 +33,7 @@ export class PolicyClaimState {
   }
 
   @Selector()
-  static getSelectedPolicyId(state: PolicyClaimStateModel): string {
+  static getSelectedPolicyId(state: PolicyClaimStateModel): number {
     return structuredClone(state.selectedPolicyId);
   }
 
@@ -57,9 +51,9 @@ export class PolicyClaimState {
 
   @Action(LoadPolicyClaim)
   loadAllPolicies(ctx: StateContext<PolicyClaimStateModel>) {
-    const state = ctx.getState();
+    const state: PolicyClaimStateModel = ctx.getState();
     return this.policyClaimService.getPolicyClaimDoc().pipe(
-      map((res) => {
+      map((res: HttpResponseBody) => {
         ctx.setState({
           ...state,
           policyClaim: {
@@ -126,4 +120,15 @@ export class PolicyClaimState {
           map((response: HttpResponseBody) => response.message)
         );
       }
+
+  @Action(PostSubmitClaim)
+  postSubmitClaim(ctx: StateContext<PolicyClaimStateModel>, {payload}: PostSubmitClaim) {
+    return this.policyClaimService.postSubmitClaim(payload).pipe(
+      map((response: HttpResponseBody) => {
+        return {
+          message: response.message
+        };
+      })
+    );
+  }
 }

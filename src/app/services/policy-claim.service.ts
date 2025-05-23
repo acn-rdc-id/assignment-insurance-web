@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { HttpResponseBody } from '../models/http-body.model';
-import { Observable, of } from 'rxjs';
-import { POLICY_CLAIM_API } from '../constants/api.constants';
+import {inject, Injectable} from '@angular/core';
+import {environment} from '../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {HttpResponseBody} from '../models/http-body.model';
+import {Observable} from 'rxjs';
+import {POLICY_CLAIM_API} from '../constants/api.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -18,11 +18,15 @@ export class PolicyClaimService {
     );
   }
 
-    getClaimList(): Observable<HttpResponseBody>{
+  getClaimList(): Observable<HttpResponseBody>{
     return this.http.get<HttpResponseBody>(
       this.apiUrl + POLICY_CLAIM_API.GET_CLAIM_LIST
     );
-
   }
-  
+
+  postSubmitClaim(payload: any): Observable<HttpResponseBody> {
+    return this.http.post<HttpResponseBody>(
+      this.apiUrl + POLICY_CLAIM_API.CLAIM_SUBMIT, payload
+    );
+  }
 }

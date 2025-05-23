@@ -14,6 +14,7 @@ import { PolicyClaimState } from '../../store/policy-claim/policy-claim.state';
 import { Store } from '@ngxs/store';
 import { ClaimPolicyDocument } from '../../models/policy-claim.model';
 import {
+  FileItem,
   FileUploadError,
   NxFileUploadConfig,
   NxFileUploader,
@@ -35,6 +36,12 @@ import {
   NxMessageToastService,
 } from '@aposin/ng-aquila/message';
 import { first, Subject, zip } from 'rxjs';
+import {PostSubmitClaim} from '../../store/policy-claim/policy-claim.action';
+import {HttpErrorBody} from '../../models/http-body.model';
+import {MessageModalData} from '../../models/message-modal-data.model';
+import {Router} from '@angular/router';
+import {MessageModalComponent} from '../message-modal/message-modal.component';
+import {NxDialogService, NxModalRef} from '@aposin/ng-aquila/modal';
 
 const successToastConfig: NxMessageToastConfig = {
   duration: 3000,
@@ -80,7 +87,10 @@ export class PolicyClaimsSubmissionUploadDocComponent
   @Input() prevStep!: () => void;
 
   store: Store = inject(Store);
-  selectedPolicyId = '';
+  router: Router = inject(Router);
+  private dialogService = inject(NxDialogService);
+  private dialogRef?: NxModalRef<any>;
+  selectedPolicyId = 0;
   tableElements = '';
   requiredDoc?: string[];
   uploaders: { [documentType: string]: NxFileUploader } = {};
@@ -92,13 +102,8 @@ export class PolicyClaimsSubmissionUploadDocComponent
   selectedTypeOfClaim?: ClaimPolicyDocument;
 
   ngOnInit(): void {
-    this.selectedPolicyId = this.store.selectSnapshot(
-      PolicyClaimState.getSelectedPolicyId
-    );
-
-    this.selectedTypeOfClaim = this.store.selectSnapshot(
-      PolicyClaimState.getSelectedTypeOfClaim
-    );
+    this.selectedPolicyId = this.store.selectSnapshot(PolicyClaimState.getSelectedPolicyId);
+    this.selectedTypeOfClaim = this.store.selectSnapshot(PolicyClaimState.getSelectedTypeOfClaim);
 
     this.requiredDoc = this.selectedTypeOfClaim.requiredDocuments;
 
@@ -192,9 +197,7 @@ export class PolicyClaimsSubmissionUploadDocComponent
       .flatMap((uploader) => uploader.errors || []);
   }
 
-  uploadFilesForUploaders(
-    uploadersWithFilesToUpload: NxFileUploaderComponent[]
-  ) {
+  uploadFilesForUploaders(uploadersWithFilesToUpload: NxFileUploaderComponent[]) {
     // wait for all uploaders with files to upload to finish uploading
     zip(
       uploadersWithFilesToUpload.map(
@@ -221,6 +224,25 @@ export class PolicyClaimsSubmissionUploadDocComponent
     uploadersWithFilesToUpload.forEach((uploader) => {
       uploader.uploadFiles();
     });
+
+    const payload: FormData = this.buildFormData();
+    this.store.dispatch(new PostSubmitClaim(payload)).subscribe({
+      complete: () => {
+        this.messageToastService.open('Claim submitted successfully!', {
+          duration: 3000,
+          context: 'success',
+          announcementMessage: 'Claim submitted.'
+        });
+        this.router.navigate(['claim-list']);
+      },
+      error: (err: HttpErrorBody) => {
+        const messageData: MessageModalData = {
+          header: 'Error',
+          message: err.message ?? 'Unexpected error occurred.'
+        };
+        this.openErrorModal(messageData);
+      }
+    });
   }
 
   readonly uploadConfig: NxFileUploadConfig = {
@@ -233,5 +255,31 @@ export class PolicyClaimsSubmissionUploadDocComponent
 
   onBack(): void {
     this.prevStep();
+  }
+
+  private openErrorModal(messageData?: MessageModalData): void {
+    this.dialogRef = this.dialogService.open(MessageModalComponent, {
+      data: messageData,
+      disableClose: true,
+      ariaLabel: 'Error dialog'
+    })
+  }
+
+  private buildFormData(): FormData {
+    const formData = new FormData();
+    formData.append('policyID', String(this.selectedPolicyId));
+    formData.append('claimTypeID', String(this.selectedTypeOfClaim?.claimTypeId));
+
+    this.uploaderComponents.forEach((uploaderComponent) => {
+      const files: FileItem[] = uploaderComponent.value || [];
+
+      files.forEach(fileItem => {
+        if (fileItem.file instanceof File) {
+          formData.append('files', fileItem.file, fileItem.file.name);
+        }
+      });
+    });
+
+    return formData;
   }
 }
