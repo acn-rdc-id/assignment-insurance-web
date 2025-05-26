@@ -24,3 +24,8 @@ export class PostSubmitClaim {
   static readonly type = '[POLICY CLAIM] POST SUBMIT CLAIM';
   constructor(public payload: any) {}
 }
+
+export class ClearPolicySubmission {
+  static readonly type = '[POLICY CLAIM] CLEAR POLICY SELECTION DETAILS';
+  constructor() {}
+}

@@ -70,6 +70,8 @@ export class PolicyClaimsSubmissionSelectPolicyComponent
   policyClaim?: PolicyClaim;
 
   ngOnInit(): void {
+    this.initForms();
+
     this.store.dispatch(new LoadPolicyClaim()).subscribe({
       complete: () => {
         this.policyClaim = this.store.selectSnapshot(
@@ -100,10 +102,8 @@ export class PolicyClaimsSubmissionSelectPolicyComponent
       .select(PolicyClaimState.getSelectedTypeOfClaim)
       .pipe()
       .subscribe((typeOfClaim) => {
-        this.infoForm.get('typeOfClaim')?.setValue(typeOfClaim);
+        this.infoForm.get('typeOfClaim')?.setValue(typeOfClaim.claimTypeName);
       });
-
-    this.initForms();
   }
 
   private openErrorModal(messageData?: MessageModalData): void {
@@ -143,6 +143,10 @@ export class PolicyClaimsSubmissionSelectPolicyComponent
         this.openErrorModal(messageData);
       },
     });
+  }
+
+  onBack(): void {
+    this.router.navigate(['/claim-list']);
   }
 
   ngOnDestroy(): void {

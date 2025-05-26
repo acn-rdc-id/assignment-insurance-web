@@ -10,8 +10,10 @@
           Upload your documents
         </nx-label>
         <span class="nx-margin-bottom-s" nxFileUploadHint id="file-upload-hint">
-          JPG, PNG or PDF • less than 1MB <br />**IMPORTANT: Please ensure the
-          uploaded file name is same name as document type.
+          File less than 1MB <br /><b
+            >**IMPORTANT: Please ensure the uploaded file name is same name as
+            document type.</b
+          >
         </span>
 
         <nx-label size="small" class="uploader-row" id="document-type-label">
@@ -22,14 +24,19 @@
         <nx-error *ngIf="getFileErrors().length > 0" id="file-upload-error">
           <div class="nx-font-weight-bold">Error</div>
           <ul>
-            <li *ngFor="let item of getFileErrors()">
-              <ng-container *ngIf="item.type === 'fileSize'">
+            @for (item of getFileErrors(); track item){
+            <li>
+              @if (item.type === 'fileSize'){
+              <ng-container>
                 File size of {{ item.filename }} exceeds limit of 1 MB
               </ng-container>
-              <ng-container *ngIf="item.type === 'upload'">
+              } @if (item.type === 'upload'){
+              <ng-container>
                 Upload error for {{ item.filename }}
               </ng-container>
+              }
             </li>
+            }
           </ul>
         </nx-error>
 
@@ -61,23 +68,15 @@
         </nx-file-uploader>
         }
 
-        <button
-          nxButton="secondary small"
-          (click)="onBack()"
-          type="button"
-          class="nx-margin-end-s"
-        >
-          Back
-        </button>
+        <div class="buttons">
+          <button nxButton="secondary" (click)="onBack()" type="button">
+            Back
+          </button>
 
-        <button
-          nxButton="secondary small"
-          (click)="triggerUpload()"
-          type="button"
-          class="nx-margin-s"
-        >
-          Submit Claim
-        </button>
+          <button nxButton="primary" (click)="triggerUpload()" type="button">
+            Submit Claim
+          </button>
+        </div>
       </div>
     </div>
   </div>

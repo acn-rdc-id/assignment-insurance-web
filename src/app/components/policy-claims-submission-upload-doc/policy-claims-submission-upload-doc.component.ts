@@ -36,12 +36,12 @@ import {
   NxMessageToastService,
 } from '@aposin/ng-aquila/message';
 import { first, Subject, zip } from 'rxjs';
-import {PostSubmitClaim} from '../../store/policy-claim/policy-claim.action';
-import {HttpErrorBody} from '../../models/http-body.model';
-import {MessageModalData} from '../../models/message-modal-data.model';
-import {Router} from '@angular/router';
-import {MessageModalComponent} from '../message-modal/message-modal.component';
-import {NxDialogService, NxModalRef} from '@aposin/ng-aquila/modal';
+import { PostSubmitClaim } from '../../store/policy-claim/policy-claim.action';
+import { HttpErrorBody } from '../../models/http-body.model';
+import { MessageModalData } from '../../models/message-modal-data.model';
+import { Router } from '@angular/router';
+import { MessageModalComponent } from '../message-modal/message-modal.component';
+import { NxDialogService, NxModalRef } from '@aposin/ng-aquila/modal';
 
 const successToastConfig: NxMessageToastConfig = {
   duration: 3000,
@@ -80,7 +80,7 @@ const noFilesToastConfig: NxMessageToastConfig = {
   styleUrl: './policy-claims-submission-upload-doc.component.scss',
 })
 export class PolicyClaimsSubmissionUploadDocComponent
-  implements OnInit, OnDestroy, OnChanges, AfterViewInit
+  implements OnInit, OnDestroy, OnChanges
 {
   constructor(private readonly messageToastService: NxMessageToastService) {}
   @Input() nextStep!: () => void;
@@ -102,8 +102,12 @@ export class PolicyClaimsSubmissionUploadDocComponent
   selectedTypeOfClaim?: ClaimPolicyDocument;
 
   ngOnInit(): void {
-    this.selectedPolicyId = this.store.selectSnapshot(PolicyClaimState.getSelectedPolicyId);
-    this.selectedTypeOfClaim = this.store.selectSnapshot(PolicyClaimState.getSelectedTypeOfClaim);
+    this.selectedPolicyId = this.store.selectSnapshot(
+      PolicyClaimState.getSelectedPolicyId
+    );
+    this.selectedTypeOfClaim = this.store.selectSnapshot(
+      PolicyClaimState.getSelectedTypeOfClaim
+    );
 
     this.requiredDoc = this.selectedTypeOfClaim.requiredDocuments;
 
@@ -115,20 +119,10 @@ export class PolicyClaimsSubmissionUploadDocComponent
     });
   }
 
-  ngAfterViewInit(): void {
-    // uploaderComponents is now ready here
-    console.log('Uploaders initialized:', this.uploaderComponents.toArray());
-  }
-
   private readonly _destroyed = new Subject<void>();
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
-  }
-
-  ngOnDestroy(): void {
-    this._destroyed.next();
-    this._destroyed.complete();
   }
 
   triggerUpload() {
@@ -197,7 +191,9 @@ export class PolicyClaimsSubmissionUploadDocComponent
       .flatMap((uploader) => uploader.errors || []);
   }
 
-  uploadFilesForUploaders(uploadersWithFilesToUpload: NxFileUploaderComponent[]) {
+  uploadFilesForUploaders(
+    uploadersWithFilesToUpload: NxFileUploaderComponent[]
+  ) {
     // wait for all uploaders with files to upload to finish uploading
     zip(
       uploadersWithFilesToUpload.map(
@@ -231,17 +227,17 @@ export class PolicyClaimsSubmissionUploadDocComponent
         this.messageToastService.open('Claim submitted successfully!', {
           duration: 3000,
           context: 'success',
-          announcementMessage: 'Claim submitted.'
+          announcementMessage: 'Claim submitted.',
         });
         this.router.navigate(['claim-list']);
       },
       error: (err: HttpErrorBody) => {
         const messageData: MessageModalData = {
           header: 'Error',
-          message: err.message ?? 'Unexpected error occurred.'
+          message: err.message ?? 'Unexpected error occurred.',
         };
         this.openErrorModal(messageData);
-      }
+      },
     });
   }
 
@@ -261,19 +257,22 @@ export class PolicyClaimsSubmissionUploadDocComponent
     this.dialogRef = this.dialogService.open(MessageModalComponent, {
       data: messageData,
       disableClose: true,
-      ariaLabel: 'Error dialog'
-    })
+      ariaLabel: 'Error dialog',
+    });
   }
 
   private buildFormData(): FormData {
     const formData = new FormData();
     formData.append('policyID', String(this.selectedPolicyId));
-    formData.append('claimTypeID', String(this.selectedTypeOfClaim?.claimTypeId));
+    formData.append(
+      'claimTypeID',
+      String(this.selectedTypeOfClaim?.claimTypeId)
+    );
 
     this.uploaderComponents.forEach((uploaderComponent) => {
       const files: FileItem[] = uploaderComponent.value || [];
 
-      files.forEach(fileItem => {
+      files.forEach((fileItem) => {
         if (fileItem.file instanceof File) {
           formData.append('files', fileItem.file, fileItem.file.name);
         }
@@ -281,5 +280,10 @@ export class PolicyClaimsSubmissionUploadDocComponent
     });
 
     return formData;
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed.next();
+    this._destroyed.complete();
   }
 }

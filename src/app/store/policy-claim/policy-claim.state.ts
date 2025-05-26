@@ -1,18 +1,26 @@
-import {Action, Selector, State, StateContext} from '@ngxs/store';
-import {POLICY_CLAIM_STATE_DEFAULTS, PolicyClaimStateModel,} from './policy-claim.state.model';
-import {inject, Injectable} from '@angular/core';
-import {PolicyClaimService} from '../../services/policy-claim.service';
-import {ClaimPolicyDocument, PolicyClaim, PolicyClaimStep,} from '../../models/policy-claim.model';
-import {map, tap} from 'rxjs';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
 import {
+  POLICY_CLAIM_STATE_DEFAULTS,
+  PolicyClaimStateModel,
+} from './policy-claim.state.model';
+import { inject, Injectable } from '@angular/core';
+import { PolicyClaimService } from '../../services/policy-claim.service';
+import {
+  ClaimPolicyDocument,
+  PolicyClaim,
+  PolicyClaimStep,
+} from '../../models/policy-claim.model';
+import { map, tap } from 'rxjs';
+import {
+  ClearPolicySubmission,
   getClaimList,
   LoadPolicyClaim,
   PostSubmitClaim,
   SetPolicyClaimSelection,
   SubmitPolicyClaimStep,
 } from './policy-claim.action';
-import {HttpResponseBody} from '../../models/http-body.model';
-import {Claims} from '../../models/claim.model';
+import { HttpResponseBody } from '../../models/http-body.model';
+import { Claims } from '../../models/claim.model';
 
 @State<PolicyClaimStateModel>({
   name: 'PolicyClaimState',
@@ -23,8 +31,8 @@ export class PolicyClaimState {
   private policyClaimService: PolicyClaimService = inject(PolicyClaimService);
 
   @Selector()
-    static getClaimList(state: PolicyClaimStateModel): Claims  {
-      return state.claimList;
+  static getClaimList(state: PolicyClaimStateModel): Claims {
+    return state.claimList;
   }
 
   @Selector()
@@ -99,36 +107,57 @@ export class PolicyClaimState {
     });
   }
 
-    @Action(getClaimList)
-      getClaimList(ctx: StateContext<PolicyClaimStateModel>) {
-        return this.policyClaimService.getClaimList().pipe(
-          tap((response: HttpResponseBody) => {
-            const state: PolicyClaimStateModel = ctx.getState();
-            const transformedClaims: Claims = response.data.map((item: any) => ({
-              claimId: item.claimId,
-              policyId: item.policyId,
-              claim_date: item.claim_date,
-              claimStatus: item.claimStatus,
-              claimType: item.claimType,
-              claimdetails: undefined,
-              claimdocuments: undefined,}))
-            ctx.setState({
-              ...state,
-              claimList: transformedClaims || []
-            });
-          }),
-          map((response: HttpResponseBody) => response.message)
-        );
-      }
+  @Action(getClaimList)
+  getClaimList(ctx: StateContext<PolicyClaimStateModel>) {
+    return this.policyClaimService.getClaimList().pipe(
+      tap((response: HttpResponseBody) => {
+        const state: PolicyClaimStateModel = ctx.getState();
+        const transformedClaims: Claims = response.data.map((item: any) => ({
+          claimId: item.claimId,
+          policyId: item.policyId,
+          claim_date: item.claim_date,
+          claimStatus: item.claimStatus,
+          claimType: item.claimType,
+          claimdetails: undefined,
+          claimdocuments: undefined,
+        }));
+        ctx.setState({
+          ...state,
+          claimList: transformedClaims || [],
+        });
+      }),
+      map((response: HttpResponseBody) => response.message)
+    );
+  }
 
   @Action(PostSubmitClaim)
-  postSubmitClaim(ctx: StateContext<PolicyClaimStateModel>, {payload}: PostSubmitClaim) {
+  postSubmitClaim(
+    ctx: StateContext<PolicyClaimStateModel>,
+    { payload }: PostSubmitClaim
+  ) {
     return this.policyClaimService.postSubmitClaim(payload).pipe(
       map((response: HttpResponseBody) => {
         return {
-          message: response.message
+          message: response.message,
         };
       })
     );
+  }
+
+  @Action(ClearPolicySubmission)
+  clearPolicySubmission(ctx: StateContext<PolicyClaimStateModel>): void {
+    const state: PolicyClaimStateModel = ctx.getState();
+
+    ctx.setState({
+      ...state,
+      selectedPolicyId: 0,
+      selectedTypeOfClaim: {
+        claimTypeId: 0,
+        claimTypeName: '',
+        claimTypeDescription: '',
+        requiredDocuments: [],
+        typeOfClaim: '',
+      },
+    });
   }
 }

@@ -11,7 +11,7 @@ export interface PolicyClaimStateModel {
   currentMainStep: PolicyClaimStep;
   selectedPolicyId: number;
   selectedTypeOfClaim: ClaimPolicyDocument;
-  claimList: Claims
+  claimList: Claims;
 }
 
 export const POLICY_CLAIM_STATE_DEFAULTS: PolicyClaimStateModel = {
@@ -21,9 +21,9 @@ export const POLICY_CLAIM_STATE_DEFAULTS: PolicyClaimStateModel = {
     claim_date: '',
     claimStatus: '',
     claimType: '',
-    claimdetails:undefined,
-    claimdocuments:undefined
-    },
+    claimdetails: undefined,
+    claimdocuments: undefined,
+  },
   policyClaim: {
     policyId: [],
     claimPolicyDocument: [],
