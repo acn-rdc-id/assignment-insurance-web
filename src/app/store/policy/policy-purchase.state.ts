@@ -106,9 +106,10 @@ export class PolicyPurchaseState {
     // quotationDetails.dateOfBirth = payload.dateOfBirth;
     // quotationDetails.quotationNumber = payload.referenceNumber;
     // quotationDetails.age = payload.ageNearestBirthday,
+    const prevPlan = ctx.getState().quotationDetails.plan;
     const updatedDetails = {
       quotationNumber: payload.quotationNumber,
-      plan: undefined,
+      plan: prevPlan,
       personalDetails: {
         // gender: payload.gender,
         // dateOfBirth: payload.dateOfBirth,
@@ -240,13 +241,15 @@ export class PolicyPurchaseState {
     return this.policyService.postQuotationPlans(payload).pipe(
       tap((response: HttpResponseBody) => {
         const state: PolicyPurchaseStateModel = ctx.getState();
+        const existingPlan = ctx.getState().quotationDetails.plan;
         const quotationDetails: PolicyDetails = {
           quotationNumber: response.data.referenceNumber,
           personalDetails: {
             age: response.data.ageNearestBirthday,
             dateOfBirth: response.data.dateOfBirth,
             gender: formatCamelCase(response.data.gender),
-          }
+          },
+          plan: existingPlan
         };
 
         ctx.setState({
