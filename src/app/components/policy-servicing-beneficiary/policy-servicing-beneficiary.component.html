@@ -35,7 +35,7 @@
                     floatLabel="always"
                   >
                     <nx-dropdown formControlName="relationshipToInsured">
-                      @for (field of RELATIONSHIP_OPTIONS; track field;) {
+                      @for (field of beneficiaryRelatioshipList; track field;) {
                         <nx-dropdown-item [value]="field">{{ field }}</nx-dropdown-item>
                       }
                     </nx-dropdown>

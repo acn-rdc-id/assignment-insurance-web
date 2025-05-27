@@ -12,3 +12,8 @@ export class UpdateInsuredInfo {
   static readonly type = '[Policy] Update Insured Info';
   constructor(public policyId: number, public updatedInfo: any) {}
 }
+
+export class GetPolicyDetails {
+  static readonly type = '[POLICY SERVICING] GET POLICY DETAILS';
+  constructor(public policyId: number) {};
+}

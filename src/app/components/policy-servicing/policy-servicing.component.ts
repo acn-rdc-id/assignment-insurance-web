@@ -45,8 +45,8 @@ export class PolicyServicingComponent implements OnInit {
     this.policyProduct = this.store.selectSnapshot(PolicyProductState.getPolicyDetailsList);
   }
 
-  goToDetail(policyNo: string): void {
-    this.router.navigate(['/policy-servicing-details', policyNo]);
+  goToDetail(policyId: number): void {
+    this.router.navigate(['/policy-servicing-details', policyId.toString()]);
   }
 
   sortTable(sort: SortEvent): void {

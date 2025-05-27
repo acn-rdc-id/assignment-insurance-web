@@ -7,7 +7,7 @@ export const POLICY_PURCHASE_API = {
 
 export const POLICY_SERVICING_API = {
   GET_ALL_POLICIES: 'policy/getAll',
-  GET_POLICY_DETAILS: 'get-policy-details',
+  GET_POLICY_DETAILS: (policyId: number) => `policy/${policyId}`,
   CREATE_BENEFICIARIES: 'policy/beneficiary',
   UPDATE_INSURED_INFO: (policyId: number) => `policy/${policyId}`
 };

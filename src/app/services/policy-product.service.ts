@@ -29,4 +29,10 @@ export class PolicyProductService {
       return this.http.patch<HttpResponseBody>(
       this.apiUrl + POLICY_SERVICING_API.UPDATE_INSURED_INFO(policyId), updatedInfo);
   }
+
+  getPolicyDetails(policyId: number): Observable<HttpResponseBody> {
+    return this.http.get<HttpResponseBody>(
+      this.apiUrl + POLICY_SERVICING_API.GET_POLICY_DETAILS(policyId)
+    );
+  }
 }

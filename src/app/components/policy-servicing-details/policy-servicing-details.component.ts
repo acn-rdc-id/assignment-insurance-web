@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, Form } from '@angular/forms';
 import { NxInputModule } from '@aposin/ng-aquila/input';
 import { NxButtonModule } from '@aposin/ng-aquila/button';
@@ -26,7 +26,10 @@ import {NxPopoverComponent, NxPopoverTriggerDirective} from '@aposin/ng-aquila/p
 import {Store} from '@ngxs/store';
 import {PolicyProductState} from '../../store/policy-product/policy-product.state';
 import {formatDate} from '../../utils/date-utils';
-import { UpdateInsuredInfo } from '../../store/policy-product/policy-product.action';
+import { GetPolicyDetails, UpdateInsuredInfo } from '../../store/policy-product/policy-product.action';
+import { HttpErrorBody } from '../../models/http-body.model';
+import { PolicyDetails } from '../../models/policy.model';
+import { pipe, Subject, takeUntil } from 'rxjs';
 // import { formatDate } from '@angular/common';
 
 export interface Breadcrumb {
@@ -69,7 +72,7 @@ export interface Breadcrumb {
   styleUrl: './policy-servicing-details.component.scss'
 })
 
-export class PolicyServicingDetailsComponent implements OnInit {
+export class PolicyServicingDetailsComponent implements OnInit, OnDestroy {
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly store: Store = inject(Store);
 
@@ -90,13 +93,15 @@ export class PolicyServicingDetailsComponent implements OnInit {
   initialFormValue: any;
 
 
-  policyDetail: any;
-  policyBeneficiaries: any;
+  policyDetail!: PolicyDetails;
+  policyBeneficiariesLength: number = 0;
   currentIndex: number = 0;
   currentPolicyNo: string | null = '';
   currentPolicyId: number | undefined;
 
   breadcrumbs: Breadcrumb[] = [];
+
+  private unsubscribe$ = new Subject();
 
   constructor(private fb: FormBuilder) {}
 
@@ -141,19 +146,19 @@ export class PolicyServicingDetailsComponent implements OnInit {
       { label: 'Policy no.', value: quotationNumber ?? '-' },
       { label: 'Effective date', value: formatDate(plan?.startDate) },
       { label: 'Expiry Date', value: formatDate(plan?.endDate) },
-      { label: 'NRIC', value: personalDetails?.identificationNo ?? '-' }
+      { label: 'NRIC', value: personalDetails?.idNo ?? '-' }
     ];
 
     this.secondRow = [
       { label: 'Insured name', value: personalDetails?.fullName ?? '-' },
-      { label: 'Beneficiary', value:  this.policyBeneficiaries.beneficiaryList.length ?? 0 },
+      { label: 'Beneficiary', value:  this.policyBeneficiariesLength.toString() },
     ];
 
     // this.cardFields = [
     //   { label: 'Title', value: personalDetails?.title ?? '-' },
     //   { label: 'Full Name', value: personalDetails?.fullName ?? '-' },
     //   { label: 'Country Code', value: personalDetails?.countryCode ?? '-' },
-    //   { label: 'Mobile Number', value: personalDetails?.phoneNo ?? '-' },
+    //   { label: 'Mobile Number', value: personalDetails?.mobileNo ?? '-' },
     //   { label: 'Email', value: personalDetails?.email ?? '-'}
     // ];
 
@@ -161,9 +166,9 @@ export class PolicyServicingDetailsComponent implements OnInit {
       title: personalDetails?.title ?? '',
       fullName: personalDetails?.fullName ?? '',
       countryCode: personalDetails?.countryCode ?? '',
-      phoneNo: personalDetails?.phoneNo ?? '',
+      mobileNo: personalDetails?.mobileNo ?? '',
       email: personalDetails?.email ?? '',
-      identificationNo: personalDetails?.identificationNo ?? '',
+      idNo: personalDetails?.idNo ?? '',
       gender: personalDetails?.gender ?? '',
       dob: formatDate(personalDetails?.dateOfBirth) ?? '',
       countryOfBirth: personalDetails?.countryOfBirth,
@@ -181,8 +186,8 @@ onSaveInsuredInfo(): void {
     return;
   }
     // const updatedInfo = this.insuredForm.value;
-    const { fullName, title, countryCode, phoneNo, email } = this.insuredForm.getRawValue();
-    const updatedInfo = { fullName, title, countryCode, phoneNo, email };
+    const { fullName, title, countryCode, mobileNo, email } = this.insuredForm.getRawValue();
+    const updatedInfo = { fullName, title, countryCode, mobileNo, email };
 
     this.store.dispatch(new UpdateInsuredInfo(this.currentPolicyId!, updatedInfo)).subscribe(() => {
       this.editMode = false;
@@ -197,7 +202,7 @@ openEdit() {
   this.insuredForm.get('title')?.enable();
   this.insuredForm.get('fullName')?.enable();
   this.insuredForm.get('countryCode')?.enable();
-  this.insuredForm.get('phoneNo')?.enable();
+  this.insuredForm.get('mobileNo')?.enable();
   this.insuredForm.get('email')?.enable();
 }
 
@@ -210,33 +215,24 @@ onCancelEdit(): void {
 
 
   loadSelectedPolicy(): void {
-    if (!this.currentPolicyNo) return;
-
-    const policyDetailsList = this.store.selectSnapshot(PolicyProductState.getPolicyDetailsList);
-    console.log('policyDetailsList', policyDetailsList)
-    const policyBeneficiaryList = this.store.selectSnapshot(PolicyProductState.getPolicyBeneficiaries);
-
-    const selectedQuotationNo = this.currentPolicyNo?.trim(); 
-
-    const policyDetail = policyDetailsList.find(
-      (entry: { quotationNumber: string }) =>
-        entry.quotationNumber?.trim() === selectedQuotationNo
-    );
-
-    const policyBeneficiaries = policyBeneficiaryList.find(
-      (entry: { policyNo: string }) =>
-        entry.policyNo?.trim() === selectedQuotationNo
-    );
-
-    if (!policyDetail) return;
-
-    this.policyDetail = policyDetail;
-    this.policyBeneficiaries = policyBeneficiaries;
-    this.currentPolicyId = policyDetail.personalDetails?.policyId;
-
-    console.log(this.policyDetail);
-    this.setupBreadcrumbs();
-    this.populatePolicyRows();
+    if (this.currentPolicyId) {
+      this.store.dispatch(new GetPolicyDetails(this.currentPolicyId)).subscribe({
+        next: () => {
+          const policyDetail: PolicyDetails = this.store.selectSnapshot(PolicyProductState.getPolicyDetails);
+          if (!policyDetail) return;
+      
+          this.policyDetail = policyDetail;
+          this.currentPolicyNo = policyDetail.quotationNumber;
+      
+          console.log(this.policyDetail);
+          this.setupBreadcrumbs();
+          this.populatePolicyRows();
+        },
+        error: (err: HttpErrorBody) => {
+          // TODO: Open message modal to display error message
+        }
+      });
+    }
   }
 
 
@@ -246,10 +242,10 @@ onCancelEdit(): void {
       title: ['', Validators.required],
       fullName: ['', Validators.required],
       countryCode: ['', Validators.required],
-      phoneNo: ['', [Validators.required, Validators.pattern(/^\d{8,10}$/)]], 
+      mobileNo: ['', [Validators.required, Validators.pattern(/^\d{8,10}$/)]], 
       email: ['', [Validators.required, Validators.email]],
 
-      identificationNo: [{ value: '', disabled: true }],
+      idNo: [{ value: '', disabled: true }],
       gender: [{ value: '', disabled: true }],
       dob: [{ value: '', disabled: true }],
 
@@ -261,9 +257,21 @@ onCancelEdit(): void {
 
     this.insuredForm.disable();
 
-    this.route.paramMap.subscribe(params => {
-      this.currentPolicyNo = params.get('policyNo');
+    this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+      this.currentPolicyId = parseInt(params.get('policyId') ?? '');
       this.loadSelectedPolicy();
     });
+
+    this.store.select(PolicyProductState.getPolicyDetails).pipe(takeUntil(this.unsubscribe$))
+    .subscribe((policyDetails) => {
+      this.policyDetail = policyDetails;
+      this.policyBeneficiariesLength = policyDetails.beneficiariesList?.length ?? 0;
+      this.populatePolicyRows();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next('');
+    this.unsubscribe$.complete();
   }
 }

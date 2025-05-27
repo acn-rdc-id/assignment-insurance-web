@@ -35,6 +35,8 @@ import {NxDropdownComponent, NxDropdownItemComponent} from '@aposin/ng-aquila/dr
 import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aquila/grid';
 import {NxMessageComponent} from '@aposin/ng-aquila/message';
 import {HttpErrorBody} from '../../models/http-body.model';
+import { MAX_BENEFICIARIES, PolicyBeneficiary, PolicyDetails } from '../../models/policy.model';
+import { BeneficiaryRelationship } from '../../enums/beneficiary-relationship.enum';
 
 @Component({
   selector: 'app-policy-servicing-beneficiary',
@@ -79,12 +81,10 @@ export class PolicyServicingBeneficiaryComponent implements OnInit, OnDestroy {
   private readonly dialogService: NxDialogService = inject(NxDialogService);
   private unsubscribe$ = new Subject<void>();
 
-  readonly MAX_BENEFICIARIES: number = 2;
-  readonly RELATIONSHIP_OPTIONS: string[] = [
-    'Spouse', 'Child', 'Parent', 'Sibling', 'Relative', 'Other'
-  ];
-
+  
+  beneficiaryRelatioshipList: Array<string> = Object.values(BeneficiaryRelationship);
   currentPolicyNo: string | null = '';
+  currentPolicyId!: number;
   dialogRef?: NxModalRef<any>;
   submitted: boolean = false;
   isBeneficiaryError: boolean = false;
@@ -99,11 +99,11 @@ export class PolicyServicingBeneficiaryComponent implements OnInit, OnDestroy {
     return this.beneficiaryDetailsForm.get('beneficiaries') as FormArray<FormGroup>;
   }
 
-  createBeneficiaryForm(data?: any): FormGroup {
+  createBeneficiaryForm(data: PolicyBeneficiary): FormGroup {
     return this.formBuilder.group({
-      id: [data?.id || null],
-      beneficiaryName: new FormControl(data?.beneficiaryName ?? '', Validators.required),
-      relationshipToInsured: new FormControl(data?.relationshipToInsured ?? '', Validators.required),
+      id: [data.id || null],
+      beneficiaryName: new FormControl(data.beneficiaryName ?? '', Validators.required),
+      relationshipToInsured: new FormControl(data.relationshipToInsured ?? '', Validators.required),
       share: new FormControl(data?.share ?? 0, [Validators.required, Validators.min(0), Validators.max(100)])
     });
   }
@@ -111,19 +111,23 @@ export class PolicyServicingBeneficiaryComponent implements OnInit, OnDestroy {
   loadInitialBeneficiaries(): void {
     if (!this.currentPolicyNo) return;
 
-    const beneficiaryList = this.store.selectSnapshot(PolicyProductState.getPolicyBeneficiaries);
-    const beneficiary = beneficiaryList.find((entry: { policyNo: string; }) => entry.policyNo?.trim() === this.currentPolicyNo!.trim());
-    const initialBeneficiaries = beneficiary?.beneficiaryList ?? [];
-
+    const beneficiaryList: Array<PolicyBeneficiary> = this.store.selectSnapshot(PolicyProductState.getPolicyBeneficiaries);
     this.formArray.clear();
-    initialBeneficiaries.forEach((data: any) => {
-      this.formArray.push(this.createBeneficiaryForm(data));
-    });
+    if (beneficiaryList.length > 0) {
+      beneficiaryList.forEach((data: PolicyBeneficiary) => {
+        this.formArray.push(this.createBeneficiaryForm(data));
+      });
+    }
   }
 
   addRow(): void {
-    if (this.formArray.length >= this.MAX_BENEFICIARIES) return;
-    this.formArray.push(this.createBeneficiaryForm());
+    if (this.formArray.length >= MAX_BENEFICIARIES) return;
+    const newBeneficiary: PolicyBeneficiary = {
+      beneficiaryName: '',
+      relationshipToInsured: '',
+      share: 0
+    };
+    this.formArray.push(this.createBeneficiaryForm(newBeneficiary));
   }
 
   removeRow(index: number): void {
@@ -145,12 +149,7 @@ export class PolicyServicingBeneficiaryComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
   }
 
-  getExistingBeneficiaries(beneficiariesState: any[]): any[] {
-    const existingEntry = beneficiariesState.find(item => item.policyNo?.trim() === this.currentPolicyNo?.trim());
-    return existingEntry?.beneficiaryList || [];
-  }
-
-  getUpdatedOrCreatedBeneficiaries(current: any[], existing: any[]): any[] {
+  getUpdatedOrCreatedBeneficiaries(current: Array<PolicyBeneficiary>, existing: Array<PolicyBeneficiary>): any[] {
     return current.map(item => {
       const isExisting: boolean = item.id !== null && existing.some(b => b.id === item.id);
       return {
@@ -163,7 +162,7 @@ export class PolicyServicingBeneficiaryComponent implements OnInit, OnDestroy {
     });
   }
 
-  getDeletedBeneficiaries(current: any[], existing: any[]): any[] {
+  getDeletedBeneficiaries(current: Array<PolicyBeneficiary>, existing: Array<PolicyBeneficiary>): any[] {
     const currentIds = current.map(item => item.id).filter(id => id !== null);
     return existing
       .filter(item => !currentIds.includes(item.id))
@@ -177,12 +176,11 @@ export class PolicyServicingBeneficiaryComponent implements OnInit, OnDestroy {
   }
 
   constructPayload(): any {
-    const beneficiariesState = this.store.selectSnapshot(PolicyProductState.getPolicyBeneficiaries);
-    const existingEntry = this.getExistingBeneficiaries(beneficiariesState);
+    const currentBeneficiariesList: Array<PolicyBeneficiary> = this.store.selectSnapshot(PolicyProductState.getPolicyBeneficiaries);
     const currentFormValues = this.formArray.value;
 
-    const updatedOrCreated = this.getUpdatedOrCreatedBeneficiaries(currentFormValues, existingEntry);
-    const deleted = this.getDeletedBeneficiaries(currentFormValues, existingEntry);
+    const updatedOrCreated = this.getUpdatedOrCreatedBeneficiaries(currentFormValues, currentBeneficiariesList);
+    const deleted = this.getDeletedBeneficiaries(currentFormValues, currentBeneficiariesList);
 
     return {
       policyNo: this.currentPolicyNo,
@@ -236,10 +234,9 @@ export class PolicyServicingBeneficiaryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      this.currentPolicyNo = params.get('policyNo');
-      this.loadInitialBeneficiaries();
-    });
+    const policyDetails: PolicyDetails = this.store.selectSnapshot(PolicyProductState.getPolicyDetails);
+    this.currentPolicyNo = policyDetails.quotationNumber;
+    this.loadInitialBeneficiaries();
   }
 
   ngOnDestroy(): void {

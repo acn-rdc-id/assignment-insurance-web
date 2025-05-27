@@ -1,15 +1,9 @@
 export interface PolicyDetails {
+    policyId?: number;
     quotationNumber: string;
     plan?: PolicyPlan;
-    personalDetails?: PolicyPersonalDetails
-}
-
-export interface PolicyBeneficiaries {
-  id?: string;
-  beneficiaryName: string;
-  relationshipToInsured: string;
-  share: number;
-  action?: string;
+    personalDetails?: PolicyPersonalDetails,
+    beneficiariesList?: Array<PolicyBeneficiary>
 }
 
 export interface PolicyPlanDto {
@@ -30,6 +24,12 @@ export interface PolicyPlan {
     premiumAmount: number;
     premiumMode?: string;
     paymentPeriod?: string;
+    referenceNumber?: string;
+    endDate?: string;
+    startDate?: string,
+    status?: string,
+    policyNo?: string,
+    policyId?: number,
 }
 
 export interface PolicyPersonalDetails {
@@ -55,57 +55,65 @@ export interface PolicyPersonalDetails {
   transactionPurpose?: string;
 }
 
+export interface PolicyBeneficiary {
+  id?: string,
+  beneficiaryName: string,
+  relationshipToInsured: string,
+  share: number
+}
+
 export const POLICY_DETAILS_DEFAULT: PolicyDetails = {
-    quotationNumber: '',
-    plan: undefined,
-    personalDetails: {
-        gender: '',
-        dateOfBirth: '',
-        age: 0,
-        title: '',
-        fullName: '',
-        nationality: '',
-        idNo: '',
-        otherId: '',
-        isUsPerson: false,
-        countryOfBirth: '',
-        isSmoker: false,
-        cigarettesPerDay: 0,
-        countryCode: '',
-        mobileNo: '',
-        occupation: '',
-        email: '',
-        transactionPurpose: ''
-    }
+  quotationNumber: '',
+  plan: undefined,
+  personalDetails: {
+      gender: '',
+      dateOfBirth: '',
+      age: 0,
+      title: '',
+      fullName: '',
+      nationality: '',
+      idNo: '',
+      otherId: '',
+      isUsPerson: false,
+      countryOfBirth: '',
+      isSmoker: false,
+      cigarettesPerDay: 0,
+      countryCode: '',
+      mobileNo: '',
+      occupation: '',
+      email: '',
+      transactionPurpose: ''
+  },
+  beneficiariesList: []
 }
 
 export interface PolicySummary {
-    name: string;
-    nric: string;
-    dob: string;
-    gender: string;
-    nationality: string;
-    birthCountry: string;
-    usPerson: string;
-    mobileNum: string;
-    email: string;
-    smoker: string;
-    occupation: string;
-    purpose: string;
+  name: string;
+  nric: string;
+  dob: string;
+  gender: string;
+  nationality: string;
+  birthCountry: string;
+  usPerson: string;
+  mobileNum: string;
+  email: string;
+  smoker: string;
+  occupation: string;
+  purpose: string;
 
-    [key: string]: string;
-  }
+  [key: string]: string;
+}
 
-  export interface PolicyPurchaseStep {
-    path: string;
-    step: number;
-  }
+export interface PolicyPurchaseStep {
+  path: string;
+  step: number;
+}
 
-  export interface TermsConditions {
-    id: number;
-    termsHtml: string;
-    isRequired: number;
-    status: string;
-  }
+export interface TermsConditions {
+  id: number;
+  termsHtml: string;
+  isRequired: number;
+  status: string;
+}
 
- 
+export const MAX_BENEFICIARIES: number = 2; 

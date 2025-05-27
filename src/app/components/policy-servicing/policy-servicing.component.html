@@ -28,7 +28,7 @@
               @for (item of policyProduct; track item) {
                 <tr nxTableRow>
                   <td nxTableCell style="color: deepskyblue">
-                    <a (click)="goToDetail(item.plan.policyNo)">{{item.plan.policyNo}}</a>
+                    <a (click)="goToDetail(item.policyId)">{{item.quotationNumber}}</a>
                   </td>
                   <td nxTableCell>{{item.personalDetails.fullName}}</td>
                   <td nxTableCell>{{item.plan.premiumAmount}}</td>
