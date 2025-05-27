@@ -185,30 +185,32 @@
             </form>
 
           </nx-expansion-panel>
-          <nx-expansion-panel
-            [scrollIntoViewActive]="scrollIntoViewActive"
-            [scrollIntoViewOptions]="scrollIntoViewOptions"
-          >
-            <nx-expansion-panel-header>
-              <nx-expansion-panel-title>
-                Beneficiary
-                <button
-                  nxFormfieldAppendix
-                  nxIconButton="tertiary small"
-                  nxPopoverDirection="right"
-                  [nxPopoverTriggerFor]="beneficiaryInfo"
-                  nxPopoverTrigger="hover"
-                  type="button"
-                  aria-label="More information"
-                >
-                  <nx-icon name="info-circle" size="s" aria-hidden="true" style="color: #0077a6"> </nx-icon>
-                </button>
-              </nx-expansion-panel-title>
-            </nx-expansion-panel-header>
-            <h2 nxHeadline="subsection-small" class="nx-margin-bottom-2m">
-              <app-policy-servicing-beneficiary></app-policy-servicing-beneficiary>
-            </h2>
-          </nx-expansion-panel>
+          @if (loadPolicyDetailsComplete) {
+            <nx-expansion-panel
+              [scrollIntoViewActive]="scrollIntoViewActive"
+              [scrollIntoViewOptions]="scrollIntoViewOptions"
+            >
+              <nx-expansion-panel-header>
+                <nx-expansion-panel-title>
+                  Beneficiary
+                  <button
+                    nxFormfieldAppendix
+                    nxIconButton="tertiary small"
+                    nxPopoverDirection="right"
+                    [nxPopoverTriggerFor]="beneficiaryInfo"
+                    nxPopoverTrigger="hover"
+                    type="button"
+                    aria-label="More information"
+                  >
+                    <nx-icon name="info-circle" size="s" aria-hidden="true" style="color: #0077a6"> </nx-icon>
+                  </button>
+                </nx-expansion-panel-title>
+              </nx-expansion-panel-header>
+              <h2 nxHeadline="subsection-small" class="nx-margin-bottom-2m">
+                <app-policy-servicing-beneficiary></app-policy-servicing-beneficiary>
+              </h2>
+            </nx-expansion-panel>
+          }
         </nx-accordion>
       </p>
     </nx-tab>

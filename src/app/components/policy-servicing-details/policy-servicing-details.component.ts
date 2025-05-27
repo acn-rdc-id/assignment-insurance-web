@@ -91,7 +91,7 @@ export class PolicyServicingDetailsComponent implements OnInit, OnDestroy {
 
   editMode: boolean = false;
   initialFormValue: any;
-
+  loadPolicyDetailsComplete: boolean = false;
 
   policyDetail!: PolicyDetails;
   policyBeneficiariesLength: number = 0;
@@ -223,6 +223,7 @@ onCancelEdit(): void {
       
           this.policyDetail = policyDetail;
           this.currentPolicyNo = policyDetail.quotationNumber;
+          this.loadPolicyDetailsComplete = true;
       
           console.log(this.policyDetail);
           this.setupBreadcrumbs();
