@@ -1,30 +1,16 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { ClaimService } from '../../services/claim.service';
-import {
-  NxSortDirective,
-  NxSortHeaderComponent,
-  NxTableCellComponent,
-  NxTableComponent,
-  SortDirection,
-  SortEvent,
-} from '@aposin/ng-aquila/table';
-import { NxColComponent } from '@aposin/ng-aquila/grid';
-import { DatePipe, NgClass } from '@angular/common';
-import { NavigationEnd, Router } from '@angular/router';
-import { NxTabComponent, NxTabGroupComponent } from '@aposin/ng-aquila/tabs';
-import { NxButtonComponent } from '@aposin/ng-aquila/button';
-import { NxBadgeComponent } from '@aposin/ng-aquila/badge';
-import { Store } from '@ngxs/store';
-import { MessageModalData } from '../../models/message-modal-data.model';
-import { NxDialogService, NxModalRef } from '@aposin/ng-aquila/modal';
-import { MessageModalComponent } from '../message-modal/message-modal.component';
-import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
-import {
-  ClearPolicySubmission,
-  getClaimList,
-} from '../../store/policy-claim/policy-claim.action';
-import { PolicyClaimState } from '../../store/policy-claim/policy-claim.state';
-import { PolicyClaim } from '../../models/policy-claim.model';
+import {Component, inject, Input, OnInit} from '@angular/core';
+import {NxSortDirective, NxSortHeaderComponent, SortDirection, SortEvent,} from '@aposin/ng-aquila/table';
+import {NxColComponent} from '@aposin/ng-aquila/grid';
+import {NavigationEnd, Router} from '@angular/router';
+import {NxTabComponent, NxTabGroupComponent} from '@aposin/ng-aquila/tabs';
+import {NxBadgeComponent} from '@aposin/ng-aquila/badge';
+import {Store} from '@ngxs/store';
+import {MessageModalData} from '../../models/message-modal-data.model';
+import {NxDialogService, NxModalRef} from '@aposin/ng-aquila/modal';
+import {MessageModalComponent} from '../message-modal/message-modal.component';
+import {ClearPolicySubmission, getClaimList,} from '../../store/policy-claim/policy-claim.action';
+import {PolicyClaimState} from '../../store/policy-claim/policy-claim.state';
+import {PolicyClaim} from '../../models/policy-claim.model';
 
 @Component({
   selector: 'app-claim-list',
@@ -96,8 +82,7 @@ export class ClaimListComponent implements OnInit {
   }
 
   goToDetails(claimId: string): void {
-    this.router.navigate(['claim-details', claimId]);
-    // Add your button click logic here
+    this.router.navigate(['/policy-claim-details', claimId.toString()]);
   }
 
   sortTable(sort: SortEvent): void {

@@ -1,26 +1,25 @@
-import { Action, Selector, State, StateContext } from '@ngxs/store';
+import {Action, Selector, State, StateContext} from '@ngxs/store';
+import {POLICY_CLAIM_STATE_DEFAULTS, PolicyClaimStateModel,} from './policy-claim.state.model';
+import {inject, Injectable} from '@angular/core';
+import {PolicyClaimService} from '../../services/policy-claim.service';
 import {
-  POLICY_CLAIM_STATE_DEFAULTS,
-  PolicyClaimStateModel,
-} from './policy-claim.state.model';
-import { inject, Injectable } from '@angular/core';
-import { PolicyClaimService } from '../../services/policy-claim.service';
-import {
-  PolicyClaimDocument,
   PolicyClaim,
+  PolicyClaimDocument,
   PolicyClaimStep,
   PolicyClaimSubmissionDetails,
 } from '../../models/policy-claim.model';
-import { map, tap } from 'rxjs';
+import {map, tap} from 'rxjs';
 import {
   ClearPolicySubmission,
+  DownloadDocument,
+  GetClaimDetails,
   getClaimList,
   LoadPolicyClaim,
   PostSubmitClaim,
   SetPolicyClaimSelection,
   SubmitPolicyClaimStep,
 } from './policy-claim.action';
-import { HttpResponseBody } from '../../models/http-body.model';
+import {HttpResponseBody} from '../../models/http-body.model';
 
 @State<PolicyClaimStateModel>({
   name: 'PolicyClaimState',
@@ -152,6 +151,38 @@ export class PolicyClaimState {
           message: response.message,
         };
       })
+    );
+  }
+
+  @Action(GetClaimDetails)
+  getClaimDetails(ctx: StateContext<PolicyClaimStateModel>, { claimId }: GetClaimDetails) {
+    return this.policyClaimService.getClaimDetails(claimId).pipe(
+      map((response: HttpResponseBody) => {
+        return {
+          message: response.message,
+        };
+      })
+    );
+  }
+
+  @Action(DownloadDocument)
+  downloadDocument(ctx: StateContext<PolicyClaimStateModel>, { payload }: DownloadDocument)
+  {
+    return this.policyClaimService.downloadDocument(payload).pipe(
+      tap((response: any) => {
+        const keyName = payload.keyName;
+        const lastUnderscoreIndex = keyName.lastIndexOf('_');
+        const fileName = keyName.substring(lastUnderscoreIndex + 1);
+
+        const file = new Blob([response], { type: 'application/octet-stream' });
+        const link = document.createElement('a');
+        const url: string = window.URL.createObjectURL(file);
+        link.href = url;
+        link.download! = fileName;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      }),
+      map((response: HttpResponseBody) => response.message)
     );
   }
 

@@ -20,8 +20,18 @@ export class getClaimList {
   constructor() {}
 }
 
+export class GetClaimDetails {
+  static readonly type = '[POLICY CLAIM] GET CLAIM DETAILS';
+  constructor(public claimId: number) {}
+}
+
 export class PostSubmitClaim {
   static readonly type = '[POLICY CLAIM] POST SUBMIT CLAIM';
+  constructor(public payload: any) {}
+}
+
+export class DownloadDocument {
+  static readonly type = '[POLICY CLAIM] DOWNLOAD DOCUMENT';
   constructor(public payload: any) {}
 }
 

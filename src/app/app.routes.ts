@@ -62,6 +62,11 @@ export const routes: Routes = [
     canActivate: [userAuthGuard]
   },
   {
+    path: 'policy-claim-details/:claimId',
+    loadComponent: () => import('./components/policy-claim-details/policy-claim-details.component').then(m => m.PolicyClaimDetailsComponent),
+    canActivate: [userAuthGuard]
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',

@@ -24,9 +24,23 @@ export class PolicyClaimService {
     );
   }
 
+  getClaimDetails(claimId: number ): Observable<HttpResponseBody>{
+    return this.http.get<HttpResponseBody>(
+      this.apiUrl + POLICY_CLAIM_API.GET_CLAIM_DETAIL(claimId)
+    );
+  }
+
   postSubmitClaim(payload: any): Observable<HttpResponseBody> {
     return this.http.post<HttpResponseBody>(
       this.apiUrl + POLICY_CLAIM_API.CLAIM_SUBMIT, payload
+    );
+  }
+
+  downloadDocument(payload: any): Observable<HttpResponseBody> {
+    return this.http.post<HttpResponseBody>(
+      this.apiUrl + POLICY_CLAIM_API.CLAIM_FILE_DOWNLOAD, payload, {
+        responseType: 'blob' as 'json',
+      }
     );
   }
 }

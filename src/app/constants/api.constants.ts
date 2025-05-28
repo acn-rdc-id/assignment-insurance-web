@@ -16,6 +16,6 @@ export const POLICY_CLAIM_API = {
   CREATE_CLAIM_POLICY_DOCUMENT: 'claim/claimpolicydocument',
   CLAIM_FILE_DOWNLOAD: 'claim/download',
   CLAIM_SUBMIT: 'claim/submit',
-  GET_CLAIM_DETAIL: 'claim/detail',
+  GET_CLAIM_DETAIL: (claimId: number ) => `claim/detail/${claimId}`,
   GET_CLAIM_LIST: 'claim/list',
 };
