@@ -12,12 +12,12 @@ import {map, tap} from 'rxjs';
 import {
   ClearPolicySubmission,
   DownloadDocument,
+  GetClaimDetails,
   getClaimList,
   LoadPolicyClaim,
   PostSubmitClaim,
   SetPolicyClaimSelection,
   SubmitPolicyClaimStep,
-  GetClaimDetails
 } from './policy-claim.action';
 import {HttpResponseBody} from '../../models/http-body.model';
 
@@ -57,11 +57,6 @@ export class PolicyClaimState {
   static getMainSteps(state: PolicyClaimStateModel): PolicyClaimStep[] {
     return state.mainSteps;
   }
-
-  // @Selector()
-  // static getClaimDetails(state: PolicyClaimStateModel): PolicyClaim {
-  //     return structuredClone(state.policyClaim[]);
-  // }
 
   @Action(LoadPolicyClaim)
   loadAllPolicies(ctx: StateContext<PolicyClaimStateModel>) {
@@ -207,13 +202,4 @@ export class PolicyClaimState {
       },
     });
   }
-
-  // @Action(GetClaimDetails)getClaimDetails({patchState}:StateContext<PolicyClaimStateModel>, {claimId}: GetClaimDetails){
-  //   return this.policyClaimService.getClaimDetails(claimId).pipe(
-  //     map((response: HttpResponseBody)=>{
-  //       const item = response.data
-  //       console.log("Line 174==> ", item)
-  //     })
-  //   );
-  // }
 }
