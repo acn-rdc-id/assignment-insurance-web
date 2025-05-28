@@ -32,7 +32,7 @@ import {
   SetPolicyClaimSelection,
 } from '../../store/policy-claim/policy-claim.action';
 import { PolicyClaimState } from '../../store/policy-claim/policy-claim.state';
-import { PolicyClaim } from '../../models/policy-claim.model';
+import { PolicyClaimSubmissionDetails } from '../../models/policy-claim.model';
 
 @Component({
   selector: 'app-policy-claims-submission-select-policy',
@@ -67,7 +67,7 @@ export class PolicyClaimsSubmissionSelectPolicyComponent
   private dialogService = inject(NxDialogService);
   private unsubscribe$ = new Subject();
   dialogRef?: NxModalRef<any>;
-  policyClaim?: PolicyClaim;
+  policyClaim?: PolicyClaimSubmissionDetails;
 
   ngOnInit(): void {
     this.initForms();
@@ -77,8 +77,8 @@ export class PolicyClaimsSubmissionSelectPolicyComponent
         this.policyClaim = this.store.selectSnapshot(
           PolicyClaimState.getPolicyClaimList
         );
-        this.policyId = this.policyClaim.policyId;
-        this.typeOfClaim = this.policyClaim.claimPolicyDocument.map(
+        this.policyId = this.policyClaim.policyIdList;
+        this.typeOfClaim = this.policyClaim.claimPolicyDocumentList.map(
           (it) => it.claimTypeName
         );
       },
@@ -126,7 +126,7 @@ export class PolicyClaimsSubmissionSelectPolicyComponent
 
     const payload = {
       policyId: formValues.policyId,
-      typeOfClaim: this.policyClaim?.claimPolicyDocument.find(
+      typeOfClaim: this.policyClaim?.claimPolicyDocumentList.find(
         (claim) => claim.claimTypeName == formValues.typeOfClaim
       ),
     };

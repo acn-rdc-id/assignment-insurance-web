@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { PolicyClaimState } from '../../store/policy-claim/policy-claim.state';
 import { Store } from '@ngxs/store';
-import { ClaimPolicyDocument } from '../../models/policy-claim.model';
+import { PolicyClaimDocument } from '../../models/policy-claim.model';
 import {
   FileItem,
   FileUploadError,
@@ -99,7 +99,7 @@ export class PolicyClaimsSubmissionUploadDocComponent
   @ViewChildren(NxFileUploaderComponent)
   uploaderComponents!: QueryList<NxFileUploaderComponent>;
 
-  selectedTypeOfClaim?: ClaimPolicyDocument;
+  selectedTypeOfClaim?: PolicyClaimDocument;
 
   ngOnInit(): void {
     this.selectedPolicyId = this.store.selectSnapshot(
@@ -112,11 +112,6 @@ export class PolicyClaimsSubmissionUploadDocComponent
     this.requiredDoc = this.selectedTypeOfClaim.requiredDocuments;
 
     console.log('requiredDoc', this.requiredDoc);
-
-    // Create an uploader for each required document
-    this.requiredDoc.forEach((doc) => {
-      this.uploaders[doc] = new NxFileUploader(this.uploadConfig, this.http);
-    });
   }
 
   private readonly _destroyed = new Subject<void>();
@@ -151,7 +146,7 @@ export class PolicyClaimsSubmissionUploadDocComponent
         return;
       }
     } else if (uploadersWithFilesToUpload.length === this.requiredDoc?.length) {
-      this.uploadFilesForUploaders(uploadersWithFilesToUpload);
+      this.uploadFilesForUploaders();
     }
   }
 
@@ -191,37 +186,17 @@ export class PolicyClaimsSubmissionUploadDocComponent
       .flatMap((uploader) => uploader.errors || []);
   }
 
-  uploadFilesForUploaders(
-    uploadersWithFilesToUpload: NxFileUploaderComponent[]
-  ) {
-    // wait for all uploaders with files to upload to finish uploading
-    zip(
-      uploadersWithFilesToUpload.map(
-        (uploaderComponent) => uploaderComponent.uploader.response
-      )
-    )
-      .pipe(first())
-      .subscribe((results: NxFileUploadResult[]) => {
-        console.log(`results`, results);
+  uploadFilesForUploaders() {
+    this.uploaderComponents.forEach((uploaderComponent) => {
+      const files: FileItem[] = uploaderComponent.value || [];
 
-        const allSucessful = results.every((result) => result.allSucessful);
-
-        if (allSucessful) {
-          this.messageToastService.open(
-            'All files were uploaded successfully!',
-            successToastConfig
-          );
-        } else {
-          results.forEach((result) => console.log(result.error));
-        }
-      });
-
-    // start uploading files
-    uploadersWithFilesToUpload.forEach((uploader) => {
-      uploader.uploadFiles();
+      console.log();
     });
 
     const payload: FormData = this.buildFormData();
+
+    console.log('PAYLOAD', payload);
+
     this.store.dispatch(new PostSubmitClaim(payload)).subscribe({
       complete: () => {
         this.messageToastService.open('Claim submitted successfully!', {
@@ -242,11 +217,7 @@ export class PolicyClaimsSubmissionUploadDocComponent
   }
 
   readonly uploadConfig: NxFileUploadConfig = {
-    requestUrl: 'file-upload',
-    options: {
-      params: new HttpParams(),
-      reportProgress: true,
-    },
+    requestUrl: '',
   };
 
   onBack(): void {

@@ -14,7 +14,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { NxTabComponent, NxTabGroupComponent } from '@aposin/ng-aquila/tabs';
 import { NxButtonComponent } from '@aposin/ng-aquila/button';
 import { NxBadgeComponent } from '@aposin/ng-aquila/badge';
-import { Claims } from '../../models/claim.model';
 import { Store } from '@ngxs/store';
 import { MessageModalData } from '../../models/message-modal-data.model';
 import { NxDialogService, NxModalRef } from '@aposin/ng-aquila/modal';
@@ -30,15 +29,11 @@ import { PolicyClaim } from '../../models/policy-claim.model';
 @Component({
   selector: 'app-claim-list',
   imports: [
-    NxTableCellComponent,
-    NxTableComponent,
     NxColComponent,
     NxSortDirective,
     NxSortHeaderComponent,
-    DatePipe,
     NxTabComponent,
     NxTabGroupComponent,
-    NxButtonComponent,
     NxBadgeComponent,
   ],
   templateUrl: './claim-list.component.html',
@@ -53,11 +48,12 @@ export class ClaimListComponent implements OnInit {
   ngOnInit(): void {
     this.store.dispatch(new getClaimList()).subscribe({
       complete: () => {
-        const claimList: Claims = this.store.selectSnapshot(
+        const claimList: PolicyClaim[] = this.store.selectSnapshot(
           PolicyClaimState.getClaimList
         );
         this.claimList = claimList;
         console.log(
+          'CLAIM ----->',
           this.store.selectSnapshot(PolicyClaimState.getPolicyClaimList)
         );
       },

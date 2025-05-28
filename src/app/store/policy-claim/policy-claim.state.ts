@@ -6,9 +6,10 @@ import {
 import { inject, Injectable } from '@angular/core';
 import { PolicyClaimService } from '../../services/policy-claim.service';
 import {
-  ClaimPolicyDocument,
+  PolicyClaimDocument,
   PolicyClaim,
   PolicyClaimStep,
+  PolicyClaimSubmissionDetails,
 } from '../../models/policy-claim.model';
 import { map, tap } from 'rxjs';
 import {
@@ -20,7 +21,6 @@ import {
   SubmitPolicyClaimStep,
 } from './policy-claim.action';
 import { HttpResponseBody } from '../../models/http-body.model';
-import { Claims } from '../../models/claim.model';
 
 @State<PolicyClaimStateModel>({
   name: 'PolicyClaimState',
@@ -31,13 +31,15 @@ export class PolicyClaimState {
   private policyClaimService: PolicyClaimService = inject(PolicyClaimService);
 
   @Selector()
-  static getClaimList(state: PolicyClaimStateModel): Claims {
-    return state.claimList;
+  static getClaimList(state: PolicyClaimStateModel): PolicyClaim[] {
+    return state.policyClaim;
   }
 
   @Selector()
-  static getPolicyClaimList(state: PolicyClaimStateModel): PolicyClaim {
-    return structuredClone(state.policyClaim);
+  static getPolicyClaimList(
+    state: PolicyClaimStateModel
+  ): PolicyClaimSubmissionDetails {
+    return structuredClone(state.policyClaimSubmissionDetails);
   }
 
   @Selector()
@@ -48,7 +50,7 @@ export class PolicyClaimState {
   @Selector()
   static getSelectedTypeOfClaim(
     state: PolicyClaimStateModel
-  ): ClaimPolicyDocument {
+  ): PolicyClaimDocument {
     return structuredClone(state.selectedTypeOfClaim);
   }
 
@@ -64,9 +66,9 @@ export class PolicyClaimState {
       map((res: HttpResponseBody) => {
         ctx.setState({
           ...state,
-          policyClaim: {
-            policyId: res.data.policyId,
-            claimPolicyDocument: res.data.claimPolicyDocument,
+          policyClaimSubmissionDetails: {
+            policyIdList: res.data.policyId,
+            claimPolicyDocumentList: res.data.claimPolicyDocument,
           },
           mainSteps: [
             { path: 'claim-selection', step: 1 },
@@ -112,18 +114,22 @@ export class PolicyClaimState {
     return this.policyClaimService.getClaimList().pipe(
       tap((response: HttpResponseBody) => {
         const state: PolicyClaimStateModel = ctx.getState();
-        const transformedClaims: Claims = response.data.map((item: any) => ({
-          claimId: item.claimId,
-          policyId: item.policyId,
-          claim_date: item.claim_date,
-          claimStatus: item.claimStatus,
-          claimType: item.claimType,
-          claimdetails: undefined,
-          claimdocuments: undefined,
-        }));
+
+        // const transformedClaims: PolicyClaim[] = response.data.map(
+        //   (item: any) => ({
+        //     claimDate: item.claimDate,
+        //     claimId: item.claimId,
+        //     policyId: item.policyId,
+        //     claimStatus: item.claimStatus,
+        //     claimType: item.claimType,
+        //     claimdetails: undefined,
+        //     claimdocuments: undefined,
+        //   })
+        // );
+
         ctx.setState({
           ...state,
-          claimList: transformedClaims || [],
+          policyClaim: response.data,
         });
       }),
       map((response: HttpResponseBody) => response.message)
@@ -137,6 +143,11 @@ export class PolicyClaimState {
   ) {
     return this.policyClaimService.postSubmitClaim(payload).pipe(
       map((response: HttpResponseBody) => {
+        const state: PolicyClaimStateModel = ctx.getState();
+        ctx.setState({
+          ...state,
+          docUpload: payload,
+        });
         return {
           message: response.message,
         };

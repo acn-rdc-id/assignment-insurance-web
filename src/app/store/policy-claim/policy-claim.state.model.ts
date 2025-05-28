@@ -1,32 +1,25 @@
-import { Claims } from '../../models/claim.model';
 import {
-  ClaimPolicyDocument,
+  PolicyClaimDocument,
   PolicyClaim,
   PolicyClaimStep,
+  PolicyClaimSubmissionDetails,
 } from '../../models/policy-claim.model';
 
 export interface PolicyClaimStateModel {
-  policyClaim: PolicyClaim;
+  policyClaim: PolicyClaim[];
+  policyClaimSubmissionDetails: PolicyClaimSubmissionDetails;
   mainSteps: PolicyClaimStep[];
   currentMainStep: PolicyClaimStep;
   selectedPolicyId: number;
-  selectedTypeOfClaim: ClaimPolicyDocument;
-  claimList: Claims;
+  selectedTypeOfClaim: PolicyClaimDocument;
+  docUpload: any;
 }
 
 export const POLICY_CLAIM_STATE_DEFAULTS: PolicyClaimStateModel = {
-  claimList: {
-    claimId: '',
-    policyId: '',
-    claim_date: '',
-    claimStatus: '',
-    claimType: '',
-    claimdetails: undefined,
-    claimdocuments: undefined,
-  },
-  policyClaim: {
-    policyId: [],
-    claimPolicyDocument: [],
+  policyClaim: [],
+  policyClaimSubmissionDetails: {
+    policyIdList: [],
+    claimPolicyDocumentList: [],
   },
   mainSteps: [
     { path: 'claim-selection', step: 1 },
@@ -41,4 +34,5 @@ export const POLICY_CLAIM_STATE_DEFAULTS: PolicyClaimStateModel = {
     requiredDocuments: [],
     typeOfClaim: '',
   },
+  docUpload: undefined,
 };
