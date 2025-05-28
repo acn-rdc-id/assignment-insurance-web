@@ -3,9 +3,10 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideStore } from '@ngxs/store';
-import { withNgxsStoragePlugin, StorageOption } from '@ngxs/storage-plugin';
+import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { withNgxsResetPlugin } from 'ngxs-reset-plugin';
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
 import { UserState } from './store/user/user.state';
@@ -34,6 +35,7 @@ export const appConfig: ApplicationConfig = {
         keys: '*',
         storage: 1,
       }),
+      withNgxsResetPlugin(),
       withNgxsReduxDevtoolsPlugin(),
       withNgxsLoggerPlugin({ disabled: environment.production })
     ),

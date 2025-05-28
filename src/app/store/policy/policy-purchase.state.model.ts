@@ -4,6 +4,8 @@ import {
   PolicyPlanDto,
   TermsConditions,
   PolicyPurchaseStep,
+  POLICY_DETAILS_DEFAULT,
+  PaymentDetails,
 } from '../../models/policy.model';
 
 export interface PolicyPurchaseStateModel {
@@ -14,6 +16,7 @@ export interface PolicyPurchaseStateModel {
   quotationDetails: PolicyDetails;
   plans: PolicyPlanDto[];
   termsAndConditions: TermsConditions[];
+  paymentDetails: PaymentDetails;
 }
 
 // export const POLICY_PURCHASE_STATE_DEFAULTS: PolicyPurchaseStateModel = {
@@ -28,13 +31,15 @@ export interface PolicyPurchaseStateModel {
 // }
 
 export const POLICY_PURCHASE_STATE_DEFAULTS: PolicyPurchaseStateModel = {
-  quotationDetails: {
-    quotationNumber: '',
-    plan: undefined,
-    personalDetails: undefined,
-  },
+  quotationDetails: POLICY_DETAILS_DEFAULT,
   plans: [],
   termsAndConditions: [],
+  paymentDetails: {
+    paymentId: 0,
+    paymentRefNo: '',
+    paymentDate: '',
+    status: ''
+  },
   mainSteps: [
     { path: 'basic-information', step: 1 },
     { path: 'get-quote', step: 2 },

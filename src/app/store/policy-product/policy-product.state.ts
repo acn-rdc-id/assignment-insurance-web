@@ -47,12 +47,7 @@ export class PolicyProductState {
             coverageTerm: item.applicationResponseDto.planResponseDto.coverageTerm,
             premiumAmount: item.applicationResponseDto.planResponseDto.premiumAmount,
             premiumMode: item.applicationResponseDto.planResponseDto.premiumMode,
-            referenceNumber: item.applicationResponseDto.planResponseDto.referenceNumber,
-            endDate: item.endDate,
-            startDate: item.startDate,
-            status: item.status,
-            policyNo: item.policyNo,
-            policyId: item.id,
+            referenceNumber: item.applicationResponseDto.planResponseDto.referenceNumber
           },
           personalDetails: {
             policyId: item.id,
@@ -71,7 +66,10 @@ export class PolicyProductState {
             title: item.applicationResponseDto.title,
             countryCode: item.applicationResponseDto.countryCode
           },
-          beneficiariesList: item.beneficiaryList
+          beneficiariesList: item.beneficiaryList,
+          endDate: item.endDate,
+          startDate: item.startDate,
+          status: item.status
         }));
 
         ctx.setState({
@@ -162,12 +160,7 @@ export class PolicyProductState {
             coverageTerm: item?.applicationResponseDto.planResponseDto.coverageTerm,
             premiumAmount: item?.applicationResponseDto.planResponseDto.premiumAmount,
             premiumMode: item?.applicationResponseDto.planResponseDto.premiumMode,
-            referenceNumber: item.applicationResponseDto.planResponseDto.referenceNumber,
-            endDate: item.endDate,
-            startDate: item.startDate,
-            status: item.status,
-            policyNo: item.policyNo,
-            policyId: item.id,
+            referenceNumber: item.applicationResponseDto.planResponseDto.referenceNumber
           },
           personalDetails: {
             policyId: item.id,
@@ -186,7 +179,10 @@ export class PolicyProductState {
             title: item.applicationResponseDto.title,
             countryCode: item.applicationResponseDto.countryCode
           },
-          beneficiariesList: item.beneficiaryList
+          beneficiariesList: item.beneficiaryList,
+          startDate: item.startDate,
+          endDate: item.endDate,
+          status: item.status          
         }
         patchState({
           policyDetails: policyDetails

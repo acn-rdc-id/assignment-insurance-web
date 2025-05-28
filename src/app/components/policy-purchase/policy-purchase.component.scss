@@ -17,5 +17,25 @@ nx-progress-stepper {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top center;
-  height: 350px;
+  background-size: auto 350px
+}
+
+.hero-content {
+  padding-left: 50px;
+  max-width: 600px;
+  margin-bottom: 12rem;
+}
+
+.hero-content h2 {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+
+.hero-content p br {
+  margin-top: 10px;
 }

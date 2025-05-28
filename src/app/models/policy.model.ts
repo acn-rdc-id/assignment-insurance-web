@@ -1,9 +1,12 @@
 export interface PolicyDetails {
-    policyId?: number;
+    policyId: number;
     quotationNumber: string;
-    plan?: PolicyPlan;
-    personalDetails?: PolicyPersonalDetails,
-    beneficiariesList?: Array<PolicyBeneficiary>
+    plan: PolicyPlan;
+    personalDetails: PolicyPersonalDetails,
+    beneficiariesList: Array<PolicyBeneficiary>,
+    status: string;
+    endDate: string;
+    startDate: string;
 }
 
 export interface PolicyPlanDto {
@@ -25,11 +28,6 @@ export interface PolicyPlan {
     premiumMode?: string;
     paymentPeriod?: string;
     referenceNumber?: string;
-    endDate?: string;
-    startDate?: string,
-    status?: string,
-    policyNo?: string,
-    policyId?: number,
     duration?: number;
 }
 
@@ -57,15 +55,26 @@ export interface PolicyPersonalDetails {
 }
 
 export interface PolicyBeneficiary {
-  id?: string,
-  beneficiaryName: string,
-  relationshipToInsured: string,
-  share: number
+  id?: string;
+  beneficiaryName: string;
+  relationshipToInsured: string;
+  share: number;
 }
 
 export const POLICY_DETAILS_DEFAULT: PolicyDetails = {
+  policyId: 0,
   quotationNumber: '',
-  plan: undefined,
+  plan: {
+    id: '',
+    planName: '',
+    premiumAmount: 0,
+    sumAssured: 0,
+    coverageTerm: '',
+    paymentPeriod: '',
+    duration: 0,
+    premiumMode: '',
+    referenceNumber: ''
+  },
   personalDetails: {
       gender: '',
       dateOfBirth: '',
@@ -85,7 +94,10 @@ export const POLICY_DETAILS_DEFAULT: PolicyDetails = {
       email: '',
       transactionPurpose: ''
   },
-  beneficiariesList: []
+  beneficiariesList: [],
+  startDate: '',
+  endDate: '',
+  status: ''
 }
 
 export interface PolicySummary {
@@ -114,6 +126,13 @@ export interface TermsConditions {
   id: number;
   termsHtml: string;
   isRequired: number;
+  status: string;
+}
+
+export interface PaymentDetails {
+  paymentId: number;
+  paymentRefNo: string;
+  paymentDate: string;
   status: string;
 }
 

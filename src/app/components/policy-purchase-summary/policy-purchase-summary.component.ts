@@ -23,8 +23,7 @@ import {convertToIsoDate} from '../../utils/date-utils';
 import {PolicyService} from '../../services/policy.service';
 import {User} from '../../models/user.model';
 import {PolicyPlan} from '../../models/policy.model';
-
-type MyDialogResult = 'success' | 'failed';
+import { PaymentAction } from '../../enums/payment-action.enum';
 
 @Component({
   selector: 'app-policy-purchase-summary',
@@ -59,21 +58,22 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
   termsAndConditions: any[] = [];
   displayPersonalInfo: any[] = [];
   quotationDetails: any = [];
-  private unsubscribe$ = new Subject();
   dialogRef?: NxModalRef<any>;
-
+  purchaseAction: typeof PaymentAction = PaymentAction;
+  
   form: FormGroup;
   formArray: FormArray;
 
+  private unsubscribe$ = new Subject();
+  
   @ViewChild('paymentDialog') paymentDialog!: TemplateRef<any>;
   modalRef: any;
-  actionResult?: MyDialogResult;
-  paymentStatus: number | null = null;
-
+  actionResult?: PaymentAction;
+  
   @Input() nextSubStep!: () => void;
   @Input() prevSubStep!: () => void;
   @Output() paymentResult = new EventEmitter<number>();
-
+  
   constructor(
     private sanitizer: DomSanitizer,
     private store: Store,
@@ -81,7 +81,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
     private dialogService: NxDialogService,
     // private deepCopy: DeepCopyService
   ) {
-
+    
     //stores checked terms
     this.form = this.fb.group({
       terms: this.fb.array([]),
@@ -250,30 +250,27 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
       showCloseIcon: true
     });
 
-    this.modalRef.afterClosed().subscribe((result: MyDialogResult) => {
+    this.modalRef.afterClosed().subscribe((result: PaymentAction) => {
       this.actionResult = result;
       this.processPayment(result);
-      this.handlePayment(result);
     });
   }
 
-  processPayment(result: MyDialogResult): void {
+  processPayment(result: PaymentAction): void {
     const selectedPlan = this.store.selectSnapshot(PolicyPurchaseState.selectedPlan);
 
     const payload = {
       quotationId: this.quotationDetails.quotationId,
       paymentAmount: selectedPlan?.premiumAmount,
       duration: Number(selectedPlan?.coverageTerm.match(/\d+/)?.[0] || 0),
-      paymentStatus: result.toUpperCase(),
+      paymentStatus: result,
       planInfo: selectedPlan,
     };
-    this.store.dispatch(new PostPayment(payload));
-  }
-
-  handlePayment(result: 'success' | 'failed'): void {
-    this.paymentStatus = result === 'success' ? 1 : 0;
-    this.paymentResult.emit(this.paymentStatus);
-    this.nextSubStep();
+    this.store.dispatch(new PostPayment(payload)).subscribe({
+      next: () => {
+        this.nextSubStep();
+      }
+    });
   }
 
   onBack(): void {

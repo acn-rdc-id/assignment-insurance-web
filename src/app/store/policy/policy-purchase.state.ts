@@ -16,6 +16,7 @@ import {
   PolicyPurchaseStateModel,
 } from './policy-purchase.state.model';
 import {
+  PaymentDetails,
   PolicyDetails,
   PolicyPersonalDetails,
   PolicyPurchaseStep,
@@ -25,6 +26,7 @@ import { PolicyService } from '../../services/policy.service';
 import { formatCamelCase } from '../../utils/string-utils';
 import { HttpResponseBody } from '../../models/http-body.model';
 import { ClaimService } from '../../services/claim.service';
+import { PaymentAction } from '../../enums/payment-action.enum';
 
 @State<PolicyPurchaseStateModel>({
   name: 'PolicyPurchaseState',
@@ -78,15 +80,20 @@ export class PolicyPurchaseState {
   }
 
   @Selector()
-  static getCurrentMainSteps(state: PolicyPurchaseStateModel): {
-    step: number;
-    path: string;
-  } {
+  static getCurrentMainStep(state: PolicyPurchaseStateModel): PolicyPurchaseStep {
     return {
       step: state.currentMainStep?.step || 1,
       path: state.currentMainStep?.path || 'basic-information',
     };
   }
+
+  @Selector()
+  static getCurrentSubStep(state: PolicyPurchaseStateModel): PolicyPurchaseStep {
+    return {
+      step: state.currentSubStep?.step || 1,
+      path: state.currentSubStep?.path || 'info-details'
+    }
+  } 
 
   @Selector()
   static getMainSteps(state: PolicyPurchaseStateModel): PolicyPurchaseStep[] {
@@ -99,8 +106,13 @@ export class PolicyPurchaseState {
   }
 
   @Selector()
-  static getQuotationDetails(state: PolicyPurchaseStateModel) {
-    return state.quotationDetails;
+  static getQuotationDetails(state: PolicyPurchaseStateModel): PolicyDetails {
+    return structuredClone(state.quotationDetails);
+  }
+
+  @Selector()
+  static getPaymentDetails(state: PolicyPurchaseStateModel): PaymentDetails {
+    return structuredClone(state.paymentDetails);
   }
 
   @Action(SubmitInitialInfoSuccess)
@@ -114,7 +126,8 @@ export class PolicyPurchaseState {
     // quotationDetails.quotationNumber = payload.referenceNumber;
     // quotationDetails.age = payload.ageNearestBirthday,
     const prevPlan = ctx.getState().quotationDetails.plan;
-    const updatedDetails = {
+    const updatedDetails: PolicyDetails = {
+      ... ctx.getState().quotationDetails,
       quotationNumber: payload.quotationNumber,
       plan: prevPlan,
       personalDetails: {
@@ -266,6 +279,7 @@ export class PolicyPurchaseState {
         const state: PolicyPurchaseStateModel = ctx.getState();
         const existingPlan = ctx.getState().quotationDetails.plan;
         const quotationDetails: PolicyDetails = {
+          ...ctx.getState().quotationDetails,
           quotationNumber: response.data.referenceNumber,
           personalDetails: {
             age: response.data.ageNearestBirthday,
@@ -313,10 +327,65 @@ export class PolicyPurchaseState {
     { payload }: PostPayment
   ) {
     return this.policyService.postPayment(payload).pipe(
-      map((response: any) => {
-        return {
-          message: response.message,
-        };
+      map((response: HttpResponseBody) => {
+        if (payload.paymentStatus === PaymentAction.Success) {
+          const policyData = response.data.policy;
+          const paymentData = response.data.paymentDetails;
+          const policyDetails: PolicyDetails = {
+            policyId: policyData.id,
+            quotationNumber: policyData.policyNo,
+            beneficiariesList: policyData.beneficiariesList,
+            personalDetails: {
+              policyId: policyData.id,
+              fullName: policyData.applicationResponseDto.fullName,
+              gender: policyData.applicationResponseDto.gender,
+              nationality: policyData.applicationResponseDto.nationality,
+              idNo: policyData.applicationResponseDto.identificationNo,
+              countryOfBirth: policyData.applicationResponseDto.countryOfBirth,
+              mobileNo: policyData.applicationResponseDto.phoneNo,
+              email: policyData.applicationResponseDto.email,
+              dateOfBirth: policyData.applicationResponseDto.dateOfBirth,
+              isSmoker: policyData.applicationResponseDto.isSmoker,
+              cigarettesNo: policyData.applicationResponseDto.cigarettesNo,
+              occupation: policyData.applicationResponseDto.occupation,
+              purposeOfTransaction: policyData.applicationResponseDto.purposeOfTransaction,
+              title: policyData.applicationResponseDto.title,
+              countryCode: policyData.applicationResponseDto.countryCode
+            },
+            plan: {
+              id: policyData.applicationResponseDto.planResponseDto.id,
+              planName: policyData.applicationResponseDto.planResponseDto.planName,
+              sumAssured: policyData.applicationResponseDto.planResponseDto.sumAssured,
+              coverageTerm: policyData.applicationResponseDto.planResponseDto.coverageTerm,
+              premiumAmount: policyData.applicationResponseDto.planResponseDto.premiumAmount,
+              premiumMode: policyData.applicationResponseDto.planResponseDto.premiumMode,
+              referenceNumber: policyData.applicationResponseDto.planResponseDto.referenceNumber
+            },
+            status: policyData.status,
+            startDate: policyData.startDate,
+            endDate: policyData.endDate
+          };
+          const paymentDetails: PaymentDetails = {
+            paymentId: paymentData.paymentId,
+            paymentRefNo: paymentData.paymentReferenceNumber,
+            paymentDate: paymentData.paymentDate,
+            status: paymentData.paymentStatus
+          };
+          ctx.patchState({
+            quotationDetails: policyDetails,
+            paymentDetails: paymentDetails
+          });
+        } else {
+          const paymentDetails: PaymentDetails = {
+            paymentId: 0,
+            paymentRefNo: 'T-000000000000',
+            paymentDate: '',
+            status: payload.paymentStatus
+          }
+          ctx.patchState({
+            paymentDetails: paymentDetails
+          });
+        }
       })
     );
   }

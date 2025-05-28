@@ -140,12 +140,12 @@ export class PolicyServicingDetailsComponent implements OnInit, OnDestroy {
   }
 
   private populatePolicyRows(): void {
-    const { plan, personalDetails, quotationNumber } = this.policyDetail;
+    const { personalDetails, quotationNumber, startDate, endDate } = this.policyDetail;
 
     this.firstRow = [
       { label: 'Policy no.', value: quotationNumber ?? '-' },
-      { label: 'Effective date', value: formatDate(plan?.startDate) },
-      { label: 'Expiry Date', value: formatDate(plan?.endDate) },
+      { label: 'Effective date', value: formatDate(startDate) },
+      { label: 'Expiry Date', value: formatDate(endDate) },
       { label: 'NRIC', value: personalDetails?.idNo ?? '-' }
     ];
 

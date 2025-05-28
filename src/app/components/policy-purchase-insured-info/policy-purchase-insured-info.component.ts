@@ -112,8 +112,8 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
     this.personalDetailsForm = this.formBuilder.group({
       title: new FormControl('', Validators.required),
       fullName: new FormControl('', Validators.required),
-      gender: new FormControl('', Validators.required),
-      dateOfBirth: new FormControl('', Validators.required),
+      gender: new FormControl({value: '', disabled: true}, Validators.required),
+      dateOfBirth: new FormControl({value: '', disabled: true}, Validators.required),
       nationality: new FormControl('', Validators.required),
       idNo: new FormControl('', {
         validators: [Validators.required, nricValidator()],
@@ -139,8 +139,6 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
   }
 
   populateFormFieldsFromState(): void {
-    const disableFields = ['gender', 'dateOfBirth'];
-
     this.store.select(PolicyPurchaseState.getPersonalDetails)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(details => {
@@ -150,9 +148,6 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
           const control = this.personalDetailsForm.get(key);
           if (control) {
             control.setValue(value);
-            if (disableFields.includes(key)) {
-              control.disable();
-            }
           }
         });
       });

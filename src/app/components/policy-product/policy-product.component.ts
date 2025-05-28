@@ -15,6 +15,8 @@ import { MessageModalData } from '../../models/message-modal-data.model';
 import { MessageModalComponent } from '../message-modal/message-modal.component';
 import { NxDialogService, NxModalRef } from '@aposin/ng-aquila/modal';
 import { Subject } from 'rxjs';
+import { StateReset } from 'ngxs-reset-plugin';
+import { PolicyPurchaseState } from '../../store/policy/policy-purchase.state';
 
 @Component({
   selector: 'app-policy-product',
@@ -61,6 +63,7 @@ export class PolicyProductComponent implements OnInit, OnDestroy {
   }
 
   goToInitialForm(): void {
+    this.store.dispatch(new StateReset(PolicyPurchaseState));
     this.router.navigate(['policy-purchase']);
   }
 

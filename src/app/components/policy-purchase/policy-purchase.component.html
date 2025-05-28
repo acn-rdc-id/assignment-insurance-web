@@ -1,13 +1,21 @@
 <nx-progress-stepper
   [linear]="true"
-  [selectedIndex]="currentStep - 1"
+  [selectedIndex]="currentMainStep().step - 1"
   currentStepLabel="Step"
-  [ngClass]="{ 'step-1-background': currentStep === 1 }">
+  [ngClass]="{ 'step-1-background': currentMainStep().step === 1 }"
 >
+
   @for (item of mainSteps; track item; let i = $index) {
     <nx-step [label]="formatCamelCase(item.path)">
       <br>
       @if (item.path === 'basic-information' && item.step === 1) {
+        <div class="hero-content">
+          <h1>Allianz i-EssentialCover</h1>
+          <p>
+            Helping to provide financial support when you are no longer able to.
+            Cover for death and total permanent disablement
+          </p>
+        </div>
         <app-policy-purchase-initial-info
           [nextStep]="nextStep.bind(this)"
           [prevStep]="prevStep.bind(this)">
@@ -22,7 +30,7 @@
       }
 
       @if (item.path === 'apply-now' && item.step === 3) {
-        @switch (currentSubStep) {
+        @switch (currentSubStep().step) {
           @case (1) {
             <div class="particulars-container">
               <nx-card style="width: 1200px">
@@ -37,7 +45,7 @@
                     <div nxCol="12,12,12,6" class="docs-grid-colored-col">
                       <app-progressbar
                         style="display: flex; justify-content: flex-end; margin-top: 2rem;"
-                        [currentPath]="currentSubStep"
+                        [currentPath]="currentSubStep().step"
                         [totalPath]="subSteps.length">
                       </app-progressbar>
                     </div>
@@ -66,7 +74,7 @@
                     <div nxCol="12,12,12,6" class="docs-grid-colored-col">
                       <app-progressbar
                         style="display: flex; justify-content: flex-end; margin-top: 2rem;"
-                        [currentPath]="currentSubStep"
+                        [currentPath]="currentSubStep().step"
                         [totalPath]="subSteps.length">
                       </app-progressbar>
                     </div>
@@ -75,8 +83,7 @@
 
                 <app-policy-purchase-summary
                   [nextSubStep]="nextSubStep.bind(this)"
-                  [prevSubStep]="prevSubStep.bind(this)"
-                  (paymentResult)="onPaymentResult($event)">
+                  [prevSubStep]="prevSubStep.bind(this)">
                 </app-policy-purchase-summary>
               </nx-card>
             </div>
@@ -96,16 +103,14 @@
                     <div nxCol="12,12,12,6" class="docs-grid-colored-col">
                       <app-progressbar
                         style="display: flex; justify-content: flex-end; margin-top: 2rem;"
-                        [currentPath]="currentSubStep"
+                        [currentPath]="currentSubStep().step"
                         [totalPath]="subSteps.length">
                       </app-progressbar>
                     </div>
                   </div>
                 </div>
 
-                <app-policy-purchase-receipt
-                  [paymentStatus]="paymentStatus">
-                </app-policy-purchase-receipt>
+                <app-policy-purchase-receipt></app-policy-purchase-receipt>
               </nx-card>
             </div>
           }

@@ -1,6 +1,6 @@
 import {CommonModule} from '@angular/common';
-import {Component, inject, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, inject, OnInit} from '@angular/core';
+import { Router} from '@angular/router';
 import {NxButtonComponent} from '@aposin/ng-aquila/button';
 import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aquila/grid';
 import {NxIconComponent} from '@aposin/ng-aquila/icon';
@@ -8,6 +8,8 @@ import {NxTableComponent, NxTableRowComponent} from '@aposin/ng-aquila/table';
 import {QuotationSummaryComponent} from '../quotation-summary/quotation-summary.component';
 import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
 import {Store} from '@ngxs/store';
+import { PaymentAction } from '../../enums/payment-action.enum';
+import { PaymentDetails, PolicyDetails } from '../../models/policy.model';
 
 @Component({
   selector: 'app-policy-purchase-receipt',
@@ -22,19 +24,19 @@ import {Store} from '@ngxs/store';
   styleUrl: './policy-purchase-receipt.component.scss'
 })
 export class PolicyPurchaseReceiptComponent implements OnInit{
-  constructor(private route: ActivatedRoute) {}
-  displayPaymentStatus: any;
+  displayPaymentStatus: string = '';
+  quotationDetails!: PolicyDetails;
+  paymentDetails!: PaymentDetails;
+  paymentAction: typeof PaymentAction = PaymentAction;
+
   private router: Router = inject(Router);
   private store: Store = inject(Store);
 
-  @Input() paymentStatus: number | null = null;
-  quotationDetails: any = [];
-
-  getStatusColor(status: number | null) {
+  getStatusColor(status: string) {
     switch (status) {
-      case 1:
+      case PaymentAction.Success:
         return { color: 'green', 'font-weight': 'bold' };
-      case 0:
+      case PaymentAction.Failed:
         return { color: 'red', 'font-weight': 'bold' };
       default:
         return { color: 'orange', 'font-weight': 'bold' };
@@ -43,11 +45,12 @@ export class PolicyPurchaseReceiptComponent implements OnInit{
 
   ngOnInit(): void {
     this.quotationDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
-    switch (this.paymentStatus) {
-      case 1:
+    this.paymentDetails = this.store.selectSnapshot(PolicyPurchaseState.getPaymentDetails);
+    switch (this.paymentDetails.status) {
+      case PaymentAction.Success:
         this.displayPaymentStatus = 'Successful';
         break;
-      case 0:
+      case PaymentAction.Failed:
         this.displayPaymentStatus = 'Failure';
         break;
       default:
@@ -55,10 +58,11 @@ export class PolicyPurchaseReceiptComponent implements OnInit{
         break;
     }
 
-    console.log('Payment Status:', this.paymentStatus);
+    console.log('Payment Status:', this.paymentDetails.status);
   }
 
   onNext(): void {
-    this.router.navigate(['/policy-product']);
+    const policyDetails: PolicyDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
+    this.router.navigate(['/policy-servicing-details', policyDetails.policyId]);
   }
 }
