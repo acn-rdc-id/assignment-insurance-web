@@ -1,15 +1,7 @@
 <div nxLayout="grid nogutters" class="grid">
     <div nxRow class="grid-row">
         <div nxCol="12,12,12,6" class="mini-summary-wrapper">
-            <nx-card>
-                <p nxHeadline="subsection-xsmall" class="nx-margin-bottom-m">2,99€</p>
-                <p nxCopytext="normal">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero voluptate
-                    explicabo ad iste, ratione cupiditate eaque sapiente odit, accusamus
-                    placeat ipsam dolor sint voluptatibus nam? Recusandae accusamus iste
-                    sapiente necessitatibus?
-                </p>
-            </nx-card>
+            <app-quotation-summary></app-quotation-summary>
         </div>
         <div nxCol="12,12,12,6">
             <div class="payment-status-wrapper">
@@ -30,7 +22,7 @@
                       <tr nxTableRow>
                         <td class="label-cell">Payment Reference No</td>
                         <td class="separator-cell">:</td>
-                        <td class="value-cell"><code>T12345678</code></td>
+                        <td class="value-cell"><code>{{ this.quotationDetails.quotationNumber }}</code></td>
                       </tr>
                     </tbody>
                   </table>
@@ -50,4 +42,5 @@
                 </div>
         </div>
     </div>
+</div>
 </div>

@@ -30,6 +30,7 @@ export interface PolicyPlan {
     status?: string,
     policyNo?: string,
     policyId?: number,
+    duration?: number;
 }
 
 export interface PolicyPersonalDetails {
@@ -116,4 +117,4 @@ export interface TermsConditions {
   status: string;
 }
 
-export const MAX_BENEFICIARIES: number = 2; 
+export const MAX_BENEFICIARIES: number = 2;

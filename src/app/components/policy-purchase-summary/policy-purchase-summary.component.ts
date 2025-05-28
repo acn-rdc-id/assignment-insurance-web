@@ -74,11 +74,6 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
   @Input() prevSubStep!: () => void;
   @Output() paymentResult = new EventEmitter<number>();
 
-  modeToDurationMap: Record<string, number> = {
-    MONTHLY: 1,
-    YEARLY: 12,
-  };
-
   constructor(
     private sanitizer: DomSanitizer,
     private store: Store,
@@ -212,7 +207,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
     console.log('Form submitted:', result);
 
     const payload = this.buildApplicationPayload();
-    
+
     this.store.dispatch(new PostPolicyApplication(payload)).subscribe({
       next: (): void => {
         this.quotationDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
@@ -268,7 +263,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
     const payload = {
       quotationId: this.quotationDetails.quotationId,
       paymentAmount: selectedPlan?.premiumAmount,
-      duration: this.modeToDurationMap[this.quotationDetails.premiumMode],
+      duration: Number(selectedPlan?.coverageTerm.match(/\d+/)?.[0] || 0),
       paymentStatus: result.toUpperCase(),
       planInfo: selectedPlan,
     };
