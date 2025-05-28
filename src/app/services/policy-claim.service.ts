@@ -43,4 +43,10 @@ export class PolicyClaimService {
       }
     );
   }
+
+  getClaimDetails(claimId: number): Observable<HttpResponseBody> {
+      return this.http.get<HttpResponseBody>(
+        this.apiUrl + POLICY_CLAIM_API.GET_CLAIM_DETAIL(claimId)
+      );
+    }
 }
