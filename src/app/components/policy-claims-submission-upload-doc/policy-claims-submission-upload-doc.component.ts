@@ -12,7 +12,10 @@ import {
 } from '@angular/core';
 import { PolicyClaimState } from '../../store/policy-claim/policy-claim.state';
 import { Store } from '@ngxs/store';
-import { PolicyClaimDocument } from '../../models/policy-claim.model';
+import {
+  PolicyClaimDocument,
+  PolicyClaimList,
+} from '../../models/policy-claim.model';
 import {
   FileItem,
   FileUploadError,
@@ -201,7 +204,10 @@ export class PolicyClaimsSubmissionUploadDocComponent
           context: 'success',
           announcementMessage: 'Claim submitted.',
         });
-        this.router.navigate(['claim-list']);
+        const policyDetails: PolicyClaimList = this.store.selectSnapshot(
+          PolicyClaimState.getPolicyClaimDetails
+        );
+        this.router.navigate(['/policy-claim-details', policyDetails.claimID]);
       },
       error: (err: HttpErrorBody) => {
         const messageData: MessageModalData = {

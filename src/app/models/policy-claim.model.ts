@@ -4,8 +4,6 @@ export interface PolicyClaim {
   claimDate: string;
   claimStatus: string;
   claimType: string;
-  claimDetails?: undefined;
-  claimdocuments?: undefined;
 }
 
 export interface PolicyClaimSubmissionDetails {
@@ -27,7 +25,7 @@ export interface PolicyClaimStep {
 }
 
 export interface PolicyClaimList {
-  claimId: string;
+  claimID: string;
   policyNo: string;
   documentList: DocumentList[];
   claimType: ClaimType;
