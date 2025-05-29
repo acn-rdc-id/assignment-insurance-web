@@ -41,12 +41,17 @@ export const routes: Routes = [
     canActivate: [userAuthGuard],
   },
   {
-    path: 'policy-servicing-details/:policyId',
-    loadComponent: () =>
-      import(
-        './components/policy-servicing-details/policy-servicing-details.component'
-      ).then((m) => m.PolicyServicingDetailsComponent),
+    path: 'policy-servicing-details',
     canActivate: [userAuthGuard],
+    children: [
+      {
+        path: ':policyId',
+        loadComponent: () =>
+          import(
+            './components/policy-servicing-details/policy-servicing-details.component'
+          ).then((m) => m.PolicyServicingDetailsComponent)
+      }
+    ]
   },
   {
     path: 'policy-claims-submission',
@@ -62,9 +67,14 @@ export const routes: Routes = [
     canActivate: [userAuthGuard]
   },
   {
-    path: 'policy-claim-details/:claimId',
-    loadComponent: () => import('./components/policy-claim-details/policy-claim-details.component').then(m => m.PolicyClaimDetailsComponent),
-    canActivate: [userAuthGuard]
+    path: 'policy-claim-details',
+    canActivate: [userAuthGuard],
+    children: [
+      {
+        path: ':claimId',
+        loadComponent: () => import('./components/policy-claim-details/policy-claim-details.component').then(m => m.PolicyClaimDetailsComponent),
+      }
+    ]
   },
   {
     path: '',

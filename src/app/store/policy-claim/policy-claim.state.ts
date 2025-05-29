@@ -7,7 +7,9 @@ import { inject, Injectable } from '@angular/core';
 import { PolicyClaimService } from '../../services/policy-claim.service';
 import {
   PolicyClaim,
+  PolicyClaimDetails,
   PolicyClaimDocument,
+  PolicyClaimList,
   PolicyClaimStep,
   PolicyClaimSubmissionDetails,
 } from '../../models/policy-claim.model';
@@ -61,10 +63,10 @@ export class PolicyClaimState {
     return state.mainSteps;
   }
 
-  // @Selector()
-  // static getClaimDetails(state: PolicyClaimStateModel): PolicyClaim {
-  //     return structuredClone(state.policyClaim[]);
-  // }
+@Selector()
+  static getPolicyClaimDetails(state: PolicyClaimStateModel): PolicyClaimDetails {
+    return state.claimDetails;
+  }
 
   @Action(LoadPolicyClaim)
   loadAllPolicies(ctx: StateContext<PolicyClaimStateModel>) {
@@ -122,18 +124,6 @@ export class PolicyClaimState {
       tap((response: HttpResponseBody) => {
         const state: PolicyClaimStateModel = ctx.getState();
 
-        // const transformedClaims: PolicyClaim[] = response.data.map(
-        //   (item: any) => ({
-        //     claimDate: item.claimDate,
-        //     claimId: item.claimId,
-        //     policyId: item.policyId,
-        //     claimStatus: item.claimStatus,
-        //     claimType: item.claimType,
-        //     claimdetails: undefined,
-        //     claimdocuments: undefined,
-        //   })
-        // );
-
         ctx.setState({
           ...state,
           policyClaim: response.data,
@@ -153,9 +143,8 @@ export class PolicyClaimState {
         const state: PolicyClaimStateModel = ctx.getState();
         ctx.setState({
           ...state,
-          docUpload: payload,
+          claimDetails: response.data,
         });
-        console.log('RESPONSE---->', response);
         return {
           message: response.message,
         };
@@ -221,13 +210,4 @@ export class PolicyClaimState {
       },
     });
   }
-
-  // @Action(GetClaimDetails)getClaimDetails({patchState}:StateContext<PolicyClaimStateModel>, {claimId}: GetClaimDetails){
-  //   return this.policyClaimService.getClaimDetails(claimId).pipe(
-  //     map((response: HttpResponseBody)=>{
-  //       const item = response.data
-  //       console.log("Line 174==> ", item)
-  //     })
-  //   );
-  // }
 }

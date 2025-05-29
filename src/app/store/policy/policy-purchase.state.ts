@@ -25,7 +25,6 @@ import { map, tap } from 'rxjs';
 import { PolicyService } from '../../services/policy.service';
 import { formatCamelCase } from '../../utils/string-utils';
 import { HttpResponseBody } from '../../models/http-body.model';
-import { ClaimService } from '../../services/claim.service';
 import { PaymentAction } from '../../enums/payment-action.enum';
 
 @State<PolicyPurchaseStateModel>({
@@ -35,7 +34,6 @@ import { PaymentAction } from '../../enums/payment-action.enum';
 @Injectable()
 export class PolicyPurchaseState {
   private policyService: PolicyService = inject(PolicyService);
-  private claimService = inject(ClaimService);
 
   @Selector()
   static getGender(state: PolicyPurchaseStateModel): string | undefined {

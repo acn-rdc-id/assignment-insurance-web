@@ -8,17 +8,12 @@ import {NxTableComponent, NxTableRowComponent} from '@aposin/ng-aquila/table';
 import {QuotationSummaryComponent} from '../quotation-summary/quotation-summary.component';
 import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
 import {Store} from '@ngxs/store';
-import { NxCardComponent } from '@aposin/ng-aquila/card';
-import { NxCopytextComponent } from '@aposin/ng-aquila/copytext';
-import { NxHeadlineComponent } from '@aposin/ng-aquila/headline';
 import { PaymentAction } from '../../enums/payment-action.enum';
 import { PaymentDetails, PolicyDetails } from '../../models/policy.model';
 
 @Component({
   selector: 'app-policy-purchase-receipt',
-  imports: [NxCardComponent,
-    NxHeadlineComponent,
-    NxCopytextComponent,
+  imports: [
     NxLayoutComponent,
     NxRowComponent,
     NxColComponent,
