@@ -1,29 +1,9 @@
-// /* Base table styling */
-// table {
-//   width: 100%;
-//   border-collapse: collapse;
-//   padding-top: 3rem;
-//   max-width: 1200px;
-//   //font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-//   font-size: 16px;
-//   background-color: #fff;
-//   //border-radius: 8px;
-//   overflow: hidden;
-// }
+
 $primary-color: grey;
 $text-color: #333;
 $banner-height: 808px;
 $font-size-large: 45px;
 $line-height-tight: 1.2;
-
-
-/* Table header */
-// thead tr{
-//   background-color: #ffffff;
-//   text-align: center;
-//   color: gray;
-//   border-bottom: 2px solid #414141;
-// }
 
 .nxbutton {
   display: grid;
@@ -64,6 +44,7 @@ $line-height-tight: 1.2;
 .policy-servicing-banner {
   height: $banner-height;
   color: $text-color;
+  overflow: auto;
   display: flex;
   justify-content: center;
   background-size: cover;

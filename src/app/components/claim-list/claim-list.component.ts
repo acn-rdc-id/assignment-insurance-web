@@ -1,16 +1,24 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
-import {NxSortDirective, NxSortHeaderComponent, SortDirection, SortEvent,} from '@aposin/ng-aquila/table';
-import {NxColComponent} from '@aposin/ng-aquila/grid';
-import {NavigationEnd, Router} from '@angular/router';
-import {NxTabComponent, NxTabGroupComponent} from '@aposin/ng-aquila/tabs';
-import {NxBadgeComponent} from '@aposin/ng-aquila/badge';
-import {Store} from '@ngxs/store';
-import {MessageModalData} from '../../models/message-modal-data.model';
-import {NxDialogService, NxModalRef} from '@aposin/ng-aquila/modal';
-import {MessageModalComponent} from '../message-modal/message-modal.component';
-import {ClearPolicySubmission, getClaimList,} from '../../store/policy-claim/policy-claim.action';
-import {PolicyClaimState} from '../../store/policy-claim/policy-claim.state';
-import {PolicyClaim} from '../../models/policy-claim.model';
+import { Component, inject, Input, OnInit } from '@angular/core';
+import {
+  NxSortDirective,
+  NxSortHeaderComponent,
+  SortDirection,
+  SortEvent,
+} from '@aposin/ng-aquila/table';
+import { NxColComponent } from '@aposin/ng-aquila/grid';
+import { NavigationEnd, Router } from '@angular/router';
+import { NxTabComponent, NxTabGroupComponent } from '@aposin/ng-aquila/tabs';
+import { NxBadgeComponent } from '@aposin/ng-aquila/badge';
+import { Store } from '@ngxs/store';
+import { MessageModalData } from '../../models/message-modal-data.model';
+import { NxDialogService, NxModalRef } from '@aposin/ng-aquila/modal';
+import { MessageModalComponent } from '../message-modal/message-modal.component';
+import {
+  ClearPolicySubmission,
+  getClaimList,
+} from '../../store/policy-claim/policy-claim.action';
+import { PolicyClaimState } from '../../store/policy-claim/policy-claim.state';
+import { PolicyClaim } from '../../models/policy-claim.model';
 
 @Component({
   selector: 'app-claim-list',
@@ -38,10 +46,6 @@ export class ClaimListComponent implements OnInit {
           PolicyClaimState.getClaimList
         );
         this.claimList = claimList;
-        console.log(
-          'CLAIM ----->',
-          this.store.selectSnapshot(PolicyClaimState.getPolicyClaimList)
-        );
       },
       error: (err) => {
         const messageData: MessageModalData = {
@@ -51,12 +55,6 @@ export class ClaimListComponent implements OnInit {
         this.openErrorModal(messageData);
       },
     });
-
-    // Check if claimList is already populated
-    // if(!this.claimList) {
-    //   this.claimList = this.store.selectSnapshot(ClaimListState.getClaimList)
-    //   };
-    //   console.log(this.claimList);
   }
 
   constructor(private router: Router) {

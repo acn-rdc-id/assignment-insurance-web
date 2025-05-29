@@ -1,14 +1,17 @@
-import {Action, Selector, State, StateContext} from '@ngxs/store';
-import {POLICY_CLAIM_STATE_DEFAULTS, PolicyClaimStateModel,} from './policy-claim.state.model';
-import {inject, Injectable} from '@angular/core';
-import {PolicyClaimService} from '../../services/policy-claim.service';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import {
+  POLICY_CLAIM_STATE_DEFAULTS,
+  PolicyClaimStateModel,
+} from './policy-claim.state.model';
+import { inject, Injectable } from '@angular/core';
+import { PolicyClaimService } from '../../services/policy-claim.service';
 import {
   PolicyClaim,
   PolicyClaimDocument,
   PolicyClaimStep,
   PolicyClaimSubmissionDetails,
 } from '../../models/policy-claim.model';
-import {map, tap} from 'rxjs';
+import { map, tap } from 'rxjs';
 import {
   ClearPolicySubmission,
   DownloadDocument,
@@ -17,9 +20,9 @@ import {
   PostSubmitClaim,
   SetPolicyClaimSelection,
   SubmitPolicyClaimStep,
-  GetClaimDetails
+  GetClaimDetails,
 } from './policy-claim.action';
-import {HttpResponseBody} from '../../models/http-body.model';
+import { HttpResponseBody } from '../../models/http-body.model';
 
 @State<PolicyClaimStateModel>({
   name: 'PolicyClaimState',
@@ -152,6 +155,7 @@ export class PolicyClaimState {
           ...state,
           docUpload: payload,
         });
+        console.log('RESPONSE---->', response);
         return {
           message: response.message,
         };
@@ -160,7 +164,10 @@ export class PolicyClaimState {
   }
 
   @Action(GetClaimDetails)
-  getClaimDetails(ctx: StateContext<PolicyClaimStateModel>, { claimId }: GetClaimDetails) {
+  getClaimDetails(
+    ctx: StateContext<PolicyClaimStateModel>,
+    { claimId }: GetClaimDetails
+  ) {
     return this.policyClaimService.getClaimDetails(claimId).pipe(
       map((response: HttpResponseBody) => {
         const state: PolicyClaimStateModel = ctx.getState();
@@ -176,8 +183,10 @@ export class PolicyClaimState {
   }
 
   @Action(DownloadDocument)
-  downloadDocument(ctx: StateContext<PolicyClaimStateModel>, { payload }: DownloadDocument)
-  {
+  downloadDocument(
+    ctx: StateContext<PolicyClaimStateModel>,
+    { payload }: DownloadDocument
+  ) {
     return this.policyClaimService.downloadDocument(payload).pipe(
       tap((response: any) => {
         const keyName = payload.keyName;

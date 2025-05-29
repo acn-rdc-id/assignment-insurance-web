@@ -7,6 +7,7 @@ export interface PolicyClaim {
   claimDetails?: undefined;
   claimdocuments?: undefined;
 }
+
 export interface PolicyClaimSubmissionDetails {
   policyIdList: string[];
   claimPolicyDocumentList: PolicyClaimDocument[];

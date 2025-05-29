@@ -161,10 +161,9 @@ export class PolicyClaimsSubmissionUploadDocComponent
         if (files.length === 0) {
           errors.push(`Please upload a file for "${doc}".`);
         } else {
-          const expectedName = doc.toLowerCase().replace(/\s+/g, '');
-          const fileName = files[0].name.toLowerCase().replace(/\s+/g, '');
+          const fileName = files[0].name.replace(/\.[^\.]+$/, '');
 
-          if (!fileName.includes(expectedName)) {
+          if (!fileName.includes(doc)) {
             errors.push(
               `Filename for "${files[0].name}" must be the same as "${doc}".`
             );
@@ -194,8 +193,6 @@ export class PolicyClaimsSubmissionUploadDocComponent
     });
 
     const payload: FormData = this.buildFormData();
-
-    console.log('PAYLOAD', payload);
 
     this.store.dispatch(new PostSubmitClaim(payload)).subscribe({
       complete: () => {
