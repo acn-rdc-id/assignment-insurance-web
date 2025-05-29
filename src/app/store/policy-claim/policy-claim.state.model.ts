@@ -4,6 +4,7 @@ import {
   PolicyClaimStep,
   PolicyClaimSubmissionDetails,
   PolicyClaimList,
+  PolicyClaimDetails,
 } from '../../models/policy-claim.model';
 
 export interface PolicyClaimStateModel {
@@ -13,7 +14,7 @@ export interface PolicyClaimStateModel {
   currentMainStep: PolicyClaimStep;
   selectedPolicyId: number;
   selectedTypeOfClaim: PolicyClaimDocument;
-  claimDetails: PolicyClaimList;
+  claimDetails: PolicyClaimDetails;
   docUpload: any;
 }
 

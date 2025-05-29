@@ -1,17 +1,59 @@
-<p>policy-claim-details works!</p>
+<div nxCol="12,12,12,12" class="policy-servicing-banner">
+  <div class="banner-content">
+    <div class="banner-title">
+      <p>Claim Details</p>
+    </div>
+  </div>
+  <div>
+    <div class="tab-content">
+      <table nxTable class="info-table" style="width: 100%; border-collapse: collapse;">
+        <tbody>
+          <tr nxTableRow>
+            <td nxTableCell class="info-label">Submission Date</td>
+            <td nxTableCell class="info-value">{{ claimDetails.claimDate }}</td>
+          </tr>
+          <tr nxTableRow>
+            <td nxTableCell class="info-label">Policy ID</td>
+            <td nxTableCell class="info-value">{{ claimDetails.policyNo }}</td>
+          </tr>
+          <!-- <tr nxTableRow>
+            <td nxTableCell class="info-label">Policy Name</td>
+            <td nxTableCell class="info-value">Allianz i-Essential Cover Life Insurance</td>
+          </tr>
+          <tr nxTableRow>
+            <td nxTableCell class="info-label">Name</td>
+            <td nxTableCell class="info-value">Nur Aina insyirah</td>
+          </tr> -->
+          <tr nxTableRow>
+            <td nxTableCell class="info-label">Claim Type</td>
+            <td nxTableCell class="info-value">{{ claimType.claimTypeName }}</td>
+          </tr>
+          <tr nxTableRow>
+            <td nxTableCell class="info-label">Claim Description</td>
+            <td nxTableCell class="info-value">{{ claimType.claimTypeDescription }}</td>
+          </tr>
+          <tr nxTableRow>
+            <td nxTableCell class="info-label">Claim Document</td>
+            <td nxTableCell class="info-value">  
+              <div class="document-links">
+              @for (doc of claimDocument; track doc.documentUrl) {
+                <nx-link href="#"
+        (click)="downloadDocument()" class="document-link" >
+                  {{ doc.documentName }}
+                </nx-link>
+              }
+              </div>  
+            </td>
+          </tr>
+          <tr nxTableRow>
+            <td nxTableCell class="info-label">Status</td>
+            <td nxTableCell class="info-value" [ngStyle]="getStatusColor(claimDetails.claimStatus)">{{ claimDetails.claimStatus }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
 
 <button (click)="downloadDocument()">Download</button>
-  <table class="info-table">
-    <tr>
-      <td class="label">Submission Date</td>
-      <td>12/03/12</td>
-    </tr>
-    <tr>
-      <td class="label">Name</td>
-      <td>MYNAMEIS</td>
-    </tr>
-    <tr>
-      <td class="label">Age</td>
-      <td>12 Years</td>
-    </tr>
-  </table>

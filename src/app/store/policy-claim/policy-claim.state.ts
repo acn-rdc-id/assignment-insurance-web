@@ -7,6 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { PolicyClaimService } from '../../services/policy-claim.service';
 import {
   PolicyClaim,
+  PolicyClaimDetails,
   PolicyClaimDocument,
   PolicyClaimList,
   PolicyClaimStep,
@@ -62,9 +63,9 @@ export class PolicyClaimState {
     return state.mainSteps;
   }
 
-  @Selector()
-  static getPolicyClaimDetails(state: PolicyClaimStateModel): PolicyClaimList {
-    return structuredClone(state.claimDetails);
+@Selector()
+  static getPolicyClaimDetails(state: PolicyClaimStateModel): PolicyClaimDetails {
+    return state.claimDetails;
   }
 
   @Action(LoadPolicyClaim)
@@ -209,13 +210,4 @@ export class PolicyClaimState {
       },
     });
   }
-
-  // @Action(GetClaimDetails)getClaimDetails({patchState}:StateContext<PolicyClaimStateModel>, {claimId}: GetClaimDetails){
-  //   return this.policyClaimService.getClaimDetails(claimId).pipe(
-  //     map((response: HttpResponseBody)=>{
-  //       const item = response.data
-  //       console.log("Line 174==> ", item)
-  //     })
-  //   );
-  // }
 }

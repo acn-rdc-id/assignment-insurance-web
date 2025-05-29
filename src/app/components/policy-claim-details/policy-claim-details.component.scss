@@ -1,14 +1,113 @@
-    .info-table {
-      width: 300px;
-      border-collapse: collapse;
-      font-family: Arial, sans-serif;
-    }
-    .info-table td {
-      border: 1px solid #ccc;
-      padding: 8px 12px;
-    }
-    .info-table td.label {
-      background-color: #f2f2f2;
-      font-weight: bold;
-      width: 40%;
-    }
+$primary-color: grey;
+$text-color: #333;
+$banner-height: 808px;
+$font-size-large: 45px;
+$line-height-tight: 1.2;
+
+.policy-servicing-banner {
+  height: $banner-height;
+  color: $text-color;
+  display: flex;
+  justify-content: center;
+  background-size: cover;
+  background-image: url('../../../assets/content-bg.jpg');
+}
+
+.banner-content {
+  position: absolute;
+  text-align: center;
+  color: white;
+  padding: 10px;
+  margin-top: 1rem;
+}
+
+.banner-title {
+  font-size: $font-size-large;
+  line-height: $line-height-tight;
+  margin: 0;
+  color: #333;
+}
+
+.tab-content {
+  padding-top: 10rem;
+
+}
+
+// .info-table {
+//   margin-top: 16px;
+//   font-size: 14px;
+//   background-color: #fafafa;
+//   border: 1px solid #e0e0e0;
+//   border-radius: 4px;
+//   min-width: 600px;
+// }
+
+.info-label {
+  font-weight: 600;
+  color: #424242;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.info-value {
+  color: #424242;
+  font-weight: 500;
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+
+.info-table {
+  min-width: 600px;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #333;
+}
+
+.info-table td {
+  padding: 12px 16px;
+  vertical-align: top;
+}
+
+.info-table tr:not(:last-child) td {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.info-table td:first-child {
+  font-weight: 500;
+  color: #2c7a7b;
+  width: 35%;
+}
+
+.info-table td:last-child {
+  color: #666;
+}
+
+.info-table tr:hover {
+  background-color: #fafafa;
+}
+
+.document-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;    
+}
+
+.document-link {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: 500 !important;
+  color: #666 !important;  
+  text-decoration: none;
+  display: block;     
+  padding: 1px 0;
+}
+
+.document-link:hover {
+  text-decoration: underline;
+  color: #2c7a7b;   
+}
+
+
+

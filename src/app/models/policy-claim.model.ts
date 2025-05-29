@@ -1,6 +1,6 @@
 export interface PolicyClaim {
   claimId: string;
-  policyId: string;
+  policyId?: string;
   claimDate: string;
   claimStatus: string;
   claimType: string;
@@ -9,6 +9,19 @@ export interface PolicyClaim {
 export interface PolicyClaimSubmissionDetails {
   policyIdList: string[];
   claimPolicyDocumentList: PolicyClaimDocument[];
+}
+
+export interface PolicyClaimDetails {
+  claimID: string;
+  policyNo: string;
+  documentList: { documentUrl: string; documentName: string }[];
+  claimType: {
+    claimTypeId: number;
+    claimTypeName: string;
+    claimTypeDescription: string;
+  };
+  claimDate: string;
+  claimStatus: string;
 }
 
 export interface PolicyClaimDocument {
