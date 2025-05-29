@@ -1,12 +1,12 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, Form } from '@angular/forms';
+import { NxInputModule } from '@aposin/ng-aquila/input';
+import { NxButtonModule } from '@aposin/ng-aquila/button';
 import {NxColComponent, NxLayoutComponent, NxRowComponent} from '@aposin/ng-aquila/grid';
 import {NxBreadcrumbComponent, NxBreadcrumbItemComponent} from '@aposin/ng-aquila/breadcrumb';
-import {RouterLink} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {NxBadgeComponent} from '@aposin/ng-aquila/badge';
 import {NxTabComponent, NxTabGroupComponent} from '@aposin/ng-aquila/tabs';
-import {PolicyDetails} from '../../models/policy.model';
-import {PolicyProductState} from '../../store/policy-product/policy-product.state';
-import {Store} from '@ngxs/store';
 import {
   NxAccordionDirective,
   NxExpansionPanelComponent,
@@ -15,6 +15,27 @@ import {
 } from '@aposin/ng-aquila/accordion';
 import {NxHeadlineComponent} from '@aposin/ng-aquila/headline';
 import {NxCopytextComponent} from '@aposin/ng-aquila/copytext';
+import {
+  PolicyServicingBeneficiaryComponent
+} from '../policy-servicing-beneficiary/policy-servicing-beneficiary.component';
+import {NxFormfieldModule, NxFormfieldAppendixDirective} from '@aposin/ng-aquila/formfield';
+import {NxDropdownComponent, NxDropdownItemComponent} from '@aposin/ng-aquila/dropdown';
+import {NxIconButtonComponent} from '@aposin/ng-aquila/button';
+import {NxIconComponent} from '@aposin/ng-aquila/icon';
+import {NxPopoverComponent, NxPopoverTriggerDirective} from '@aposin/ng-aquila/popover';
+import {Store} from '@ngxs/store';
+import {PolicyProductState} from '../../store/policy-product/policy-product.state';
+import {formatDate} from '../../utils/date-utils';
+import { GetPolicyDetails, UpdateInsuredInfo } from '../../store/policy-product/policy-product.action';
+import { HttpErrorBody } from '../../models/http-body.model';
+import { PolicyDetails } from '../../models/policy.model';
+import { pipe, Subject, takeUntil } from 'rxjs';
+// import { formatDate } from '@angular/common';
+
+export interface Breadcrumb {
+  label: string;
+  link: string | null;
+}
 
 @Component({
   selector: 'app-policy-servicing-details',
@@ -33,18 +54,56 @@ import {NxCopytextComponent} from '@aposin/ng-aquila/copytext';
     NxExpansionPanelHeaderComponent,
     NxExpansionPanelTitleDirective,
     NxHeadlineComponent,
-    NxCopytextComponent
+    NxCopytextComponent,
+    PolicyServicingBeneficiaryComponent,
+    NxFormfieldAppendixDirective,
+    NxFormfieldModule,
+    NxInputModule,
+    NxDropdownComponent,
+    NxDropdownItemComponent,
+    NxButtonModule,
+    NxIconButtonComponent,
+    NxIconComponent,
+    NxPopoverComponent,
+    NxPopoverTriggerDirective,
+    ReactiveFormsModule
   ],
   templateUrl: './policy-servicing-details.component.html',
   styleUrl: './policy-servicing-details.component.scss'
 })
-export class PolicyServicingDetailsComponent implements OnInit {
-  currentIndex = 0;
 
-  breadcrumbs = [
-    { label: 'Policies', link: '/policies' },
-    { label: 'ACCENTURE TECHNOLOGY SOLUTIONS SDN. BHD.', link: '#' }
-  ];
+export class PolicyServicingDetailsComponent implements OnInit, OnDestroy {
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly store: Store = inject(Store);
+
+  insuredForm!: FormGroup;
+
+  FIELD_OPTIONS = {
+    title: [
+      { value: 'Mr', label: 'Mr' },
+      { value: 'Mrs', label: 'Mrs' },
+    ],
+    countryCode: [
+      { value: '60', label: '60'},
+      { value: '62', label: '62'}
+    ]
+  }
+
+  editMode: boolean = false;
+  initialFormValue: any;
+  loadPolicyDetailsComplete: boolean = false;
+
+  policyDetail!: PolicyDetails;
+  policyBeneficiariesLength: number = 0;
+  currentIndex: number = 0;
+  currentPolicyNo: string | null = '';
+  currentPolicyId: number | undefined;
+
+  breadcrumbs: Breadcrumb[] = [];
+
+  private unsubscribe$ = new Subject();
+
+  constructor(private fb: FormBuilder) {}
 
   policyDetails = {
     companyName: 'Accenture Technology Solutions Sdn. Bhd.',
@@ -52,17 +111,12 @@ export class PolicyServicingDetailsComponent implements OnInit {
     status: 'In Force'
   };
 
-  firstRow = [
-    { label: 'Policy no.', value: 'G122222-000' },
-    { label: 'Effective date', value: '01 Sep 2024' },
-    { label: 'Expiry Date', value: '31 Aug 2025' },
-    { label: 'NRIC', value: '900000-10-1001' }
-  ];
+  firstRow = [{
+    label: '', value: ''
+  }];
 
   secondRow = [
-    { label: 'Insured name', value: 'CAPITAL NAME' },
-    { label: 'Facility', value: 'Managed Care Free' },
-    { label: 'Dependents', value: '2' }
+    { label: '', value: '' },
   ];
 
   cardFields = [
@@ -72,16 +126,153 @@ export class PolicyServicingDetailsComponent implements OnInit {
     { label: 'Insured NRIC', value: '900516-10-1000' }
   ];
 
-  store: Store = inject(Store);
-
-  scrollIntoViewActive = true;
-
+  scrollIntoViewActive: boolean = true;
   scrollIntoViewOptions: ScrollIntoViewOptions = {
     behavior: 'smooth',
   };
 
+  private setupBreadcrumbs(): void {
+    this.breadcrumbs = [
+      { label: 'Policies', link: '/policy-product' },
+      { label: 'Policy Servicing', link: '/policy-servicing' },
+      { label: 'Policy Details', link: '#' }
+    ];
+  }
+
+  private populatePolicyRows(): void {
+    const { personalDetails, quotationNumber, startDate, endDate } = this.policyDetail;
+
+    this.firstRow = [
+      { label: 'Policy no.', value: quotationNumber ?? '-' },
+      { label: 'Effective date', value: formatDate(startDate) },
+      { label: 'Expiry Date', value: formatDate(endDate) },
+      { label: 'NRIC', value: personalDetails?.idNo ?? '-' }
+    ];
+
+    this.secondRow = [
+      { label: 'Insured name', value: personalDetails?.fullName ?? '-' },
+      { label: 'Beneficiary', value:  this.policyBeneficiariesLength.toString() },
+    ];
+
+    // this.cardFields = [
+    //   { label: 'Title', value: personalDetails?.title ?? '-' },
+    //   { label: 'Full Name', value: personalDetails?.fullName ?? '-' },
+    //   { label: 'Country Code', value: personalDetails?.countryCode ?? '-' },
+    //   { label: 'Mobile Number', value: personalDetails?.mobileNo ?? '-' },
+    //   { label: 'Email', value: personalDetails?.email ?? '-'}
+    // ];
+
+    this.insuredForm.patchValue({
+      title: personalDetails?.title ?? '',
+      fullName: personalDetails?.fullName ?? '',
+      countryCode: personalDetails?.countryCode ?? '',
+      mobileNo: personalDetails?.mobileNo ?? '',
+      email: personalDetails?.email ?? '',
+      idNo: personalDetails?.idNo ?? '',
+      gender: personalDetails?.gender ?? '',
+      dob: formatDate(personalDetails?.dateOfBirth) ?? '',
+      countryOfBirth: personalDetails?.countryOfBirth,
+      nationality: personalDetails?.nationality,
+      // occupation: personalDetails?.occupation,
+      // purposeOfTransaction: personalDetails?.purposeOfTransaction
+    });
+
+    this.insuredForm.disable();
+  }
+
+onSaveInsuredInfo(): void {
+  if (this.insuredForm.invalid) {
+    this.insuredForm.markAllAsTouched();
+    return;
+  }
+    // const updatedInfo = this.insuredForm.value;
+    const { fullName, title, countryCode, mobileNo, email } = this.insuredForm.getRawValue();
+    const updatedInfo = { fullName, title, countryCode, mobileNo, email };
+
+    this.store.dispatch(new UpdateInsuredInfo(this.currentPolicyId!, updatedInfo)).subscribe(() => {
+      this.editMode = false;
+      this.loadSelectedPolicy();
+    })
+}
+
+openEdit() {
+  this.editMode = true;
+  this.initialFormValue = this.insuredForm.getRawValue();
+  // this.insuredForm.enable();
+  this.insuredForm.get('title')?.enable();
+  this.insuredForm.get('fullName')?.enable();
+  this.insuredForm.get('countryCode')?.enable();
+  this.insuredForm.get('mobileNo')?.enable();
+  this.insuredForm.get('email')?.enable();
+}
+
+onCancelEdit(): void {
+  this.insuredForm.patchValue(this.initialFormValue);
+  this.insuredForm.markAsPristine();
+  this.editMode = false;
+  this.insuredForm.disable();
+}
+
+
+  loadSelectedPolicy(): void {
+    if (this.currentPolicyId) {
+      this.store.dispatch(new GetPolicyDetails(this.currentPolicyId)).subscribe({
+        next: () => {
+          const policyDetail: PolicyDetails = this.store.selectSnapshot(PolicyProductState.getPolicyDetails);
+          if (!policyDetail) return;
+      
+          this.policyDetail = policyDetail;
+          this.currentPolicyNo = policyDetail.quotationNumber;
+          this.loadPolicyDetailsComplete = true;
+      
+          console.log(this.policyDetail);
+          this.setupBreadcrumbs();
+          this.populatePolicyRows();
+        },
+        error: (err: HttpErrorBody) => {
+          // TODO: Open message modal to display error message
+        }
+      });
+    }
+  }
+
+
   ngOnInit(): void {
-    const policyDetails: PolicyDetails[] = this.store.selectSnapshot(PolicyProductState.getPolicyDetailsList);
-    console.log(policyDetails);
+
+    this.insuredForm = this.fb.group({
+      title: ['', Validators.required],
+      fullName: ['', Validators.required],
+      countryCode: ['', Validators.required],
+      mobileNo: ['', [Validators.required, Validators.pattern(/^\d{8,10}$/)]], 
+      email: ['', [Validators.required, Validators.email]],
+
+      idNo: [{ value: '', disabled: true }],
+      gender: [{ value: '', disabled: true }],
+      dob: [{ value: '', disabled: true }],
+
+      countryOfBirth: [{ value: '', disable: true}],
+      nationality: [{ value: '', disable: true}],
+      // occupation: [{ value: '', disable: true}],
+      // purposeOfTransaction: [{ value: '', disable: true}]
+    })
+
+    this.insuredForm.disable();
+
+    this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+      this.currentPolicyId = parseInt(params.get('policyId') ?? '');
+      this.loadSelectedPolicy();
+    });
+
+    this.store.select(PolicyProductState.getPolicyDetails).pipe(takeUntil(this.unsubscribe$))
+    .subscribe((policyDetails) => {
+      this.policyDetail = policyDetails;
+      this.policyBeneficiariesLength = policyDetails.beneficiariesList?.length ?? 0;
+      this.populatePolicyRows();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next('');
+    this.unsubscribe$.complete();
   }
 }

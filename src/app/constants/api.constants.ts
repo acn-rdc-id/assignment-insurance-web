@@ -7,14 +7,15 @@ export const POLICY_PURCHASE_API = {
 
 export const POLICY_SERVICING_API = {
   GET_ALL_POLICIES: 'policy/getAll',
-  GET_POLICY_DETAILS: 'get-policy-details',
+  GET_POLICY_DETAILS: (policyId: number) => `policy/${policyId}`,
+  CREATE_BENEFICIARIES: 'policy/beneficiary',
+  UPDATE_INSURED_INFO: (policyId: number) => `policy/${policyId}`
 };
 
 export const POLICY_CLAIM_API = {
   CREATE_CLAIM_POLICY_DOCUMENT: 'claim/claimpolicydocument',
   CLAIM_FILE_DOWNLOAD: 'claim/download',
   CLAIM_SUBMIT: 'claim/submit',
-  GET_CLAIM_DETAIL: 'claim/detail',
+  GET_CLAIM_DETAIL: (claimId: number ) => `claim/detail/${claimId}`,
   GET_CLAIM_LIST: 'claim/list',
-
 };

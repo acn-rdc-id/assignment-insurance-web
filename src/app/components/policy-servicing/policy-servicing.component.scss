@@ -18,6 +18,7 @@ body {
 .policy-servicing-banner {
   height: $banner-height;
   color: $text-color;
+  overflow: auto;
   display: flex;
   justify-content: center;
   background-size: cover;

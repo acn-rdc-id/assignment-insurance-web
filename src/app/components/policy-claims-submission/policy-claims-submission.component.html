@@ -1,0 +1,20 @@
+<div class="particulars-container">
+  <nx-card style="width: 1200px">
+    <div nxLayout="list"></div>
+    <h3 nxHeadline size="l" class="card-title">Policy Claim Submission</h3>
+
+    @if (currentStep == 1) {
+    <app-policy-claims-submission-select-policy
+      [nextStep]="nextStep.bind(this)"
+      [prevStep]="prevStep.bind(this)"
+    >
+    </app-policy-claims-submission-select-policy>
+    } @if (currentStep == 2) {
+    <app-policy-claims-submission-upload-doc
+      [nextStep]="nextStep.bind(this)"
+      [prevStep]="prevStep.bind(this)"
+    >
+    </app-policy-claims-submission-upload-doc>
+    }
+  </nx-card>
+</div>

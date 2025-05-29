@@ -6,3 +6,8 @@ export function convertToIsoDate(dateStr?: string): string | null {
 
   return isNaN(isoDate.getTime()) ? null : isoDate.toISOString();
 }
+
+export function formatDate(dateStr?: string): string {
+  if (!dateStr) return '-';
+  return new Date(dateStr).toLocaleDateString('en-GB');
+}

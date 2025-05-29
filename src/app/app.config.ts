@@ -3,9 +3,10 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideStore } from '@ngxs/store';
-import { withNgxsStoragePlugin, StorageOption } from '@ngxs/storage-plugin';
+import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { withNgxsResetPlugin } from 'ngxs-reset-plugin';
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
 import { UserState } from './store/user/user.state';
@@ -13,7 +14,8 @@ import { errorHandlingInterceptor } from './interceptors/error-handling.intercep
 import { loadingInterceptor } from './interceptors/loading.interceptor';
 import { PolicyPurchaseState } from './store/policy/policy-purchase.state';
 import { PolicyProductState } from './store/policy-product/policy-product.state';
-import {userAuthInterceptor} from './interceptors/user-auth.interceptor';
+import { userAuthInterceptor } from './interceptors/user-auth.interceptor';
+import { PolicyClaimState } from './store/policy-claim/policy-claim.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,14 +23,19 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     provideAnimations(),
     provideHttpClient(
-      withInterceptors([errorHandlingInterceptor, loadingInterceptor, userAuthInterceptor])
+      withInterceptors([
+        errorHandlingInterceptor,
+        loadingInterceptor,
+        userAuthInterceptor,
+      ])
     ),
     provideStore(
-      [UserState, PolicyPurchaseState, PolicyProductState],
+      [UserState, PolicyPurchaseState, PolicyProductState, PolicyClaimState],
       withNgxsStoragePlugin({
         keys: '*',
         storage: 1,
       }),
+      withNgxsResetPlugin(),
       withNgxsReduxDevtoolsPlugin(),
       withNgxsLoggerPlugin({ disabled: environment.production })
     ),

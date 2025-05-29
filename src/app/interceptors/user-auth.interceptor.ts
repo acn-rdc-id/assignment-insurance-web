@@ -10,12 +10,19 @@ export const userAuthInterceptor: HttpInterceptorFn = (req, next) => {
   const store = inject(Store);
   const authToken = store.selectSnapshot(UserState.getJwtToken);
   const user: User = store.selectSnapshot(UserState.getUser);
+
+  const isFormData: boolean = req.body instanceof FormData;
+
   if (!req.context.get(SkipUserAuthHeaders)) {
-    const authHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
+    let authHeader = new HttpHeaders({
       'Authorization': `Bearer ${authToken}`,
       'userId': user.userId
     });
+
+    if (!isFormData) {
+      authHeader = authHeader.set('Content-Type', 'application/json');
+    }
+
     const authorizedRequest = req.clone({
       headers: authHeader
     });

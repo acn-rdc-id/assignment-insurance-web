@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit, signal, Signal} from '@angular/core';
 import {
   PolicyPurchaseInitialInfoComponent
 } from '../policy-purchase-initial-info/policy-purchase-initial-info.component';
@@ -20,6 +20,7 @@ import {
 import {PolicyPurchaseReceiptComponent} from '../policy-purchase-receipt/policy-purchase-receipt.component';
 import {NgClass} from '@angular/common';
 import {formatCamelCase} from '../../utils/string-utils';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-policy-purchase',
@@ -44,28 +45,32 @@ import {formatCamelCase} from '../../utils/string-utils';
   templateUrl: './policy-purchase.component.html',
   styleUrl: './policy-purchase.component.scss',
 })
-export class PolicyPurchaseComponent implements OnInit {
+export class PolicyPurchaseComponent implements OnInit, OnDestroy {
   store: Store = inject(Store);
 
-  currentStep: number = 1;
-  currentSubStep: number = 1;
-  currentPath: string = 'basic-information';
-  currentSubPath: string = 'info-details';
-  paymentStatus: number | null = null;
+  currentMainStep: Signal<PolicyPurchaseStep> = signal({ step: 1, path: 'basic-information' });
+  currentSubStep: Signal<PolicyPurchaseStep> = signal({ step: 1, path: 'info-details' });
 
   mainSteps: PolicyPurchaseStep[] = [];
   subSteps: PolicyPurchaseStep[] = [];
 
+  unsubscribe$ = new Subject();
+
   initSteps(): void {
-    this.store.select(PolicyPurchaseState.getMainSteps).subscribe(steps => {
+    this.store.select(PolicyPurchaseState.getMainSteps)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe(steps => {
       this.mainSteps = steps;
-      this.submitStep(this.currentStep, this.currentPath);
     });
 
-    this.store.select(PolicyPurchaseState.getSubSteps).subscribe(steps => {
+    this.store.select(PolicyPurchaseState.getSubSteps)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe(steps => {
       this.subSteps = steps;
-      this.submitSubStep(this.currentSubStep, this.currentSubPath);
     });
+
+    this.currentMainStep = this.store.selectSignal(PolicyPurchaseState.getCurrentMainStep);
+    this.currentSubStep = this.store.selectSignal(PolicyPurchaseState.getCurrentSubStep);
   }
 
   submitStep(step: number, path: string): void {
@@ -74,10 +79,6 @@ export class PolicyPurchaseComponent implements OnInit {
 
   submitSubStep(step: number, path: string): void {
     this.store.dispatch(new SubmitPolicyPurchaseSubStep({ step: step, path: path }));
-  }
-
-  onPaymentResult(status: number) {
-    this.paymentStatus = status;
   }
 
   ngOnInit(): void {
@@ -93,35 +94,36 @@ export class PolicyPurchaseComponent implements OnInit {
   }
 
   nextStep(): void {
-    if (this.currentStep < this.mainSteps.length) {
-      const nextStep: PolicyPurchaseStep = this.mainSteps[this.currentStep];
+    if (this.currentMainStep().step < this.mainSteps.length) {
+      const nextStep: PolicyPurchaseStep = this.mainSteps[this.currentMainStep().step];
       this.onStepChange(nextStep.step, nextStep.path);
-      this.currentStep++;
     }
   }
 
   nextSubStep(): void {
-    if (this.currentSubStep < this.subSteps.length) {
-      const nextStep: PolicyPurchaseStep = this.subSteps[this.currentSubStep];
+    if (this.currentSubStep().step < this.subSteps.length) {
+      const nextStep: PolicyPurchaseStep = this.subSteps[this.currentSubStep().step];
       this.onSubStepChange(nextStep.step, nextStep.path);
-      this.currentSubStep++;
     }
   }
 
   prevStep(): void {
-    if (this.currentStep > 1) {
-      const prevStep: PolicyPurchaseStep = this.mainSteps[this.currentStep - 2];
+    if (this.currentMainStep().step > 1) {
+      const prevStep: PolicyPurchaseStep = this.mainSteps[this.currentMainStep().step - 2];
       this.onStepChange(prevStep.step, prevStep.path);
-      this.currentStep--;
     }
   }
 
   prevSubStep(): void {
-    if (this.currentSubStep > 1) {
-      const prevStep: PolicyPurchaseStep = this.subSteps[this.currentSubStep - 2];
+    if (this.currentSubStep().step > 1) {
+      const prevStep: PolicyPurchaseStep = this.subSteps[this.currentSubStep().step - 2];
       this.onSubStepChange(prevStep.step, prevStep.path);
-      this.currentSubStep--;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next('');
+    this.unsubscribe$.complete();
   }
 
   protected readonly formatCamelCase = formatCamelCase;

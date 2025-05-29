@@ -1,15 +1,7 @@
 <div nxLayout="grid nogutters" class="grid">
     <div nxRow class="grid-row">
         <div nxCol="12,12,12,6" class="mini-summary-wrapper">
-            <nx-card>
-                <p nxHeadline="subsection-xsmall" class="nx-margin-bottom-m">2,99€</p>
-                <p nxCopytext="normal">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero voluptate
-                    explicabo ad iste, ratione cupiditate eaque sapiente odit, accusamus
-                    placeat ipsam dolor sint voluptatibus nam? Recusandae accusamus iste
-                    sapiente necessitatibus?
-                </p>
-            </nx-card>
+            <app-quotation-summary></app-quotation-summary>
         </div>
         <div nxCol="12,12,12,6">
             <div class="payment-status-wrapper">
@@ -25,12 +17,12 @@
                       <tr nxTableRow>
                         <td class="label-cell">Payment Status</td>
                         <td class="separator-cell">:</td>
-                        <td class="value-cell failure" [ngStyle]="getStatusColor(paymentStatus!)">{{displayPaymentStatus}}</td>
+                        <td class="value-cell failure" [ngStyle]="getStatusColor(paymentDetails.status!)">{{displayPaymentStatus}}</td>
                       </tr>
                       <tr nxTableRow>
                         <td class="label-cell">Payment Reference No</td>
                         <td class="separator-cell">:</td>
-                        <td class="value-cell"><code>T12345678</code></td>
+                        <td class="value-cell"><code>{{ this.paymentDetails.paymentRefNo }}</code></td>
                       </tr>
                     </tbody>
                   </table>
@@ -40,7 +32,7 @@
                             <p>Allianz Contact Centre: <b><u>03-123456789</u></b><br>
                                 Email: <b><u>cust.serv&#64;allianz.co</u></b></p>
                         </div>
-                        <div nxCol="12,12,12,6" class="display-button" *ngIf="paymentStatus === 1">
+                        <div nxCol="12,12,12,6" class="display-button" *ngIf="paymentDetails.status === paymentAction.Success">
                             <button nxButton="redirect" type="button" (click)="onNext()" >
                                 <nx-icon name="arrow-right" nxIconPositionEnd aria-hidden="true"></nx-icon>
                                 Go to Details
@@ -50,4 +42,5 @@
                 </div>
         </div>
     </div>
+</div>
 </div>

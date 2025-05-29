@@ -23,8 +23,7 @@ import {convertToIsoDate} from '../../utils/date-utils';
 import {PolicyService} from '../../services/policy.service';
 import {User} from '../../models/user.model';
 import {PolicyPlan} from '../../models/policy.model';
-
-type MyDialogResult = 'success' | 'failed';
+import { PaymentAction } from '../../enums/payment-action.enum';
 
 @Component({
   selector: 'app-policy-purchase-summary',
@@ -59,26 +58,22 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
   termsAndConditions: any[] = [];
   displayPersonalInfo: any[] = [];
   quotationDetails: any = [];
-  private unsubscribe$ = new Subject();
   dialogRef?: NxModalRef<any>;
-
+  purchaseAction: typeof PaymentAction = PaymentAction;
+  
   form: FormGroup;
   formArray: FormArray;
 
+  private unsubscribe$ = new Subject();
+  
   @ViewChild('paymentDialog') paymentDialog!: TemplateRef<any>;
   modalRef: any;
-  actionResult?: MyDialogResult;
-  paymentStatus: number | null = null;
-
+  actionResult?: PaymentAction;
+  
   @Input() nextSubStep!: () => void;
   @Input() prevSubStep!: () => void;
   @Output() paymentResult = new EventEmitter<number>();
-
-  modeToDurationMap: Record<string, number> = {
-    MONTHLY: 1,
-    YEARLY: 12,
-  };
-
+  
   constructor(
     private sanitizer: DomSanitizer,
     private store: Store,
@@ -86,7 +81,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
     private dialogService: NxDialogService,
     // private deepCopy: DeepCopyService
   ) {
-
+    
     //stores checked terms
     this.form = this.fb.group({
       terms: this.fb.array([]),
@@ -213,31 +208,18 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
 
     const payload = this.buildApplicationPayload();
 
-    this.policyService.postPolicyApplication(payload).subscribe({
-      next: (response: any): void => {
-        this.quotationId = response.data.id;
-        this.premiumMode = response.data.planResponseDto?.premiumMode;
-        this.duration = this.modeToDurationMap[this.premiumMode];
+    this.store.dispatch(new PostPolicyApplication(payload)).subscribe({
+      next: (): void => {
+        this.quotationDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
         this.openModal();
       },
-      error: (error): void => {
-        console.error('❌ API call failed:', error);
+      error: (err: HttpErrorBody): void => {
+        this.openErrorModal({
+          header: 'Error',
+          message: err.message ?? 'Unexpected error occurred.'
+        });
       }
     });
-
-    // todo fix this later
-    // this.store.dispatch(new PostPolicyApplication(payload)).subscribe({
-    //   next: (): void => {
-    //     this.quotationDetails = this.store.selectSnapshot(PolicyPurchaseState.getQuotationDetails);
-    //     this.openModal();
-    //   },
-    //   error: (err: HttpErrorBody): void => {
-    //     this.openErrorModal({
-    //       header: 'Error',
-    //       message: err.message ?? 'Unexpected error occurred.'
-    //     });
-    //   }
-    // });
   }
 
   buildApplicationPayload() {
@@ -268,30 +250,27 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
       showCloseIcon: true
     });
 
-    this.modalRef.afterClosed().subscribe((result: MyDialogResult) => {
+    this.modalRef.afterClosed().subscribe((result: PaymentAction) => {
       this.actionResult = result;
       this.processPayment(result);
-      this.handlePayment(result);
     });
   }
 
-  processPayment(result: MyDialogResult): void {
+  processPayment(result: PaymentAction): void {
     const selectedPlan = this.store.selectSnapshot(PolicyPurchaseState.selectedPlan);
 
     const payload = {
-      quotationId: this.quotationId,//this.quotationDetails.quotationId, todo fix this later
+      quotationId: this.quotationDetails.quotationId,
       paymentAmount: selectedPlan?.premiumAmount,
-      duration: this.modeToDurationMap[this.quotationDetails.premiumMode],
-      paymentStatus: result.toUpperCase(),
+      duration: Number(selectedPlan?.coverageTerm.match(/\d+/)?.[0] || 0),
+      paymentStatus: result,
       planInfo: selectedPlan,
     };
-    this.store.dispatch(new PostPayment(payload));
-  }
-
-  handlePayment(result: 'success' | 'failed'): void {
-    this.paymentStatus = result === 'success' ? 1 : 0;
-    this.paymentResult.emit(this.paymentStatus);
-    this.nextSubStep();
+    this.store.dispatch(new PostPayment(payload)).subscribe({
+      next: () => {
+        this.nextSubStep();
+      }
+    });
   }
 
   onBack(): void {

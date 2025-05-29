@@ -31,7 +31,7 @@
           <div nxRow class="docs-grid-colored-row">
             <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <label class="form-label">Gender *</label>
-              <nx-radio-toggle formControlName="gender" [disabled]="true">
+              <nx-radio-toggle formControlName="gender">
                 @for (item of gender; track item) {
                   <nx-radio-toggle-button [value]="item">
                     {{ item }}
@@ -41,7 +41,7 @@
             </div>
             <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield label="Date of Birth *" appearance="outline" floatLabel="always">
-                <input nxInput [value]="personalDetailsForm.get('dateOfBirth')?.value" disabled />
+                <input nxInput formControlName="dateOfBirth" />
               </nx-formfield>
             </div>
           </div>

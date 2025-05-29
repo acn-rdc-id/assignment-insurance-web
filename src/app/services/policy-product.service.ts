@@ -17,4 +17,22 @@ export class PolicyProductService {
       this.apiUrl + POLICY_SERVICING_API.GET_ALL_POLICIES
     );
   }
+
+  postListBeneficiaries(payload: any): Observable<HttpResponseBody> {
+    return this.http.post<HttpResponseBody>(
+      this.apiUrl + POLICY_SERVICING_API.CREATE_BENEFICIARIES,
+      payload
+    );
+  }
+
+  updateInsuredInfo(policyId: number, updatedInfo: any): Observable<HttpResponseBody> {
+      return this.http.patch<HttpResponseBody>(
+      this.apiUrl + POLICY_SERVICING_API.UPDATE_INSURED_INFO(policyId), updatedInfo);
+  }
+
+  getPolicyDetails(policyId: number): Observable<HttpResponseBody> {
+    return this.http.get<HttpResponseBody>(
+      this.apiUrl + POLICY_SERVICING_API.GET_POLICY_DETAILS(policyId)
+    );
+  }
 }

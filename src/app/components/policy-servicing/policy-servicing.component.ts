@@ -16,6 +16,7 @@ import {DatePipe, NgClass} from '@angular/common';
 import {NxColComponent} from '@aposin/ng-aquila/grid';
 import {PolicyProductState} from '../../store/policy-product/policy-product.state';
 import {Store} from '@ngxs/store';
+import { PolicyDetails } from '../../models/policy.model';
 
 @Component({
   selector: 'app-policy-servicing',
@@ -39,14 +40,14 @@ import {Store} from '@ngxs/store';
 export class PolicyServicingComponent implements OnInit {
   private store: Store = inject(Store);
   private router: Router = inject(Router);
-  policyProduct: any;
+  policyProduct: Array<PolicyDetails> = [];
 
   ngOnInit(): void {
     this.policyProduct = this.store.selectSnapshot(PolicyProductState.getPolicyDetailsList);
   }
 
-  goToDetail(id: string): void {
-    this.router.navigate(['/policy-servicing-details', id]);
+  goToDetail(policyId: number): void {
+    this.router.navigate(['/policy-servicing-details', policyId.toString()]);
   }
 
   sortTable(sort: SortEvent): void {

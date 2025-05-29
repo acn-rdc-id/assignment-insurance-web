@@ -1,42 +1,54 @@
-import {Action, Selector, State, StateContext} from '@ngxs/store';
-import {inject, Injectable} from '@angular/core';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { inject, Injectable } from '@angular/core';
 import {
-  PostQuotationPlans,
   GetTermsAndConditions,
+  PostPayment,
+  PostPolicyApplication,
+  PostQuotationPlans,
   SelectPlan,
   SubmitInitialInfoSuccess,
   SubmitPersonalDetailsInfo,
   SubmitPolicyPurchaseStep,
-  SubmitPolicyPurchaseSubStep, PostPolicyApplication, PostPayment
+  SubmitPolicyPurchaseSubStep,
 } from './policy-purchase.action';
-import {POLICY_PURCHASE_STATE_DEFAULTS, PolicyPurchaseStateModel} from './policy-purchase.state.model';
-import {PolicyDetails, PolicyPersonalDetails, PolicyPurchaseStep} from '../../models/policy.model';
-import {map, tap} from 'rxjs';
-import {PolicyService} from '../../services/policy.service';
-import {formatCamelCase} from '../../utils/string-utils';
-import {HttpResponseBody} from '../../models/http-body.model';
+import {
+  POLICY_PURCHASE_STATE_DEFAULTS,
+  PolicyPurchaseStateModel,
+} from './policy-purchase.state.model';
+import {
+  PaymentDetails,
+  PolicyDetails,
+  PolicyPersonalDetails,
+  PolicyPurchaseStep,
+} from '../../models/policy.model';
+import { map, tap } from 'rxjs';
+import { PolicyService } from '../../services/policy.service';
+import { formatCamelCase } from '../../utils/string-utils';
+import { HttpResponseBody } from '../../models/http-body.model';
+import { ClaimService } from '../../services/claim.service';
+import { PaymentAction } from '../../enums/payment-action.enum';
 
 @State<PolicyPurchaseStateModel>({
-  name: 'PolicyState',
-  defaults: POLICY_PURCHASE_STATE_DEFAULTS
+  name: 'PolicyPurchaseState',
+  defaults: POLICY_PURCHASE_STATE_DEFAULTS,
 })
-
 @Injectable()
 export class PolicyPurchaseState {
-  private policyService:PolicyService =  inject(PolicyService);
+  private policyService: PolicyService = inject(PolicyService);
+  private claimService = inject(ClaimService);
 
   @Selector()
   static getGender(state: PolicyPurchaseStateModel): string | undefined {
-    return state.quotationDetails.personalDetails?.gender
+    return state.quotationDetails.personalDetails?.gender;
   }
 
   @Selector()
-  static getAge(state: PolicyPurchaseStateModel): number | undefined{
+  static getAge(state: PolicyPurchaseStateModel): number | undefined {
     return state.quotationDetails.personalDetails?.age;
   }
 
   @Selector()
-  static getDateOfBirth(state: PolicyPurchaseStateModel): string | undefined{
+  static getDateOfBirth(state: PolicyPurchaseStateModel): string | undefined {
     return state.quotationDetails.personalDetails?.dateOfBirth;
   }
 
@@ -56,22 +68,32 @@ export class PolicyPurchaseState {
   }
 
   @Selector()
-    static getTermsAndConditions(state: PolicyPurchaseStateModel){
-        return state.termsAndConditions;
-    }
+  static getTermsAndConditions(state: PolicyPurchaseStateModel) {
+    return state.termsAndConditions;
+  }
 
   @Selector()
-  static getPersonalDetails(state: PolicyPurchaseStateModel): PolicyPersonalDetails | null {
+  static getPersonalDetails(
+    state: PolicyPurchaseStateModel
+  ): PolicyPersonalDetails | null {
     return state.quotationDetails.personalDetails ?? null;
   }
 
   @Selector()
-  static getCurrentMainSteps(state: PolicyPurchaseStateModel): { step: number, path: string } {
+  static getCurrentMainStep(state: PolicyPurchaseStateModel): PolicyPurchaseStep {
     return {
       step: state.currentMainStep?.step || 1,
-      path: state.currentMainStep?.path || 'basic-information'
+      path: state.currentMainStep?.path || 'basic-information',
     };
   }
+
+  @Selector()
+  static getCurrentSubStep(state: PolicyPurchaseStateModel): PolicyPurchaseStep {
+    return {
+      step: state.currentSubStep?.step || 1,
+      path: state.currentSubStep?.path || 'info-details'
+    }
+  } 
 
   @Selector()
   static getMainSteps(state: PolicyPurchaseStateModel): PolicyPurchaseStep[] {
@@ -84,20 +106,30 @@ export class PolicyPurchaseState {
   }
 
   @Selector()
-  static getQuotationDetails(state: PolicyPurchaseStateModel){
-    return state.quotationDetails;
+  static getQuotationDetails(state: PolicyPurchaseStateModel): PolicyDetails {
+    return structuredClone(state.quotationDetails);
+  }
+
+  @Selector()
+  static getPaymentDetails(state: PolicyPurchaseStateModel): PaymentDetails {
+    return structuredClone(state.paymentDetails);
   }
 
   @Action(SubmitInitialInfoSuccess)
-  submitInitialInfoSuccess(ctx: StateContext<PolicyPurchaseStateModel>, {payload}: SubmitInitialInfoSuccess) {
+  submitInitialInfoSuccess(
+    ctx: StateContext<PolicyPurchaseStateModel>,
+    { payload }: SubmitInitialInfoSuccess
+  ) {
     let quotationDetails = structuredClone(ctx.getState().quotationDetails);
     // quotationDetails.gender = payload.gender;
     // quotationDetails.dateOfBirth = payload.dateOfBirth;
     // quotationDetails.quotationNumber = payload.referenceNumber;
     // quotationDetails.age = payload.ageNearestBirthday,
-    const updatedDetails = {
+    const prevPlan = ctx.getState().quotationDetails.plan;
+    const updatedDetails: PolicyDetails = {
+      ... ctx.getState().quotationDetails,
       quotationNumber: payload.quotationNumber,
-      plan: undefined,
+      plan: prevPlan,
       personalDetails: {
         // gender: payload.gender,
         // dateOfBirth: payload.dateOfBirth,
@@ -116,13 +148,13 @@ export class PolicyPurchaseState {
         mobileNo: '',
         occupation: '',
         email: '',
-        transactionPurpose: ''
-      }
+        transactionPurpose: '',
+      },
     };
 
     ctx.patchState({
       quotationDetails: updatedDetails,
-      plans: payload.plans
+      plans: payload.plans,
     });
 
     // ctx.patchState({
@@ -132,7 +164,10 @@ export class PolicyPurchaseState {
   }
 
   @Action(SelectPlan)
-  selectPlan(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: SelectPlan) {
+  selectPlan(
+    ctx: StateContext<PolicyPurchaseStateModel>,
+    { payload }: SelectPlan
+  ) {
     const quotationDetails = structuredClone(ctx.getState().quotationDetails);
     // const selectedPlan: PolicyPlan = {
     //   coverageTerm: payload.coverageTerm,
@@ -143,19 +178,23 @@ export class PolicyPurchaseState {
     // }
     const updatedQuotation = {
       ...quotationDetails,
-      plan: payload
+      plan: payload,
     };
 
     // quotationDetails.plan = selectedPlan;
-    console.log('Patch log plan\: ', updatedQuotation.plan)
+    console.log('Patch log plan: ', updatedQuotation.plan);
     ctx.patchState({ quotationDetails: updatedQuotation });
   }
 
-
   @Action(SubmitPersonalDetailsInfo)
-  submitPersonalDetailsInfo(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: SubmitPersonalDetailsInfo): void {
+  submitPersonalDetailsInfo(
+    ctx: StateContext<PolicyPurchaseStateModel>,
+    { payload }: SubmitPersonalDetailsInfo
+  ): void {
     const state: PolicyPurchaseStateModel = ctx.getState();
-    const quotationDetails: PolicyDetails = structuredClone(state.quotationDetails || {});
+    const quotationDetails: PolicyDetails = structuredClone(
+      state.quotationDetails || {}
+    );
 
     quotationDetails.personalDetails = {
       title: payload.title,
@@ -174,38 +213,44 @@ export class PolicyPurchaseState {
       mobileNo: payload.mobileNo,
       occupation: payload.occupation,
       email: payload.email,
-      transactionPurpose: payload.transactionPurpose
+      transactionPurpose: payload.transactionPurpose,
     };
 
     ctx.setState({
       ...state,
-      quotationDetails
+      quotationDetails,
     });
   }
 
   @Action(SubmitPolicyPurchaseStep)
-  setCurrentMainStep(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: SubmitPolicyPurchaseStep): void {
+  setCurrentMainStep(
+    ctx: StateContext<PolicyPurchaseStateModel>,
+    { payload }: SubmitPolicyPurchaseStep
+  ): void {
     const state: PolicyPurchaseStateModel = ctx.getState();
 
     ctx.setState({
       ...state,
       currentMainStep: {
         path: payload.path,
-        step: payload.step
-      }
+        step: payload.step,
+      },
     });
   }
 
   @Action(SubmitPolicyPurchaseSubStep)
-  setCurrentSubStep(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: SubmitPolicyPurchaseSubStep): void {
+  setCurrentSubStep(
+    ctx: StateContext<PolicyPurchaseStateModel>,
+    { payload }: SubmitPolicyPurchaseSubStep
+  ): void {
     const state: PolicyPurchaseStateModel = ctx.getState();
 
     ctx.setState({
       ...state,
       currentSubStep: {
         path: payload.path,
-        step: payload.step
-      }
+        step: payload.step,
+      },
     });
   }
 
@@ -217,7 +262,7 @@ export class PolicyPurchaseState {
 
         ctx.setState({
           ...state,
-          termsAndConditions: response.data || []
+          termsAndConditions: response.data || [],
         });
       }),
       map((response: any) => response.message)
@@ -225,23 +270,29 @@ export class PolicyPurchaseState {
   }
 
   @Action(PostQuotationPlans)
-  postQuotationPlans(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: SubmitPolicyPurchaseSubStep ) {
+  postQuotationPlans(
+    ctx: StateContext<PolicyPurchaseStateModel>,
+    { payload }: SubmitPolicyPurchaseSubStep
+  ) {
     return this.policyService.postQuotationPlans(payload).pipe(
       tap((response: HttpResponseBody) => {
         const state: PolicyPurchaseStateModel = ctx.getState();
+        const existingPlan = ctx.getState().quotationDetails.plan;
         const quotationDetails: PolicyDetails = {
+          ...ctx.getState().quotationDetails,
           quotationNumber: response.data.referenceNumber,
           personalDetails: {
             age: response.data.ageNearestBirthday,
             dateOfBirth: response.data.dateOfBirth,
             gender: formatCamelCase(response.data.gender),
-          }
+          },
+          plan: existingPlan,
         };
 
         ctx.setState({
           ...state,
           quotationDetails: quotationDetails,
-          plans: response.data.plans || []
+          plans: response.data.plans || [],
         });
       }),
       map((response: any) => response.message)
@@ -249,17 +300,21 @@ export class PolicyPurchaseState {
   }
 
   @Action(PostPolicyApplication)
-  postPolicyApplication(ctx: StateContext<any>, { payload }: PostPolicyApplication ) {
+  postPolicyApplication(
+    ctx: StateContext<any>,
+    { payload }: PostPolicyApplication
+  ) {
     return this.policyService.postPolicyApplication(payload).pipe(
       tap((response: HttpResponseBody): void => {
         const state: PolicyPurchaseStateModel = ctx.getState();
 
         ctx.setState({
+          ...state,
           quotationDetails: {
             ...state.quotationDetails,
             quotationId: response.data.id,
             premiumMode: response.data.planResponseDto.premiumMode,
-          }
+          },
         });
       }),
       map((response: any) => response.message)
@@ -267,12 +322,70 @@ export class PolicyPurchaseState {
   }
 
   @Action(PostPayment)
-  postPayment(ctx: StateContext<PolicyPurchaseStateModel>, { payload }: PostPayment ) {
+  postPayment(
+    ctx: StateContext<PolicyPurchaseStateModel>,
+    { payload }: PostPayment
+  ) {
     return this.policyService.postPayment(payload).pipe(
-      map((response: any) => {
-        return {
-          message: response.message
-        };
+      map((response: HttpResponseBody) => {
+        if (payload.paymentStatus === PaymentAction.Success) {
+          const policyData = response.data.policy;
+          const paymentData = response.data.paymentDetails;
+          const policyDetails: PolicyDetails = {
+            policyId: policyData.id,
+            quotationNumber: policyData.policyNo,
+            beneficiariesList: policyData.beneficiariesList,
+            personalDetails: {
+              policyId: policyData.id,
+              fullName: policyData.applicationResponseDto.fullName,
+              gender: policyData.applicationResponseDto.gender,
+              nationality: policyData.applicationResponseDto.nationality,
+              idNo: policyData.applicationResponseDto.identificationNo,
+              countryOfBirth: policyData.applicationResponseDto.countryOfBirth,
+              mobileNo: policyData.applicationResponseDto.phoneNo,
+              email: policyData.applicationResponseDto.email,
+              dateOfBirth: policyData.applicationResponseDto.dateOfBirth,
+              isSmoker: policyData.applicationResponseDto.isSmoker,
+              cigarettesNo: policyData.applicationResponseDto.cigarettesNo,
+              occupation: policyData.applicationResponseDto.occupation,
+              purposeOfTransaction: policyData.applicationResponseDto.purposeOfTransaction,
+              title: policyData.applicationResponseDto.title,
+              countryCode: policyData.applicationResponseDto.countryCode
+            },
+            plan: {
+              id: policyData.applicationResponseDto.planResponseDto.id,
+              planName: policyData.applicationResponseDto.planResponseDto.planName,
+              sumAssured: policyData.applicationResponseDto.planResponseDto.sumAssured,
+              coverageTerm: policyData.applicationResponseDto.planResponseDto.coverageTerm,
+              premiumAmount: policyData.applicationResponseDto.planResponseDto.premiumAmount,
+              premiumMode: policyData.applicationResponseDto.planResponseDto.premiumMode,
+              referenceNumber: policyData.applicationResponseDto.planResponseDto.referenceNumber
+            },
+            status: policyData.status,
+            startDate: policyData.startDate,
+            endDate: policyData.endDate
+          };
+          const paymentDetails: PaymentDetails = {
+            paymentId: paymentData.paymentId,
+            paymentRefNo: paymentData.paymentReferenceNumber,
+            paymentDate: paymentData.paymentDate,
+            status: paymentData.paymentStatus
+          };
+          ctx.patchState({
+            quotationDetails: policyDetails,
+            paymentDetails: paymentDetails
+          });
+        } else {
+          const paymentDetails: PaymentDetails = {
+            paymentId: 0,
+            paymentRefNo: 'T-000000000000',
+            paymentDate: '',
+            status: payload.paymentStatus
+          }
+          ctx.patchState({
+            paymentDetails: paymentDetails
+          });
+        }
       })
     );
   }
