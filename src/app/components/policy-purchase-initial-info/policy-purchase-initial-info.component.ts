@@ -61,7 +61,7 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit, OnDestroy {
 
   today: Date = new Date();
   minAge: number = 18;
-  maxAge: number = 65;
+  maxAge: number = 55;
 
   maxDate: Date;
   minDate: Date;
@@ -71,11 +71,17 @@ export class PolicyPurchaseInitialInfoComponent implements OnInit, OnDestroy {
     private store: Store,
     private router: Router,
   ) {
-    this.maxDate = new Date();
-    this.maxDate.setFullYear(this.today.getFullYear() - this.minAge);
 
-    this.minDate = new Date();
-    this.minDate.setFullYear(this.today.getFullYear() - this.maxAge);
+    const today = new Date();
+
+    this.minDate = new Date(today);
+    this.minDate.setFullYear(today.getFullYear() - this.maxAge);
+    this.minDate.setHours(0, 0, 0, 0);
+
+    this.maxDate = new Date(today);
+    this.maxDate.setFullYear(today.getFullYear() - this.minAge);
+    this.maxDate.setHours(0, 0, 0, 0);
+
   }
 
   ngOnInit(): void {
