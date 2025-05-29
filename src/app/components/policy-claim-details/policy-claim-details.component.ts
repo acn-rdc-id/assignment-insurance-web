@@ -33,6 +33,7 @@ export class PolicyClaimDetailsComponent implements OnInit {
   claimDetails!: PolicyClaimDetails;
   claimType!: ClaimType;
   claimDocument!: DocumentList[];
+  loadClaimsDetailsComplete: boolean = false;
 
   getStatusColor(status: string) {
     switch (status) {
@@ -49,14 +50,15 @@ export class PolicyClaimDetailsComponent implements OnInit {
     if (this.currentClaimId) {
       this.store.dispatch(new GetClaimDetails(this.currentClaimId)).subscribe({
         next: () => {
-          this.claimDetails = this.store.selectSnapshot (PolicyClaimState.getPolicyClaimDetails)
+          this.claimDetails = this.store.selectSnapshot (PolicyClaimState.getPolicyClaimDetails);
 
-          console.log("Claim Details ==> ", this.claimDetails)
+          console.log("Claim Details ==> ", this.claimDetails);
 
           this.claimType = this.claimDetails.claimType;
 
           this.claimDocument = this.claimDetails.documentList;
-          console.log("line 42", this.claimDocument)
+          this.loadClaimsDetailsComplete = true;
+          console.log("line 42", this.claimDocument);
         },
         error: (err: HttpErrorBody) => {
         }
