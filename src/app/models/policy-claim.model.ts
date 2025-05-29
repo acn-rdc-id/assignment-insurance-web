@@ -24,3 +24,23 @@ export interface PolicyClaimStep {
   path: string;
   step: number;
 }
+
+export interface PolicyClaimList {
+  claimId: string;
+  policyNo: string;
+  documentList: DocumentList[];
+  claimType: ClaimType;
+  claimDate: string;
+  claimStatus: string;
+}
+
+export interface DocumentList {
+  documentUrl: string;
+  documentName: string;
+}
+
+export interface ClaimType {
+  claimTypeId: number;
+  claimTypeName: string;
+  claimTypeDescription: string;
+}

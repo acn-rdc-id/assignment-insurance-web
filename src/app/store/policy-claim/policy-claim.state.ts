@@ -163,6 +163,11 @@ export class PolicyClaimState {
   getClaimDetails(ctx: StateContext<PolicyClaimStateModel>, { claimId }: GetClaimDetails) {
     return this.policyClaimService.getClaimDetails(claimId).pipe(
       map((response: HttpResponseBody) => {
+        const state: PolicyClaimStateModel = ctx.getState();
+        ctx.setState({
+          ...state,
+          claimDetails: response.data,
+        });
         return {
           message: response.message,
         };

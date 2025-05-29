@@ -56,14 +56,6 @@ export const routes: Routes = [
       ).then((m) => m.PolicyClaimsSubmissionComponent),
     canActivate: [userAuthGuard],
   },
-    {
-    path: 'policy-claim-details/:claimId',
-    loadComponent: () =>
-      import(
-        './components/policy-claim-details/policy-claim-details.component'
-      ).then((m) => m.PolicyClaimDetailsComponent),
-    canActivate: [userAuthGuard],
-  },
   {
     path: 'claim-list',
     loadComponent: () => import('./components/claim-list/claim-list.component').then(m => m.ClaimListComponent),

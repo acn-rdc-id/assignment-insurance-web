@@ -2,7 +2,7 @@ import {
   PolicyClaimDocument,
   PolicyClaim,
   PolicyClaimStep,
-  PolicyClaimSubmissionDetails,
+  PolicyClaimSubmissionDetails, PolicyClaimList,
 } from '../../models/policy-claim.model';
 
 export interface PolicyClaimStateModel {
@@ -12,6 +12,7 @@ export interface PolicyClaimStateModel {
   currentMainStep: PolicyClaimStep;
   selectedPolicyId: number;
   selectedTypeOfClaim: PolicyClaimDocument;
+  claimDetails: PolicyClaimList;
   docUpload: any;
 }
 
@@ -33,6 +34,20 @@ export const POLICY_CLAIM_STATE_DEFAULTS: PolicyClaimStateModel = {
     claimTypeDescription: '',
     requiredDocuments: [],
     typeOfClaim: '',
+  },
+  claimDetails: {
+    claimId: '',
+    policyNo: '',
+    documentList: [
+      { documentUrl: '', documentName: ''}
+    ],
+    claimType: {
+      claimTypeId: 0,
+      claimTypeName: '',
+      claimTypeDescription: '',
+    },
+    claimDate: '',
+    claimStatus: ''
   },
   docUpload: undefined,
 };
