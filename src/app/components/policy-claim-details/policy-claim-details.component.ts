@@ -1,22 +1,25 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ActivatedRoute, RouterLink} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {Subject, takeUntil} from 'rxjs';
 import {Store} from '@ngxs/store';
 import {DownloadDocument, GetClaimDetails} from '../../store/policy-claim/policy-claim.action';
 import {HttpErrorBody} from '../../models/http-body.model';
 import {NxColComponent} from '@aposin/ng-aquila/grid';
-import { ClaimType, DocumentList, PolicyClaim, PolicyClaimDetails } from '../../models/policy-claim.model';
-import { PolicyClaimState } from '../../store/policy-claim/policy-claim.state';
-import { NxLinkComponent } from '@aposin/ng-aquila/link';
+import {ClaimType, DocumentList, PolicyClaimDetails} from '../../models/policy-claim.model';
+import {PolicyClaimState} from '../../store/policy-claim/policy-claim.state';
+import {NxLinkComponent} from '@aposin/ng-aquila/link';
 import {CommonModule} from '@angular/common';
+import {NxTableCellComponent, NxTableComponent, NxTableRowComponent} from '@aposin/ng-aquila/table';
 
 @Component({
   selector: 'app-policy-claim-details',
   imports: [
     NxColComponent,
     NxLinkComponent,
-    RouterLink,
-    CommonModule
+    CommonModule,
+    NxTableComponent,
+    NxTableRowComponent,
+    NxTableCellComponent
   ],
   templateUrl: './policy-claim-details.component.html',
   styleUrl: './policy-claim-details.component.scss'

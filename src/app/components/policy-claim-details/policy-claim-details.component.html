@@ -34,7 +34,7 @@
           </tr>
           <tr nxTableRow>
             <td nxTableCell class="info-label">Claim Document</td>
-            <td nxTableCell class="info-value">  
+            <td nxTableCell class="info-value">
               <div class="document-links">
               @for (doc of claimDocument; track doc.documentUrl) {
                 <nx-link href="#"
@@ -42,7 +42,7 @@
                   {{ doc.documentName }}
                 </nx-link>
               }
-              </div>  
+              </div>
             </td>
           </tr>
           <tr nxTableRow>
@@ -55,5 +55,3 @@
     </div>
   </div>
 </div>
-
-<button (click)="downloadDocument()">Download</button>
