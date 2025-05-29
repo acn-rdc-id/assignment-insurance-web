@@ -64,10 +64,11 @@ export class PolicyClaimDetailsComponent implements OnInit {
     }
   }
 
-  downloadDocument(): void {
+  downloadDocument(docUrl: string ): void {
     const payload = {
-      keyName: "claim-policy/7e0eb95c-e9b0-4bb2-9f98-b038db9b972c_24_1/24_1_Diagnosis Report.txt"
+      keyName: docUrl
     };
+    console.log("payload", payload);
 
     this.store.dispatch(new DownloadDocument(payload)).subscribe({
       error: (err: HttpErrorBody) => {

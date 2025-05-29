@@ -38,7 +38,7 @@
               <div class="document-links">
               @for (doc of claimDocument; track doc.documentUrl) {
                 <nx-link href="#"
-        (click)="downloadDocument()" class="document-link" >
+        (click)="downloadDocument(doc.documentUrl)" class="document-link" >
                   {{ doc.documentName }}
                 </nx-link>
               }
