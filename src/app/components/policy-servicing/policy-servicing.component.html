@@ -7,7 +7,7 @@
 
   <div class="tab-content">
     <nx-tab-group>
-      <nx-tab [label]="'Allianz Life (' + (policyProduct?.length || 0) + ')'">
+      <nx-tab [label]="'Allianz Life (' + (policyProduct.length || 0) + ')'">
         @if (policyProduct) {
           <p>You have {{ policyProduct.length }} policies</p>
         }

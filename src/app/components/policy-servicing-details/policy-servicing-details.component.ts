@@ -14,7 +14,6 @@ import {
   NxExpansionPanelTitleDirective
 } from '@aposin/ng-aquila/accordion';
 import {NxHeadlineComponent} from '@aposin/ng-aquila/headline';
-import {NxCopytextComponent} from '@aposin/ng-aquila/copytext';
 import {
   PolicyServicingBeneficiaryComponent
 } from '../policy-servicing-beneficiary/policy-servicing-beneficiary.component';
@@ -54,7 +53,6 @@ export interface Breadcrumb {
     NxExpansionPanelHeaderComponent,
     NxExpansionPanelTitleDirective,
     NxHeadlineComponent,
-    NxCopytextComponent,
     PolicyServicingBeneficiaryComponent,
     NxFormfieldAppendixDirective,
     NxFormfieldModule,
