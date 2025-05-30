@@ -37,9 +37,10 @@ export class ClaimListComponent implements OnInit {
   @Input() claimList: any;
   private dialogService = inject(NxDialogService);
   dialogRef?: NxModalRef<any>;
-
   store: Store = inject(Store);
+
   ngOnInit(): void {
+    this.store.dispatch(new ClearPolicySubmission());
     this.store.dispatch(new getClaimList()).subscribe({
       complete: () => {
         const claimList: PolicyClaim[] = this.store.selectSnapshot(

@@ -109,5 +109,10 @@ $line-height-tight: 1.2;
   color: #2c7a7b;   
 }
 
-
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
 
