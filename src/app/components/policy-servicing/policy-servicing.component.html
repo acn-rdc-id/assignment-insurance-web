@@ -40,12 +40,12 @@
               </thead>
               <tbody>
                 @for (item of policyProductShownPageElements; track item) {
-                  <tr nxTableRow>
+                  <tr nxTableRow (click)="goToDetail(item.policyId)">
                     <td nxTableCell style="color: deepskyblue">
-                      <a (click)="goToDetail(item.policyId)">{{item.quotationNumber}}</a>
+                      <a>{{item.quotationNumber}}</a>
                     </td>
-                    <td nxTableCell>{{ item.personalDetails?.fullName }}</td>
-                    <td nxTableCell>{{ item.plan?.premiumAmount }}</td>
+                    <td nxTableCell>{{ item.personalDetails.fullName }}</td>
+                    <td nxTableCell>{{ item.plan.premiumAmount }}</td>
                     <td nxTableCell>{{ item.startDate | date: 'dd MMM yyyy' }}</td>
                     <td nxTableCell>{{ item.endDate | date: 'dd MMM yyyy' }}</td>
                     <td nxTableCell>
