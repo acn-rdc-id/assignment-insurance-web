@@ -19,6 +19,9 @@ import {
 } from '../../store/policy-claim/policy-claim.action';
 import { PolicyClaimState } from '../../store/policy-claim/policy-claim.state';
 import { PolicyClaim } from '../../models/policy-claim.model';
+import { NxFormfieldComponent } from '@aposin/ng-aquila/formfield';
+import { NxPaginationComponent } from '@aposin/ng-aquila/pagination';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-claim-list',
@@ -28,25 +31,46 @@ import { PolicyClaim } from '../../models/policy-claim.model';
     NxSortHeaderComponent,
     NxTabComponent,
     NxTabGroupComponent,
+    FormsModule,
     NxBadgeComponent,
+    NxFormfieldComponent,
+    NxPaginationComponent,
   ],
   templateUrl: './claim-list.component.html',
   styleUrl: './claim-list.component.scss',
 })
 export class ClaimListComponent implements OnInit {
-  @Input() claimList: any;
+  claimList!: PolicyClaim[];
   private dialogService = inject(NxDialogService);
   dialogRef?: NxModalRef<any>;
   store: Store = inject(Store);
+  router: Router = inject(Router);
+  page: number = 1;
+  filterValue: string = '';
+  elementsPerPage: number = 7;
+
+  policyClaimShownPageElements!: PolicyClaim[];
+  policyClaimAvailableElements!: PolicyClaim[];
 
   ngOnInit(): void {
     this.store.dispatch(new ClearPolicySubmission());
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        window.scrollTo(0, 0); // Scroll to top
+      }
+    });
+
     this.store.dispatch(new getClaimList()).subscribe({
       complete: () => {
         const claimList: PolicyClaim[] = this.store.selectSnapshot(
           PolicyClaimState.getClaimList
         );
         this.claimList = claimList;
+        this.policyClaimAvailableElements = claimList;
+
+        console.log('INITTTT->', this.policyClaimAvailableElements);
+        this.updatePage();
       },
       error: (err) => {
         const messageData: MessageModalData = {
@@ -58,13 +82,47 @@ export class ClaimListComponent implements OnInit {
     });
   }
 
-  constructor(private router: Router) {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        window.scrollTo(0, 0); // Scroll to top
-      }
-    });
+  onFilterValueChange(value: string) {
+    this.page = 1;
+    this.filterData(value);
   }
+
+  filterData(filterValue: string) {
+    const filterRegexp = new RegExp(filterValue, 'i');
+
+    this.policyClaimAvailableElements = this.claimList.filter((row) =>
+      Object.values(row).some((value) => {
+        let stringValue;
+
+        if (typeof value === 'object' && value !== null) {
+          stringValue = JSON.stringify(value);
+        } else {
+          stringValue = String(value);
+        }
+
+        return filterRegexp.test(stringValue);
+      })
+    );
+
+    this.updatePage();
+  }
+
+  updatePage() {
+    const indexMin = (this.page - 1) * this.elementsPerPage;
+    const indexMax = indexMin + this.elementsPerPage;
+    this.policyClaimShownPageElements =
+      this.policyClaimAvailableElements.filter(
+        (x, index) => index >= indexMin && index < indexMax
+      );
+  }
+
+  // constructor(private router: Router) {
+  //   this.router.events.subscribe((event) => {
+  //     if (event instanceof NavigationEnd) {
+  //       window.scrollTo(0, 0); // Scroll to top
+  //     }
+  //   });
+  // }
 
   private openErrorModal(messageData?: MessageModalData): void {
     this.dialogRef = this.dialogService.open(MessageModalComponent, {
@@ -106,5 +164,20 @@ export class ClaimListComponent implements OnInit {
 
   private getValueByPath(obj: any, path: string): any {
     return path.split('.').reduce((acc, part) => acc?.[part], obj);
+  }
+
+  prevPage() {
+    this.page--;
+    this.updatePage();
+  }
+
+  nextPage() {
+    this.page++;
+    this.updatePage();
+  }
+
+  goToPage(n: number) {
+    this.page = n;
+    this.updatePage();
   }
 }
