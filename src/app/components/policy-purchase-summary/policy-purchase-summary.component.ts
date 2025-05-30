@@ -23,7 +23,7 @@ import {convertToIsoDate} from '../../utils/date-utils';
 import {PolicyService} from '../../services/policy.service';
 import {User} from '../../models/user.model';
 import {PolicyPlan} from '../../models/policy.model';
-import { PaymentAction } from '../../enums/payment-action.enum';
+import {PaymentAction} from '../../enums/payment-action.enum';
 
 @Component({
   selector: 'app-policy-purchase-summary',
@@ -60,20 +60,20 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
   quotationDetails: any = [];
   dialogRef?: NxModalRef<any>;
   purchaseAction: typeof PaymentAction = PaymentAction;
-  
+
   form: FormGroup;
   formArray: FormArray;
 
   private unsubscribe$ = new Subject();
-  
+
   @ViewChild('paymentDialog') paymentDialog!: TemplateRef<any>;
   modalRef: any;
   actionResult?: PaymentAction;
-  
+
   @Input() nextSubStep!: () => void;
   @Input() prevSubStep!: () => void;
   @Output() paymentResult = new EventEmitter<number>();
-  
+
   constructor(
     private sanitizer: DomSanitizer,
     private store: Store,
@@ -81,7 +81,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
     private dialogService: NxDialogService,
     // private deepCopy: DeepCopyService
   ) {
-    
+
     //stores checked terms
     this.form = this.fb.group({
       terms: this.fb.array([]),
@@ -247,7 +247,7 @@ export class PolicyPurchaseSummaryComponent implements OnInit, OnDestroy {
 
   openModal(): void{
     this.modalRef = this.dialogService.open(this.paymentDialog, {
-      showCloseIcon: true
+      disableClose: true
     });
 
     this.modalRef.afterClosed().subscribe((result: PaymentAction) => {
