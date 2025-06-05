@@ -21,6 +21,7 @@ import { MobilePrefix } from '../../enums/mobile-prefix.enum';
 import { UserRegistrationForm } from '../../models/user.model';
 import { HttpErrorBody } from '../../models/http-body.model';
 import { MessageModalData } from '../../models/message-modal-data.model';
+import {NxMessageComponent} from '@aposin/ng-aquila/message';
 
 @Component({
   selector: 'app-user-registration',
@@ -42,7 +43,8 @@ import { MessageModalData } from '../../models/message-modal-data.model';
     NxIconComponent,
     NxPopoverComponent,
     NxIconButtonComponent,
-    NxPasswordToggleComponent
+    NxPasswordToggleComponent,
+    NxMessageComponent
   ],
   providers: [NricPipe],
   templateUrl: './user-registration.component.html',
@@ -58,13 +60,14 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit, OnDestr
   mobilePrefixList: Array<MobilePrefix> = Object.values(MobilePrefix);
   dialogRef?: NxModalRef<any>;
   idNoInputRef!: HTMLInputElement;
-  
+
   private nricPipe = inject(NricPipe);
   private store = inject(Store);
   private dialogService = inject(NxDialogService);
   private unsubscribe$ = new Subject();
   private prevIdNoValue: string = '';
-  
+  submitted: boolean = false;
+
   registrationForm: FormGroup = new FormGroup({
     idType: new FormControl(IdType.Nric, Validators.required),
     idNo: new FormControl('', {
@@ -86,7 +89,7 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit, OnDestr
       this.idTypeStringList.push(getIdTypeString(idType));
     });
   }
-  
+
   ngOnInit(): void {
     this.onFormChange();
   }
@@ -133,6 +136,7 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   onRegister() {
+    this.submitted = true;
     if (this.registrationForm.valid) {
       const userRegistrationPayload: UserRegistrationForm = {
         email: this.registrationForm.value.email,
