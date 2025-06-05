@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, Inject, inject, LOCALE_ID} from '@angular/core';
 import {
   NxHeaderCellDirective,
   NxSortDirective,
@@ -16,7 +16,11 @@ import {DatePipe, NgClass} from '@angular/common';
 import {NxColComponent} from '@aposin/ng-aquila/grid';
 import {PolicyProductState} from '../../store/policy-product/policy-product.state';
 import {Store} from '@ngxs/store';
-import { PolicyDetails } from '../../models/policy.model';
+import {PolicyDetails} from '../../models/policy.model';
+import {NxFormfieldComponent} from '@aposin/ng-aquila/formfield';
+import {FormsModule} from '@angular/forms';
+import {NxPaginationComponent} from '@aposin/ng-aquila/pagination';
+import {NxInputDirective} from '@aposin/ng-aquila/input';
 
 @Component({
   selector: 'app-policy-servicing',
@@ -32,18 +36,34 @@ import { PolicyDetails } from '../../models/policy.model';
     NxBadgeComponent,
     NgClass,
     DatePipe,
-    NxColComponent
+    NxColComponent,
+    NxFormfieldComponent,
+    FormsModule,
+    NxPaginationComponent,
+    NxInputDirective,
   ],
   templateUrl: './policy-servicing.component.html',
   styleUrl: './policy-servicing.component.scss'
 })
-export class PolicyServicingComponent implements OnInit {
+export class PolicyServicingComponent {
   private store: Store = inject(Store);
   private router: Router = inject(Router);
+
   policyProduct: Array<PolicyDetails> = [];
 
-  ngOnInit(): void {
+  policyProductShownPageElements!: PolicyDetails[];
+  policyProductAvailableElements: PolicyDetails[];
+
+  page: number = 1;
+  filterValue: string = '';
+  elementsPerPage: number = 7;
+
+  constructor(@Inject(LOCALE_ID) private readonly localeId: string) {
     this.policyProduct = this.store.selectSnapshot(PolicyProductState.getPolicyDetailsList);
+
+    this.policyProductAvailableElements = this.policyProduct;
+
+    this.updatePage();
   }
 
   goToDetail(policyId: number): void {
@@ -55,11 +75,13 @@ export class PolicyServicingComponent implements OnInit {
 
     if (!active || direction === null) return;
 
-    this.policyProduct = [...(this.policyProduct || [])].sort((a, b) => {
+    this.policyProductAvailableElements = [...(this.policyProductAvailableElements || [])].sort((a, b) => {
       const aValue = this.getValueByPath(a, active);
       const bValue = this.getValueByPath(b, active);
       return this.compare(aValue, bValue, direction);
     });
+
+    this.updatePage();
   }
 
   private compare(a: any, b: any, direction: SortDirection): number {
@@ -70,7 +92,56 @@ export class PolicyServicingComponent implements OnInit {
     return 0;
   }
 
+  onFilterValueChange(value: string) {
+    this.page = 1;
+    this.filterData(value);
+  }
+
   private getValueByPath(obj: any, path: string): any {
     return path.split('.').reduce((acc, part) => acc?.[part], obj);
+  }
+
+  filterData(filterValue: string) {
+    const filterRegexp = new RegExp(filterValue, 'i');
+
+    this.policyProductAvailableElements = this.policyProduct.filter(row =>
+      Object.values(row).some(value => {
+        let stringValue;
+
+        if (typeof value === 'object' && value !== null) {
+          stringValue = JSON.stringify(value);
+        } else {
+          stringValue = String(value);
+        }
+
+        return filterRegexp.test(stringValue);
+      })
+    );
+
+    this.updatePage();
+  }
+
+  updatePage() {
+    const indexMin = (this.page - 1) * this.elementsPerPage;
+    const indexMax = indexMin + this.elementsPerPage;
+    this.policyProductShownPageElements =
+      this.policyProductAvailableElements.filter(
+        (x, index) => index >= indexMin && index < indexMax,
+      );
+  }
+
+  prevPage() {
+    this.page--;
+    this.updatePage();
+  }
+
+  nextPage() {
+    this.page++;
+    this.updatePage();
+  }
+
+  goToPage(n: number) {
+    this.page = n;
+    this.updatePage();
   }
 }

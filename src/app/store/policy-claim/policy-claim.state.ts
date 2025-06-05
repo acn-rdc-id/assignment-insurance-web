@@ -9,7 +9,6 @@ import {
   PolicyClaim,
   PolicyClaimDetails,
   PolicyClaimDocument,
-  PolicyClaimList,
   PolicyClaimStep,
   PolicyClaimSubmissionDetails,
 } from '../../models/policy-claim.model';
@@ -63,8 +62,10 @@ export class PolicyClaimState {
     return state.mainSteps;
   }
 
-@Selector()
-  static getPolicyClaimDetails(state: PolicyClaimStateModel): PolicyClaimDetails {
+  @Selector()
+  static getPolicyClaimDetails(
+    state: PolicyClaimStateModel
+  ): PolicyClaimDetails {
     return state.claimDetails;
   }
 
@@ -208,6 +209,11 @@ export class PolicyClaimState {
         requiredDocuments: [],
         typeOfClaim: '',
       },
+      currentMainStep: {
+        path: '',
+        step: 0,
+      },
+      mainSteps: [],
     });
   }
 }

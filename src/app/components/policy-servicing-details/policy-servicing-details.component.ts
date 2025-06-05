@@ -185,8 +185,11 @@ onSaveInsuredInfo(): void {
   }
     // const updatedInfo = this.insuredForm.value;
     const { fullName, title, countryCode, mobileNo, email } = this.insuredForm.getRawValue();
-    const updatedInfo = { fullName, title, countryCode, mobileNo, email };
-
+    const updatedInfo = {
+      fullName, title, countryCode,
+      phoneNo: mobileNo,
+      email
+    };
     this.store.dispatch(new UpdateInsuredInfo(this.currentPolicyId!, updatedInfo)).subscribe(() => {
       this.editMode = false;
       this.loadSelectedPolicy();
@@ -218,11 +221,11 @@ onCancelEdit(): void {
         next: () => {
           const policyDetail: PolicyDetails = this.store.selectSnapshot(PolicyProductState.getPolicyDetails);
           if (!policyDetail) return;
-      
+
           this.policyDetail = policyDetail;
           this.currentPolicyNo = policyDetail.quotationNumber;
           this.loadPolicyDetailsComplete = true;
-      
+
           console.log(this.policyDetail);
           this.setupBreadcrumbs();
           this.populatePolicyRows();
@@ -241,7 +244,7 @@ onCancelEdit(): void {
       title: ['', Validators.required],
       fullName: ['', Validators.required],
       countryCode: ['', Validators.required],
-      mobileNo: ['', [Validators.required, Validators.pattern(/^\d{8,10}$/)]], 
+      mobileNo: ['', [Validators.required, Validators.pattern(/^\d{8,10}$/)]],
       email: ['', [Validators.required, Validators.email]],
 
       idNo: [{ value: '', disabled: true }],
