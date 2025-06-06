@@ -11,7 +11,7 @@
   <div class="plan-layout-container">
     <div class="plan-selection-container">
       @for (plan of plans$ | async; track plan.planName) {
-      <div class="plan-card" (click)="onPlanSelect(plan)" [class.selected]="infoForm.value.planSelection === plan.planName" style="cursor: pointer;">
+      <div class="plan-card" [class.selected]="infoForm.value.planSelection === plan.planName" style="cursor: pointer;">
         <nx-card>
           <div class="plan-header">
             <div class="premium">
@@ -46,6 +46,7 @@
               name="planSelection"
               [value]="plan.planName"
               formControlName="planSelection"
+              (click)="onPlanSelect(plan)"
             >
               {{
                 infoForm.value.planSelection === plan.planName
