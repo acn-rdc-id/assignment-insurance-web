@@ -166,7 +166,7 @@ export class PolicyClaimsSubmissionUploadDocComponent
         } else {
           const fileName = files[0].name.replace(/\.[^\.]+$/, '');
 
-          if (!fileName.includes(doc)) {
+          if (fileName !== doc) {
             errors.push(
               `Filename for "${files[0].name}" must be the same as "${doc}".`
             );
