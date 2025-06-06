@@ -20,7 +20,8 @@
             </div>
             <div nxCol="12,12,12,6" class="docs-grid-colored-col nested">
               <nx-formfield label="Name as per NRIC *" appearance="outline" floatLabel="always">
-                <input nxInput type="text" formControlName="fullName" autocomplete="fullname" />
+                <input nxInput type="text" formControlName="fullName"
+                     (input)="stripNonAlphabetCharacters($event)" autocomplete="fullname" />
               </nx-formfield>
             </div>
           </div>
@@ -197,7 +198,10 @@
                 floatLabel="always"
                 autocomplete="mobileNo"
               >
-                <input nxInput maxlength=10 formControlName="mobileNo" />
+                <input nxInput maxlength=10 formControlName="mobileNo"
+                   (keydown)="blockNonNumericKeydown($event)"
+                   (input)="stripNonNumericInput($event)"
+                />
               </nx-formfield>
             </div>
           </div>

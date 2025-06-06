@@ -138,6 +138,34 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
     });
   }
 
+  blockNonNumericKeydown(event: KeyboardEvent): void {
+    const allowedKeys = [
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'
+    ];
+
+    if (allowedKeys.includes(event.key)) {
+      return;
+    }
+
+    if (!/^\d$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  stripNonNumericInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/\D/g, '');
+  }
+
+  stripNonAlphabetCharacters(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+
+    this.personalDetailsForm.get('fullName')?.setValue(input.value, {
+      emitEvent: false
+    });
+  }
+
   populateFormFieldsFromState(): void {
     this.store.select(PolicyPurchaseState.getPersonalDetails)
       .pipe(takeUntil(this.unsubscribe$))
