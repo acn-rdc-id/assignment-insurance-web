@@ -25,6 +25,15 @@
     <form [formGroup]="registrationForm" (ngSubmit)="onRegister()" class="registration-form">
       <div nxLayout="grid" class="registration-form-grid">
         <div nxRow>
+          <div nxCol="12,12,12,12" style="margin-bottom: 1rem;">
+            @if (submitted && registrationForm.invalid) {
+              <nx-message context="error" class="error-message">
+                One or more required fields are incomplete or contain errors. Please correct them to continue.
+              </nx-message>
+            }
+          </div>
+        </div>
+        <div nxRow>
           <div nxCol="12,5">
             <nx-formfield label="ID type">
               <nx-dropdown formControlName="idType">
@@ -51,7 +60,7 @@
             </nx-formfield>
             <nx-popover #idNoHint>
               <div style="max-width: 300px">
-                Enter the ID number that you used during policy sign-up. 
+                Enter the ID number that you used during policy sign-up.
                 Hyphens and spaces should not be included, e.g.:
                 <br/>
                 <br/>
