@@ -19,10 +19,10 @@
                         <td class="separator-cell">:</td>
                         <td class="value-cell failure" [ngStyle]="getStatusColor(paymentDetails.status!)">{{displayPaymentStatus}}</td>
                       </tr>
-                      <tr nxTableRow>
-                        <td class="label-cell">Payment Reference No</td>
+                      <tr nxTableRow *ngIf="this.paymentDetails.status">
+                        <td class="label-cell">{{ this.displayLabel }}</td>
                         <td class="separator-cell">:</td>
-                        <td class="value-cell"><code>{{ this.paymentDetails.paymentRefNo }}</code></td>
+                        <td class="value-cell"><code>{{ this.quotationDetails.quotationNumber }}</code></td>
                       </tr>
                     </tbody>
                   </table>
