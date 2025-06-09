@@ -21,7 +21,7 @@ export interface PolicyClaimStateModel {
 export const POLICY_CLAIM_STATE_DEFAULTS: PolicyClaimStateModel = {
   policyClaim: [],
   policyClaimSubmissionDetails: {
-    policyIdList: [],
+    policyList: [],
     claimPolicyDocumentList: [],
   },
   mainSteps: [

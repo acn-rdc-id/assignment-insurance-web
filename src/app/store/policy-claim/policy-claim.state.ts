@@ -77,7 +77,7 @@ export class PolicyClaimState {
         ctx.setState({
           ...state,
           policyClaimSubmissionDetails: {
-            policyIdList: res.data.policyId,
+            policyList: res.data.policyInfo,
             claimPolicyDocumentList: res.data.claimPolicyDocument,
           },
           mainSteps: [

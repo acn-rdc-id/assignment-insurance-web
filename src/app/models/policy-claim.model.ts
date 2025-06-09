@@ -8,7 +8,7 @@ export interface PolicyClaim {
 }
 
 export interface PolicyClaimSubmissionDetails {
-  policyIdList: string[];
+  policyList: Array<{policyId: string, policyNo: string}>;
   claimPolicyDocumentList: PolicyClaimDocument[];
 }
 
