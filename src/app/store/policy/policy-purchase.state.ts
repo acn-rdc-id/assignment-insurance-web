@@ -348,7 +348,8 @@ export class PolicyPurchaseState {
               occupation: policyData.applicationResponseDto.occupation,
               purposeOfTransaction: policyData.applicationResponseDto.purposeOfTransaction,
               title: policyData.applicationResponseDto.title,
-              countryCode: policyData.applicationResponseDto.countryCode
+              countryCode: policyData.applicationResponseDto.countryCode,
+              age: policyData.applicationResponseDto.age
             },
             plan: {
               id: policyData.applicationResponseDto.planResponseDto.id,
