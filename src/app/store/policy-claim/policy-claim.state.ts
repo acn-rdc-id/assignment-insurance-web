@@ -16,7 +16,7 @@ import { map, tap } from 'rxjs';
 import {
   ClearPolicySubmission,
   DownloadDocument,
-  getClaimList,
+  GetClaimList,
   LoadPolicyClaim,
   PostSubmitClaim,
   SetPolicyClaimSelection,
@@ -35,11 +35,11 @@ export class PolicyClaimState {
 
   @Selector()
   static getClaimList(state: PolicyClaimStateModel): PolicyClaim[] {
-    return state.policyClaim;
+    return structuredClone(state.policyClaim);
   }
 
   @Selector()
-  static getPolicyClaimList(
+  static getClaimSubmissionDetails(
     state: PolicyClaimStateModel
   ): PolicyClaimSubmissionDetails {
     return structuredClone(state.policyClaimSubmissionDetails);
@@ -77,7 +77,7 @@ export class PolicyClaimState {
         ctx.setState({
           ...state,
           policyClaimSubmissionDetails: {
-            policyIdList: res.data.policyId,
+            policyList: res.data.policyInfo,
             claimPolicyDocumentList: res.data.claimPolicyDocument,
           },
           mainSteps: [
@@ -119,7 +119,7 @@ export class PolicyClaimState {
     });
   }
 
-  @Action(getClaimList)
+  @Action(GetClaimList)
   getClaimList(ctx: StateContext<PolicyClaimStateModel>) {
     return this.policyClaimService.getClaimList().pipe(
       tap((response: HttpResponseBody) => {

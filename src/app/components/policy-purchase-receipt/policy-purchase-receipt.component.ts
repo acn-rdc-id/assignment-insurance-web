@@ -29,6 +29,7 @@ export class PolicyPurchaseReceiptComponent implements OnInit{
   quotationDetails!: PolicyDetails;
   paymentDetails!: PaymentDetails;
   paymentAction: typeof PaymentAction = PaymentAction;
+  displayLabel: string = '';
 
   private router: Router = inject(Router);
   private store: Store = inject(Store);
@@ -50,16 +51,19 @@ export class PolicyPurchaseReceiptComponent implements OnInit{
     switch (this.paymentDetails.status) {
       case PaymentAction.Success:
         this.displayPaymentStatus = 'Successful';
+        this.displayLabel = 'Policy Number';
         break;
       case PaymentAction.Failed:
         this.displayPaymentStatus = 'Failure';
+        this.displayLabel = 'Quotation Number';
         break;
       default:
         this.displayPaymentStatus = 'Invalid';
         break;
     }
 
-    console.log('Payment Status:', this.paymentDetails.status);
+    console.log('Quotation Details Details:', this.quotationDetails);
+    console.log('Payment Details:', this.paymentDetails);
   }
 
   onNext(): void {

@@ -15,7 +15,7 @@ import { NxDialogService, NxModalRef } from '@aposin/ng-aquila/modal';
 import { MessageModalComponent } from '../message-modal/message-modal.component';
 import {
   ClearPolicySubmission,
-  getClaimList,
+  GetClaimList,
 } from '../../store/policy-claim/policy-claim.action';
 import { PolicyClaimState } from '../../store/policy-claim/policy-claim.state';
 import { PolicyClaim } from '../../models/policy-claim.model';
@@ -61,7 +61,7 @@ export class ClaimListComponent implements OnInit {
       }
     });
 
-    this.store.dispatch(new getClaimList()).subscribe({
+    this.store.dispatch(new GetClaimList()).subscribe({
       complete: () => {
         const claimList: PolicyClaim[] = this.store.selectSnapshot(
           PolicyClaimState.getClaimList

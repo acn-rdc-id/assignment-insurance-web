@@ -59,7 +59,7 @@ export class PolicyClaimsSubmissionSelectPolicyComponent
   @Input() prevStep!: () => void;
 
   infoForm!: FormGroup;
-  policyId = [''];
+  policyList: Array<{policyId: string, policyNo: string}> = [];
   typeOfClaim = [''];
   formBuilder: FormBuilder = inject(FormBuilder);
   private router: Router = inject(Router);
@@ -75,9 +75,9 @@ export class PolicyClaimsSubmissionSelectPolicyComponent
     this.store.dispatch(new LoadPolicyClaim()).subscribe({
       complete: () => {
         this.policyClaim = this.store.selectSnapshot(
-          PolicyClaimState.getPolicyClaimList
+          PolicyClaimState.getClaimSubmissionDetails
         );
-        this.policyId = this.policyClaim.policyIdList;
+        this.policyList = this.policyClaim.policyList;
         this.typeOfClaim = this.policyClaim.claimPolicyDocumentList.map(
           (it) => it.claimTypeName
         );

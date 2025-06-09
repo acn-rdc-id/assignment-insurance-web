@@ -1,4 +1,4 @@
-<div nxCol="12,12,12,12" class="policy-servicing-banner">
+<div class="policy-servicing-banner">
   <div class="banner-content">
     <div class="banner-title">
       <p>Claims</p>
@@ -35,7 +35,7 @@
               >
                 <thead>
                   <tr nxTableRow>
-                    <th nxHeaderCell nxSortHeaderCell="policyId">Policy ID</th>
+                    <th nxHeaderCell nxSortHeaderCell="policyId">Policy Number</th>
                     <th nxHeaderCell nxSortHeaderCell="claimType">
                       Claim Type
                     </th>
@@ -51,7 +51,7 @@
                   @for (item of policyClaimShownPageElements; track item) {
                   <tr nxTableRow (click)="goToDetails(item.claimId)">
                     <td nxTableCell style="color: deepskyblue">
-                      <a>{{ item.claimId }}</a>
+                      <a>{{ item.policyNo }}</a>
                     </td>
                     <td nxTableCell>{{ item.claimType }}</td>
                     <td nxTableCell>{{ item.claimDate }}</td>
@@ -89,8 +89,8 @@
             </nx-pagination>
             }
           </div></nx-tab
-        ></nx-tab-group
-      >
+        >
+      </nx-tab-group>
     </div>
   </div>
 </div>

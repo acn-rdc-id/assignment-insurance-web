@@ -1,13 +1,14 @@
 export interface PolicyClaim {
   claimId: string;
   policyId?: string;
+  policyNo: string;
   claimDate: string;
   claimStatus: string;
   claimType: string;
 }
 
 export interface PolicyClaimSubmissionDetails {
-  policyIdList: string[];
+  policyList: Array<{policyId: string, policyNo: string}>;
   claimPolicyDocumentList: PolicyClaimDocument[];
 }
 

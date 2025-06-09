@@ -10,9 +10,9 @@
               floatLabel="always"
             >
               <nx-dropdown formControlName="policyId">
-                @for (field of policyId; track field;) {
-                <nx-dropdown-item value="{{ field }}">{{
-                  field
+                @for (policy of policyList; track policy;) {
+                <nx-dropdown-item value="{{ policy.policyId }}">{{
+                  policy.policyNo
                 }}</nx-dropdown-item>
                 }
               </nx-dropdown>

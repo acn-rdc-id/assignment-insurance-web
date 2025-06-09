@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
-import { map } from "rxjs";
+import { catchError, map } from "rxjs";
 import { NxDialogService, NxModalRef } from "@aposin/ng-aquila/modal";
 import { UserLogin, UserLogout, UserRegistration } from "./user.action";
 import { UserService } from "../../services/user.service";
@@ -9,6 +9,7 @@ import { MessageModalComponent } from "../../components/message-modal/message-mo
 import { USER_STATE_DEFAULT, UserStateModel } from "./user.state.model";
 import { MessageModalData } from "../../models/message-modal-data.model";
 import { User } from "../../models/user.model";
+import { HttpErrorBody } from "../../models/http-body.model";
 
 @State<UserStateModel>({
   name: 'UserState',
@@ -65,20 +66,35 @@ export class UserState {
     {payload}: UserRegistration
   ) {
     return this.userService.userRegistration(payload).pipe(
-      map(res => res.message)
-    ).subscribe(res => {
-      const messageData: MessageModalData = {
-        header: 'Success',
-        message: res
+      map(res => res? res.message as string : '')
+    ).subscribe({
+      next: (res: string) => {
+        const messageData: MessageModalData = {
+          header: 'Success',
+          message: res
+        };
+        this.dialogRef = this.dialogService.open(MessageModalComponent, {
+          data: messageData,
+          disableClose: true,
+          ariaLabel: 'Success Message'
+        });
+        this.dialogRef.afterClosed().subscribe(() => {
+          this.router.navigate(['login']);
+        })
+      },
+      error: (err: HttpErrorBody) => {
+        const errorMessage = err.message?.includes('Duplicate entry')
+        ? 'Error: Duplicate User.' : err?.message;
+        const messageData: MessageModalData = {
+          header: 'Error',
+          message: errorMessage ? errorMessage : 'Unexpected error occured.'
+        };
+        this.dialogRef = this.dialogService.open(MessageModalComponent, {
+          data: messageData,
+          disableClose: true,
+          ariaLabel: 'Error dialog'
+        });
       }
-      this.dialogRef = this.dialogService.open(MessageModalComponent, {
-        data: messageData,
-        disableClose: true,
-        ariaLabel: 'Success Message'
-      });
-      this.dialogRef.afterClosed().subscribe(() => {
-        this.router.navigate(['login']);
-      })
     });
   }
 
