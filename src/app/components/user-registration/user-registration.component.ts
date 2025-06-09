@@ -149,15 +149,7 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit, OnDestr
         role: UserRole.User
       }
 
-      this.store.dispatch(new UserRegistration(userRegistrationPayload)).subscribe({
-        error: (err: HttpErrorBody) => {
-          const messageData: MessageModalData = {
-            header: 'Error',
-            message: err.message ? err.message : 'Unexpected error occured.'
-          }
-          this.openErrorModal(messageData);
-        }
-      })
+      this.store.dispatch(new UserRegistration(userRegistrationPayload));
     }
   }
 
@@ -190,14 +182,6 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit, OnDestr
       }
       this.prevIdNoValue = this.registrationForm.value?.idNo;
     });
-  }
-
-  private openErrorModal(messageData?: MessageModalData): void {
-    this.dialogRef = this.dialogService.open(MessageModalComponent, {
-      data: messageData,
-      disableClose: true,
-      ariaLabel: 'Error dialog'
-    })
   }
 
   ngOnDestroy(): void {
