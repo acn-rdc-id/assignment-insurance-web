@@ -75,7 +75,7 @@ export class PolicyClaimsSubmissionSelectPolicyComponent
     this.store.dispatch(new LoadPolicyClaim()).subscribe({
       complete: () => {
         this.policyClaim = this.store.selectSnapshot(
-          PolicyClaimState.getPolicyClaimList
+          PolicyClaimState.getClaimSubmissionDetails
         );
         this.policyId = this.policyClaim.policyIdList;
         this.typeOfClaim = this.policyClaim.claimPolicyDocumentList.map(

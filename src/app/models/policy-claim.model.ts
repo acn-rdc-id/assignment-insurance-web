@@ -1,6 +1,7 @@
 export interface PolicyClaim {
   claimId: string;
   policyId?: string;
+  policyNo: string;
   claimDate: string;
   claimStatus: string;
   claimType: string;
