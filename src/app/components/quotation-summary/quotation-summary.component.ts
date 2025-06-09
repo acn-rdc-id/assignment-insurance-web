@@ -4,7 +4,7 @@ import {PolicyPurchaseState} from '../../store/policy/policy-purchase.state';
 import {Store} from '@ngxs/store';
 import {NxTableCellComponent, NxTableComponent, NxTableRowComponent} from '@aposin/ng-aquila/table';
 import {PolicyDetails} from '../../models/policy.model';
-import {formatCamelCase, formatPremium} from '../../utils/string-utils';
+import {formatCamelCase, formatPremium, formatDate} from '../../utils/string-utils';
 
 @Component({
   selector: 'app-quotation-summary',
@@ -40,7 +40,7 @@ export class QuotationSummaryComponent implements OnInit, OnChanges {
       {title: 'Plan Information Summary', desc: ''},
       {title: 'Reference Number', desc: this.quotation.quotationNumber ?? '—'},
       {title: 'Gender', desc: this.quotation.personalDetails?.gender ?? '—'},
-      {title: 'Date of Birth', desc: this.quotation.personalDetails?.dateOfBirth ?? '—'},
+      {title: 'Date of Birth', desc: formatDate(this.quotation.personalDetails?.dateOfBirth)},
       {title: 'Age Nearest Birthday', desc: this.quotation.personalDetails?.age?.toString() ?? '—'},
       {title: 'Selected Plan', desc: this.quotation.plan?.planName ?? '—'}, //
       {title: 'Premium Mode', desc: formatCamelCase(mode) ?? '—'},
