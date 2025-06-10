@@ -1,5 +1,5 @@
-@if (submitted && (beneficiaryDetailsForm.invalid || this.isBeneficiaryError)) {
-  <nx-error class="nx-margin-bottom-xs"> {{ errorMessage }}</nx-error>
+@if (shouldShowErrorMessage()) {
+  <nx-message context="error" class="nx-margin-bottom-xs"> {{ errorMessage }}</nx-message>
 }
 
 @if (successMessage) {

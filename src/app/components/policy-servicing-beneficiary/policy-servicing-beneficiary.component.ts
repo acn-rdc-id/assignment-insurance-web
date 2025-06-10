@@ -81,7 +81,7 @@ export class PolicyServicingBeneficiaryComponent implements OnInit, OnDestroy {
   private readonly dialogService: NxDialogService = inject(NxDialogService);
   private unsubscribe$ = new Subject<void>();
 
-  
+
   beneficiaryRelatioshipList: Array<string> = Object.values(BeneficiaryRelationship);
   currentPolicyNo: string | null = '';
   currentPolicyId!: number;
@@ -132,6 +132,10 @@ export class PolicyServicingBeneficiaryComponent implements OnInit, OnDestroy {
 
   removeRow(index: number): void {
     this.formArray.removeAt(index);
+  }
+
+  shouldShowErrorMessage(): boolean {
+    return this.submitted && (this.beneficiaryDetailsForm.invalid || this.isBeneficiaryError) && this.errorMessage.trim() !== '';
   }
 
   showError(message: string): void {
