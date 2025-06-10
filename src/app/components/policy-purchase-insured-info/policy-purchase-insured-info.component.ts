@@ -159,7 +159,7 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
 
   stripNonAlphabetCharacters(event: Event): void {
     const input = event.target as HTMLInputElement;
-    input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+    input.value = input.value.replace(/[^a-zA-Z\s@]/g, '');
 
     this.personalDetailsForm.get('fullName')?.setValue(input.value, {
       emitEvent: false
