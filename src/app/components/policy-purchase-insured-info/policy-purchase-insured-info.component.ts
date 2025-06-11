@@ -122,7 +122,7 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
       isUsPerson: new FormControl(false),
       countryOfBirth: new FormControl('', Validators.required),
       isSmoker: new FormControl(false),
-      cigarettesPerDay: new FormControl(0),
+      cigarettesPerDay: new FormControl(0, [Validators.min(1), Validators.max(20)]),
       countryCode: new FormControl('', Validators.required),
       mobileNo: new FormControl('', [
         Validators.required,
@@ -159,7 +159,7 @@ export class PolicyPurchaseInsuredInfoComponent implements OnInit, OnDestroy {
 
   stripNonAlphabetCharacters(event: Event): void {
     const input = event.target as HTMLInputElement;
-    input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+    input.value = input.value.replace(/[^a-zA-Z\s@]/g, '');
 
     this.personalDetailsForm.get('fullName')?.setValue(input.value, {
       emitEvent: false

@@ -147,11 +147,15 @@ export class ClaimListComponent implements OnInit {
 
     if (!active || direction === null) return;
 
-    this.claimList = [...(this.claimList || [])].sort((a, b) => {
+    this.policyClaimAvailableElements = [
+      ...(this.policyClaimAvailableElements || []),
+    ].sort((a, b) => {
       const aValue = this.getValueByPath(a, active);
       const bValue = this.getValueByPath(b, active);
       return this.compare(aValue, bValue, direction);
     });
+
+    this.updatePage();
   }
 
   private compare(a: any, b: any, direction: SortDirection): number {
