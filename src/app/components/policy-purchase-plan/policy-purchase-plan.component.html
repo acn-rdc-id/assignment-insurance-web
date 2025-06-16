@@ -47,6 +47,7 @@
               [value]="plan.planName"
               formControlName="planSelection"
               (click)="onPlanSelect(plan)"
+              id="plan-{{plan.id}}"
             >
               {{
                 infoForm.value.planSelection === plan.planName
